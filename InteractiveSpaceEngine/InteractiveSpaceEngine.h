@@ -3,14 +3,14 @@
 
 #include <boost/thread.hpp>
 #include "KinectSensor.h"
+#include "ImageProcessingFactory.h"
 
-class InteractiveSpaceEngine
+class InteractiveSpaceEngine : ThreadWorker
 {
 private:
 	static InteractiveSpaceEngine instance;
-
-	boost::thread* workingThread;
 	KinectSensor* kinectSensor;
+	ImageProcessingFactory* ipf;
 
 	void dispose();
 
@@ -21,7 +21,11 @@ public:
 	void run();
 	void stop();
 
-	void operator() (); //working thread to process data
+	inline void join() { threadJoin(); } //for console debug
+
+	virtual void operator() ();
+
+	inline KinectSensor* getKinectSensor() { return kinectSensor; }
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include <memory.h>
 using namespace xn;
 
-KinectSensor::KinectSensor()
+KinectSensor::KinectSensor() : frameCount(0)
 {
 	XnStatus rc;
 	EnumerationErrors errors;
@@ -14,27 +14,19 @@ KinectSensor::KinectSensor()
 	assert(rc == XN_STATUS_OK);
 
 	rc = context.FindExistingNode(XN_NODE_TYPE_IMAGE, rgbGen);
-	assert(rc == XN_STATUS_OK);
+	assert(rc == XN_STATUS_OK);	
 
-	XnMapOutputMode rgbMapOutputMode;
-	rc = rgbGen.GetMapOutputMode(rgbMapOutputMode);
-	assert(rc == XN_STATUS_OK);
+	rgbImg = createBlankRGBImage();
+	depthImg = createBlankDepthImage();
 
-	XnMapOutputMode depthMapOutputMode;
-	rc = depthGen.GetMapOutputMode(depthMapOutputMode);
-	assert(rc == XN_STATUS_OK);
-	
-	rgbImg = cvCreateImage(cvSize(rgbMapOutputMode.nXRes, rgbMapOutputMode.nYRes), IPL_DEPTH_8U, 3);
-	depthImg = cvCreateImage(cvSize(depthMapOutputMode.nXRes, depthMapOutputMode.nYRes), IPL_DEPTH_16U, 1);
-
-	workingThread = new boost::thread(boost::ref(*this));
+	threadStart();
 }
 
 KinectSensor::~KinectSensor()
 {
-	workingThread->interrupt();
-	delete workingThread;
-	workingThread = NULL;
+	threadStop();
+	context.StopGeneratingAll();
+	context.Release();
 
 	cvReleaseImage(&rgbImg);
 	cvReleaseImage(&depthImg);
@@ -47,15 +39,32 @@ void KinectSensor::operator() ()
 		boost::this_thread::interruption_point();
 		context.WaitAndUpdateAll();
 		
-		{
-			WriteLock rgbLock(rgbImgMutex);
-			memcpy(rgbImg->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
-			cvCvtColor(rgbImg, rgbImg, CV_RGB2BGR);
-		}
+		WriteLock rgbLock(rgbImgMutex);
+		WriteLock depthLock(depthImgMutex);
+		WriteLock frameLock(frameCountMutex);
+		//lock 3 resources at the same time to keep synchronization
+		
+		memcpy(rgbImg->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
+		cvCvtColor(rgbImg, rgbImg, CV_RGB2BGR);
 
-		{
-			WriteLock depthLock(depthImgMutex);
-			memcpy(depthImg->imageData, depthGen.GetData(), depthGen.GetDataSize());
-		}
+		memcpy(depthImg->imageData, depthGen.GetData(), depthGen.GetDataSize());
+
+		frameCount++;
 	}
+}
+
+IplImage* KinectSensor::createBlankRGBImage()
+{
+	XnMapOutputMode rgbMapOutputMode;
+	XnStatus rc = rgbGen.GetMapOutputMode(rgbMapOutputMode);
+	assert(rc == XN_STATUS_OK);
+	return cvCreateImage(cvSize(rgbMapOutputMode.nXRes, rgbMapOutputMode.nYRes), IPL_DEPTH_8U, 3);
+}
+
+IplImage* KinectSensor::createBlankDepthImage()
+{
+	XnMapOutputMode depthMapOutputMode;
+	XnStatus rc = depthGen.GetMapOutputMode(depthMapOutputMode);
+	assert(rc == XN_STATUS_OK);
+	return cvCreateImage(cvSize(depthMapOutputMode.nXRes, depthMapOutputMode.nYRes), IPL_DEPTH_16U, 1);
 }

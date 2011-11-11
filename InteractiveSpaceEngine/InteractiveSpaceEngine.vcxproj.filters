@@ -21,12 +21,24 @@
     <ClInclude Include="InteractiveSpaceEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcessingFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InteractiveSpaceEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessingFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

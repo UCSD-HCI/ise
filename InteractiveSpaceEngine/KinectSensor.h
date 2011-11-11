@@ -1,48 +1,11 @@
 #ifndef KINECT_SENSOR_H
 #define KINECT_SENSOR_H
 
-#include <cv.h>
-#include <boost/thread.hpp>
 #include <XnCppWrapper.h>
+#include "ThreadUtils.h"
+#include "ThreadWorker.h"
 
-typedef boost::shared_mutex Mutex;
-typedef boost::unique_lock<boost::shared_mutex> WriteLock;
-typedef boost::shared_lock<boost::shared_mutex> ReadLock;
-
-template <class T>
-struct ReadLockedPtr
-{
-private:
-	const T* obj;
-	ReadLock* readLock;
-
-public:
-	ReadLockedPtr(const T& obj, Mutex& mutex) : obj(&obj), readLock(new ReadLock(mutex)) { }
-
-	inline const T* operator-> () 
-	{
-		return obj;
-	}
-
-	inline const T& operator* ()
-	{
-		return *obj;
-	}
-
-	inline operator const T*()	//convert to normal ptr
-	{
-		return obj;
-	}
-
-	inline void release()
-	{
-		delete readLock;
-	}
-};
-
-typedef struct ReadLockedPtr<IplImage> ReadLockedIplImagePtr;
-
-class KinectSensor
+class KinectSensor : public ThreadWorker
 {
 private:
 	IplImage* rgbImg;
@@ -54,8 +17,9 @@ private:
 
 	Mutex depthImgMutex;
 	Mutex rgbImgMutex;
+	Mutex frameCountMutex;
 
-	boost::thread* workingThread;
+	long long frameCount;
 
 public:
 	KinectSensor();
@@ -63,8 +27,16 @@ public:
 
 	inline ReadLockedIplImagePtr lockDepthImage() { return ReadLockedIplImagePtr(*depthImg, depthImgMutex); }
 	inline ReadLockedIplImagePtr lockRGBImage() { return ReadLockedIplImagePtr(*rgbImg, rgbImgMutex); }
+	inline long long getFrameCount() 
+	{
+		ReadLock frameCountLock(frameCountMutex);
+		return frameCount; 
+	}
 
-	void operator() ();	//thread worker
+	virtual void operator() ();	//thread worker
+
+	IplImage* createBlankRGBImage();		//create a blank image to store rgb data
+	IplImage* createBlankDepthImage();	//create a blank image to store depth data
 };
 
 #endif

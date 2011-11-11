@@ -4,7 +4,7 @@
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : workingThread(NULL), kinectSensor(NULL)
+InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL)
 {
 }
 
@@ -15,17 +15,18 @@ InteractiveSpaceEngine::~InteractiveSpaceEngine()
 
 void InteractiveSpaceEngine::dispose()
 {
-	if (workingThread != NULL)
-	{
-		workingThread->interrupt();
-		delete workingThread;
-		workingThread = NULL;
-	}
+	threadStop();
 
 	if (kinectSensor != NULL)
 	{
 		delete kinectSensor;
 		kinectSensor = NULL;
+	}
+
+	if (ipf != NULL)
+	{
+		delete ipf;
+		ipf = NULL;
 	}
 }
 
@@ -37,8 +38,8 @@ InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
 void InteractiveSpaceEngine::run()
 {
 	kinectSensor = new KinectSensor();
-	workingThread = new boost::thread(boost::ref(*this));
-	workingThread->join();
+	ipf = new ImageProcessingFactory(kinectSensor);
+	threadStart();
 }
 
 void InteractiveSpaceEngine::stop()
@@ -54,7 +55,8 @@ void InteractiveSpaceEngine::operator() ()
 	{
 		boost::this_thread::interruption_point();
 
-		ReadLockedIplImagePtr ptr = kinectSensor->lockRGBImage();
+		//ReadLockedIplImagePtr ptr = kinectSensor->lockRGBImage();
+		ReadLockedIplImagePtr ptr = ipf->lockImageProduct(DepthHistogramedProduct);
 		cvShowImage("Test", ptr);
 		ptr.release();
 		if( (cvWaitKey(10) & 255) == 27 ) break;
@@ -64,6 +66,7 @@ void InteractiveSpaceEngine::operator() ()
 int main()
 {
 	InteractiveSpaceEngine::sharedEngine()->run();
-
+	InteractiveSpaceEngine::sharedEngine()->join();
+	InteractiveSpaceEngine::sharedEngine()->stop();
 	return 0;
 }

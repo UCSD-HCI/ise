@@ -122,10 +122,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ThreadWorker.h" />
+    <ClInclude Include="ImageProcessingFactory.h" />
     <ClInclude Include="InteractiveSpaceEngine.h" />
     <ClInclude Include="KinectSensor.h" />
+    <ClInclude Include="ThreadUtils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ImageProcessingFactory.cpp" />
     <ClCompile Include="InteractiveSpaceEngine.cpp" />
     <ClCompile Include="KinectSensor.cpp" />
   </ItemGroup>
