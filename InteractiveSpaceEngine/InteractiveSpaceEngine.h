@@ -5,6 +5,7 @@
 #include "KinectSensor.h"
 #include "ImageProcessingFactory.h"
 #include "OmniTouchFingerTracker.h"
+#include "FingerSelector.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -14,9 +15,10 @@ private:
 	ImageProcessingFactory* ipf;
 	
 	OmniTouchFingerTracker* omniTracker;
+	FingerSelector* fingerSelector;
 
 	long long kinectSensorFrameCount;
-
+	
 	void dispose();
 
 public:
@@ -33,6 +35,7 @@ public:
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
 	inline OmniTouchFingerTracker* getOmniTouchFingerTracker() { return omniTracker; }
+	inline FingerSelector* getFingerSelector() { return fingerSelector; }
 };
 
 #endif

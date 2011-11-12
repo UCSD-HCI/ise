@@ -17,21 +17,22 @@ typedef enum
 	StripFalling
 } StripState;
 
-typedef struct Strip
+typedef struct OmniTouchStrip
 {
 	int row;
 	int leftCol, rightCol;
 	bool visited;
-	struct Strip(int row, int leftCol, int rightCol) : row(row), leftCol(leftCol), rightCol(rightCol), visited(false) { }
-} Strip;
+	struct OmniTouchStrip(int row, int leftCol, int rightCol) : row(row), leftCol(leftCol), rightCol(rightCol), visited(false) { }
+} OmniTouchStrip;
 
-typedef struct Finger
+typedef struct OmniTouchFinger
 {
 	int tipX, tipY, tipZ;
 	int endX, endY, endZ;
-	struct Finger(int tipX, int tipY, int tipZ, int endX, int endY, int endZ) : tipX(tipX), tipY(tipY), tipZ(tipZ), endX(endX), endY(endY), endZ(endZ) { }
-	bool operator<(const Finger& ref) const { return endY - tipY > ref.endY - ref.tipY; }	//sort more to less
-} Finger;
+	struct OmniTouchFinger(int tipX, int tipY, int tipZ, int endX, int endY, int endZ) : tipX(tipX), tipY(tipY), tipZ(tipZ), endX(endX), endY(endY), endZ(endZ) { }
+	bool operator<(const OmniTouchFinger& ref) const { return endY - tipY > ref.endY - ref.tipY; }	//sort more to less
+} OmniTouchFinger;
+
 
 class OmniTouchFingerTracker
 {
@@ -45,7 +46,8 @@ private:
 	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax;
 
 	IplImage* debugFindFingersResult;
-	std::vector<std::vector<Strip> > strips;
+	std::vector<std::vector<OmniTouchStrip> > strips;
+	std::vector<OmniTouchFinger> fingers;
 	
 	float distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2);
 	void findStrips();
@@ -58,6 +60,8 @@ public:
 	void refresh();
 
 	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax);
+
+	inline const std::vector<OmniTouchFinger>& getFingers() const { return fingers; }
 };
 
 #endif

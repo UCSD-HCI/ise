@@ -123,6 +123,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DllWrapper.h" />
+    <ClInclude Include="FingerSelector.h" />
+    <ClInclude Include="InteractiveSpaceTypes.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
     <ClInclude Include="ThreadWorker.h" />
     <ClInclude Include="ImageProcessingFactory.h" />
@@ -132,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandDllWrapper.cpp" />
+    <ClCompile Include="FingerSelector.cpp" />
     <ClCompile Include="ImageProcessingFactory.cpp" />
     <ClCompile Include="InteractiveSpaceEngine.cpp" />
     <ClCompile Include="KinectSensor.cpp" />

@@ -59,7 +59,7 @@ void OmniTouchFingerTracker::findStrips()
 
 	for (int i = 0; i < sobelPtr->height; i++)
 	{
-		strips.push_back(vector<Strip>());
+		strips.push_back(vector<OmniTouchStrip>());
 
 		StripState state = StripSmooth;
 		int partialMin, partialMax;
@@ -143,7 +143,7 @@ void OmniTouchFingerTracker::findStrips()
 							rgb888ValAt(debugFindFingersResult, i, tj)[1] = 255;
 							//bufferPixel(tmpPixelBuffer, i, tj)[2] = 0;
 						}
-						strips[i].push_back(Strip(i, partialMaxPos, partialMinPos));
+						strips[i].push_back(OmniTouchStrip(i, partialMaxPos, partialMinPos));
 						
 						partialMax = currVal;
 						partialMaxPos = j;
@@ -162,12 +162,12 @@ void OmniTouchFingerTracker::findStrips()
 //handhint: the result for estimating the hand position, in real world coordinate. int x, int y, int z, int pixelLength. pixel lenth is used as the measure of confidence.
 void OmniTouchFingerTracker::findFingers()
 {
-	vector<Strip*> stripBuffer;	//used to fill back
-	vector<Finger> fingers;
+	vector<OmniTouchStrip*> stripBuffer;	//used to fill back
+	fingers.clear();
 
 	for (int i = 0; i < debugFindFingersResult->height; i++)
 	{
-		for (vector<Strip>::iterator it = strips[i].begin(); it != strips[i].end(); ++it)
+		for (vector<OmniTouchStrip>::iterator it = strips[i].begin(); it != strips[i].end(); ++it)
 		{
 			if (it->visited)
 			{
@@ -182,11 +182,11 @@ void OmniTouchFingerTracker::findFingers()
 			int blankCounter = 0;
 			for (int si = i; si < debugFindFingersResult->height; si++)
 			{
-				Strip* currTop = stripBuffer[stripBuffer.size() - 1];
+				OmniTouchStrip* currTop = stripBuffer[stripBuffer.size() - 1];
 
 				//search strip
 				bool stripFound = false;
-				for (vector<Strip>::iterator sIt = strips[si].begin(); sIt != strips[si].end(); ++sIt)
+				for (vector<OmniTouchStrip>::iterator sIt = strips[si].begin(); sIt != strips[si].end(); ++sIt)
 				{
 					if (sIt->visited)
 					{
@@ -214,9 +214,9 @@ void OmniTouchFingerTracker::findFingers()
 			}
 
 			//check length
-			Strip* first = stripBuffer[0];
+			OmniTouchStrip* first = stripBuffer[0];
 			int firstMidCol = (first->leftCol + first->rightCol) / 2;
-			Strip* last = stripBuffer[stripBuffer.size() - 1];
+			OmniTouchStrip* last = stripBuffer[stripBuffer.size() - 1];
 			int lastMidCol = (last->leftCol + last->rightCol) / 2;
 
 			ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSourceProduct);
@@ -260,7 +260,7 @@ void OmniTouchFingerTracker::findFingers()
 					}
 				}
 
-				fingers.push_back(Finger(firstMidCol, first->row, depth, lastMidCol, last->row, depth));	//TODO: depth?
+				fingers.push_back(OmniTouchFinger(firstMidCol, first->row, depth, lastMidCol, last->row, depth));	//TODO: depth?
 			}
 		}
 	}

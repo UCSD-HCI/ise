@@ -15,3 +15,12 @@ DLL_EXPORT void releaseReadLockedWrapperPtr(ReadLockedWrapperPtr ptr)
 {
 	ptr.release();
 }
+
+DLL_EXPORT ReadLockedWrapperPtr lockFingers(int* fingerNum)
+{
+	ReadLockedPtr<Finger*> fingersPtr = InteractiveSpaceEngine::sharedEngine()->getFingerSelector()->lockFingers(fingerNum);
+	ReadLockedWrapperPtr res;
+	res.obj = *fingersPtr;
+	res.readLock = fingersPtr.getReadLock();
+	return res;
+}

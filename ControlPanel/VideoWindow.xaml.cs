@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using ControlPanel.NativeWrappers;
 
 namespace ControlPanel
 {
@@ -21,10 +22,13 @@ namespace ControlPanel
     {
         private BackgroundWorker refreshWorker;
         private VideoSourceType videoSourceType;
+        private List<Ellipse> fingerPoints;
 
         public VideoWindow()
         {
             InitializeComponent();
+
+            fingerPoints = new List<Ellipse>();
         }
 
         public void SetVideo(VideoSourceType videoSourceType)
@@ -32,6 +36,22 @@ namespace ControlPanel
             this.videoSourceType = videoSourceType;
 
             Title = videoSourceType.ToString();
+
+            //create finger points
+            for (int i = 0; i < NativeConstants.MAX_FINGER_NUM; i++)
+            {
+                Ellipse ellipse = new Ellipse()
+                {
+                    Width = 10,
+                    Height = 10,
+                    Fill = Brushes.Orange,
+                    Stroke = Brushes.White,
+                    StrokeThickness = 2,
+                    Opacity = 0,
+                };
+                fingerPoints.Add(ellipse);
+                canvas.Children.Add(ellipse);
+            }
 
             refreshWorker = new BackgroundWorker();
             refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
@@ -51,6 +71,28 @@ namespace ControlPanel
             Dispatcher.BeginInvoke((Action)delegate
             {
                 videoImage.Source = VideoSources.SharedVideoSources.GetSource(videoSourceType);
+
+                //draw fingers
+                unsafe
+                {
+                    int fingerNum;
+                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
+                    Finger* fingers = (Finger*)ptr.IntPtr;
+
+                    for (int i = 0; i < fingerNum; i++)
+                    {
+                        Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
+                        Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
+                        fingerPoints[i].Opacity = 1.0;
+                    }
+
+                    for (int i = fingerNum; i < fingerPoints.Count; i++)
+                    {
+                        fingerPoints[i].Opacity = 0;
+                    }
+
+                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                }
             });
         }
 
