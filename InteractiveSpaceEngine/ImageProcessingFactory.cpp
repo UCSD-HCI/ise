@@ -1,7 +1,7 @@
 #include "ImageProcessingFactory.h"
 #include <stdio.h>
 
-ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kinectSensor(kinectSensor), kinectSensorFrameCount(-1), omniTouchFrameCount(-1)
+ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kinectSensor(kinectSensor)
 {
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
@@ -18,14 +18,10 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kin
 
 	products[DepthSobeledProduct] = cvCreateImage(depthSize, IPL_DEPTH_32S, 1);
 	products[DebugOmniOutputProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 3);
-
-	threadStart();
 }
 
 ImageProcessingFactory::~ImageProcessingFactory()
 {
-	threadStop();
-
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
 		if (products[i] != NULL)
@@ -35,140 +31,41 @@ ImageProcessingFactory::~ImageProcessingFactory()
 	}
 }
 
-int* histogram;
-
-void ImageProcessingFactory::operator() ()
+void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 {
-	histogram = new int[KINECT_MAX_DEPTH * 48 * 2];
-	while (true)
+	if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
 	{
-		boost::this_thread::interruption_point();
-
-		if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
+		//DepthHisogramedProduct
 		{
-			//DepthHisogramedProduct
-			{
-				WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
-				ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+			WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
+			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
 				
-				updateDepthHistogram(depthSrc);
+			updateDepthHistogram(depthSrc);
 
-				IplImage* dst = products[DebugDepthHistogramedProduct];
+			IplImage* dst = products[DebugDepthHistogramedProduct];
 
-				for (int y = 0; y < depthSrc->height; ++y)
+			for (int y = 0; y < depthSrc->height; ++y)
+			{
+				ushort* srcPtr = (ushort*)(depthSrc->imageData + y * depthSrc->widthStep);
+				byte* dstPtr = (byte*)(dst->imageData + y * dst->widthStep);
+				for (int x = 0; x < depthSrc->width; ++x, ++srcPtr, ++dstPtr)
 				{
-					ushort* srcPtr = (ushort*)(depthSrc->imageData + y * depthSrc->widthStep);
-					byte* dstPtr = (byte*)(dst->imageData + y * dst->widthStep);
-					for (int x = 0; x < depthSrc->width; ++x, ++srcPtr, ++dstPtr)
-					{
-						*dstPtr = depthHistogram[*srcPtr];
-					}
+					*dstPtr = depthHistogram[*srcPtr];
 				}
-
-				depthSrc.release();
 			}
 
-			//sobel for OmniTouch
-			{
-				ReadLock countLock(omniTouchFrameCountMutex);
-
-				WriteLock wLock(productsMutex[DepthSobeledProduct]);
-				ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
-				
-				depthSobel(depthSrc, products[DepthSobeledProduct]);
-
-				depthSrc.release();
-
-				omniTouchFrameCount++;
-			}
-
-
-			//test[[[
-			{
-					ReadLockedIplImagePtr sobelPtr = lockImageProduct(DepthSobeledProduct);
-					WriteLockedIplImagePtr dstPtr = lockWritableImageProduct(DebugOmniOutputProduct);
-
-					//generate histogram
-					int min = 65535, max = 0;
-					for (int i = 0; i < sobelPtr->height; i++)
-					{
-						for (int j = 0; j < sobelPtr->width; j++)
-						{
-							int h = (int)abs(*intValAt(sobelPtr, i, j));
-							if (h > max) max = h;
-							if (h < min) min = h;
-						}
-					}
-	
-					int histogramSize = max - min + 1;
-					//assert(histogramSize < maxHistogramSize);
-					int histogramOffset = min;
-
-					memset(histogram, 0, histogramSize * sizeof(int));
-
-					for (int i = 0; i < sobelPtr->height; i++)
-					{
-						for (int j = 0; j < sobelPtr->width; j++)
-						{
-							int h = (int)abs(*intValAt(sobelPtr, i, j));
-							histogram[h - histogramOffset]++;
-						}
-					}
-
-					for (int i = 1; i < histogramSize; i++)
-					{
-						histogram[i] += histogram[i-1];
-					}
-
-					int points = sobelPtr->width * sobelPtr->height;
-					for (int i = 0; i < histogramSize; i++)
-					{
-						histogram[i] = (int)(256 * ((double)histogram[i] / (double)points) + 0.5);
-					}
-
-					//draw the image
-					for (int i = 0; i < sobelPtr->height; i++)
-					{
-						byte* dstPixel = rgb888ValAt(dstPtr, i, 0);
-						for (int j = 0; j < sobelPtr->width; j++, dstPixel += 3)
-						{
-							/*if (bufferPixel(tmpPixelBuffer, i, j)[0] == 255 || bufferPixel(tmpPixelBuffer, i, j)[1] == 255 || bufferPixel(tmpPixelBuffer, i, j)[2] == 255)
-							{
-								dstPixel(i ,j)[0] = bufferPixel(tmpPixelBuffer, i, j)[0];
-								dstPixel(i ,j)[1] = bufferPixel(tmpPixelBuffer, i, j)[1];
-								dstPixel(i ,j)[2] = bufferPixel(tmpPixelBuffer, i, j)[2];
-							}
-							else*/
-							{
-								int depth = *intValAt(sobelPtr, i, j);
-								if (depth >= 0)
-								{
-									dstPixel[0] = 0;
-									dstPixel[2] = histogram[depth - histogramOffset];
-								}
-								else
-								{
-									dstPixel[0] = histogram[-depth - histogramOffset];
-									dstPixel[2] = 0;
-								}
-								//dstPixel[1] = bufferPixel(tmpPixelBuffer, i, j)[1];
-								dstPixel[1] = 0;
-							}
-							//dstPixel(i, j)[1] = histogram[*bufferDepth(hDerivativeRes, i, j) - histogramOffset];
-							//dstPixel(i, j)[2] = histogram[*bufferDepth(vDerivativeRes, i, j) - histogramOffset];
-						}
-					}
-
-					dstPtr.release();
-					sobelPtr.release();
-			}
-			//]]]
-
-
-			kinectSensorFrameCount = kinectSensor->getFrameCount();
+			depthSrc.release();
 		}
 
-		boost::this_thread::yield();
+		//sobel for OmniTouch
+		{
+			WriteLock wLock(productsMutex[DepthSobeledProduct]);
+			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+				
+			depthSobel(depthSrc, products[DepthSobeledProduct]);
+
+			depthSrc.release();
+		}
 	}
 }
 

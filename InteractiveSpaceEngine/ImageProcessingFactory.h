@@ -11,9 +11,9 @@
 typedef unsigned short ushort;
 typedef unsigned char byte;
 
-#define ushortValAt(imgPtr, row, col) (ushort*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 2)
-#define intValAt(imgPtr, row, col) (int*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 4)
-#define rgb888ValAt(imgPtr, row, col) (byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 3)
+#define ushortValAt(imgPtr, row, col) ((ushort*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 2))
+#define intValAt(imgPtr, row, col) ((int*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 4))
+#define rgb888ValAt(imgPtr, row, col) ((byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 3))
 
 typedef enum 
 {
@@ -29,19 +29,15 @@ typedef enum
 	ImageProductsCount
 } ImageProductType;
 
-class ImageProcessingFactory : public ThreadWorker
+class ImageProcessingFactory
 {
 private:
 	IplImage* products[ImageProductsCount];
 	Mutex productsMutex[ImageProductsCount];
 
-	int depthHistogram[KINECT_MAX_DEPTH];
-
 	KinectSensor* kinectSensor;
-	long long kinectSensorFrameCount;
 
-	Mutex omniTouchFrameCountMutex;
-	long long omniTouchFrameCount;
+	int depthHistogram[KINECT_MAX_DEPTH];
 
 	void updateDepthHistogram(ReadLockedIplImagePtr& depthSrc);
 	void depthSobel(const IplImage* src, IplImage* dst);
@@ -74,13 +70,7 @@ public:
 		return products[type]->height;
 	}
 
-	inline long long getOmniTouchFrameCount() 
-	{
-		ReadLock frameCountLock(omniTouchFrameCountMutex);
-		return omniTouchFrameCount; 
-	}
-
-	virtual void operator() ();
+	void refresh(long long kinectSensorFrameCount);
 };
 
 #endif

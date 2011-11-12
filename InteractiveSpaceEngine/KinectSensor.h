@@ -36,6 +36,8 @@ public:
 
 	IplImage* createBlankRGBImage();		//create a blank image to store rgb data
 	IplImage* createBlankDepthImage();	//create a blank image to store depth data
+
+	inline xn::DepthGenerator* getDepthGenerator() { return &depthGen; }
 };
 
 #endif

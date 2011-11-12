@@ -37,6 +37,7 @@ namespace ControlPanel
             isSlidersValueLoaded = true;
 
             CommandDllWrapper.engineRun();
+            NativeWrappers.CommandDllWrapper.setOmniTouchParameters(threshold1Slider.Value, threshold2Slider.Value, threshold3Slider.Value, threshold4Slider.Value);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

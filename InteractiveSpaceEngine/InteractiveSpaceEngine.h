@@ -15,7 +15,7 @@ private:
 	
 	OmniTouchFingerTracker* omniTracker;
 
-	long long omniTouchFrameCount;
+	long long kinectSensorFrameCount;
 
 	void dispose();
 

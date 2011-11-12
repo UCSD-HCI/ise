@@ -4,7 +4,7 @@
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), omniTouchFrameCount(-1)
+InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), kinectSensorFrameCount(-1)
 {
 }
 
@@ -48,9 +48,9 @@ void InteractiveSpaceEngine::run()
 
 	kinectSensor->setImageProcessingFactory(ipf);
 
-	omniTouchFrameCount = -1;
+	kinectSensorFrameCount = -1;
 
-	omniTracker = new OmniTouchFingerTracker(ipf);
+	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor->getDepthGenerator());
 
 	threadStart();
 }
@@ -62,38 +62,18 @@ void InteractiveSpaceEngine::stop()
 
 void InteractiveSpaceEngine::operator() ()
 {
-	/*cvNamedWindow("Test", CV_WINDOW_AUTOSIZE);
-
 	while(true)
 	{
 		boost::this_thread::interruption_point();
 
-		//ReadLockedIplImagePtr ptr = kinectSensor->lockRGBImage();
-		ReadLockedIplImagePtr ptr = ipf->lockImageProduct(DepthHistogramedProduct);
-		cvShowImage("Test", ptr);
-		ptr.release();
-		if( (cvWaitKey(10) & 255) == 27 ) break;
-	}*/
-
-	while(true)
-	{
-		boost::this_thread::interruption_point();
-
-		if (ipf->getOmniTouchFrameCount() > omniTouchFrameCount)
+		if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
 		{
-			//omniTracker->refresh();
+			ipf->refresh(kinectSensorFrameCount);
+			omniTracker->refresh();
 		}
-
-		boost::this_thread::yield();
+		else
+		{
+			boost::this_thread::yield();
+		}
 	}
 }
-
-/*
-int main()
-{
-	InteractiveSpaceEngine::sharedEngine()->run();
-	InteractiveSpaceEngine::sharedEngine()->join();
-	InteractiveSpaceEngine::sharedEngine()->stop();
-	return 0;
-}
-*/
