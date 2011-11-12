@@ -26,6 +26,7 @@ public:
 	virtual void operator() ();
 
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
+	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
 };
 
 #endif

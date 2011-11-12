@@ -45,8 +45,6 @@ void KinectSensor::operator() ()
 		//lock 3 resources at the same time to keep synchronization
 		
 		memcpy(rgbImg->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
-		cvCvtColor(rgbImg, rgbImg, CV_RGB2BGR);
-
 		memcpy(depthImg->imageData, depthGen.GetData(), depthGen.GetDataSize());
 
 		frameCount++;

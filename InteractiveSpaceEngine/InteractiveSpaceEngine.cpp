@@ -49,7 +49,7 @@ void InteractiveSpaceEngine::stop()
 
 void InteractiveSpaceEngine::operator() ()
 {
-	cvNamedWindow("Test", CV_WINDOW_AUTOSIZE);
+	/*cvNamedWindow("Test", CV_WINDOW_AUTOSIZE);
 
 	while(true)
 	{
@@ -60,7 +60,10 @@ void InteractiveSpaceEngine::operator() ()
 		cvShowImage("Test", ptr);
 		ptr.release();
 		if( (cvWaitKey(10) & 255) == 27 ) break;
-	}
+	}*/
+
+	kinectSensor->threadJoin();
+	ipf->threadJoin();
 }
 
 int main()

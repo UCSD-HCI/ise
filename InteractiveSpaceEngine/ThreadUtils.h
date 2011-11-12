@@ -8,6 +8,18 @@ typedef boost::shared_mutex Mutex;
 typedef boost::unique_lock<boost::shared_mutex> WriteLock;
 typedef boost::shared_lock<boost::shared_mutex> ReadLock;
 
+//A pointer with a lock, used in wrappers
+typedef struct 
+{
+	void* obj;
+	void* readLock; 
+
+	void release()
+	{
+		delete (ReadLock*)readLock;
+	}
+} ReadLockedWrapperPtr;
+
 template <class T>
 struct ReadLockedPtr
 {
@@ -37,9 +49,18 @@ public:
 	{
 		delete readLock;
 	}
+
+	inline const T* getObj()
+	{
+		return obj;
+	}
+
+	inline ReadLock* getReadLock()
+	{
+		return readLock;
+	}
 };
 
 typedef struct ReadLockedPtr<IplImage> ReadLockedIplImagePtr;
-
 
 #endif

@@ -45,6 +45,18 @@ public:
 		return ReadLockedIplImagePtr(*products[type], productsMutex[type]);
 	}
 
+	inline int getImageProductWidth(ImageProducts type)
+	{
+		assert(products[type] != NULL);
+		return products[type]->width;
+	}
+
+	inline int getImageProductHeight(ImageProducts type)
+	{
+		assert(products[type] != NULL);
+		return products[type]->height;
+	}
+
 	virtual void operator() ();
 };
 
