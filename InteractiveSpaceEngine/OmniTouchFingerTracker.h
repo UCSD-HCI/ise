@@ -48,8 +48,9 @@ private:
 	std::vector<std::vector<Strip> > strips;
 	
 	float distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2);
-	void findStrips(ReadLockedIplImagePtr& sobelPtr);
-	void generateOutputImage(ReadLockedIplImagePtr& sobelPtr);
+	void findStrips();
+	void findFingers();
+	void generateOutputImage();
 
 public:
 	OmniTouchFingerTracker(ImageProcessingFactory* ipf, xn::DepthGenerator* depthGen);

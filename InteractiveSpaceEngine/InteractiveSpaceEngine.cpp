@@ -66,10 +66,12 @@ void InteractiveSpaceEngine::operator() ()
 	{
 		boost::this_thread::interruption_point();
 
-		if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
+		long long newFrameCount = kinectSensor->getFrameCount();
+		if (newFrameCount > kinectSensorFrameCount)
 		{
 			ipf->refresh(kinectSensorFrameCount);
 			omniTracker->refresh();
+			kinectSensorFrameCount = newFrameCount;
 		}
 		else
 		{

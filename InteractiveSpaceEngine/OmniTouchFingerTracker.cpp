@@ -30,11 +30,9 @@ void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerW
 void OmniTouchFingerTracker::refresh()
 {
 	memset(debugFindFingersResult->imageData, 0, debugFindFingersResult->widthStep * debugFindFingersResult->height);
-
-	ReadLockedIplImagePtr sobelPtr = ipf->lockImageProduct(DepthSobeledProduct);
-	findStrips(sobelPtr);
-	generateOutputImage(sobelPtr);
-	sobelPtr.release();
+	findStrips();
+	findFingers();
+	generateOutputImage();
 }
 
 float OmniTouchFingerTracker::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2)
@@ -55,8 +53,10 @@ float OmniTouchFingerTracker::distSquaredInRealWorld(int x1, int y1, int depth1,
 		 + (realPoints[0].Z - realPoints[1].Z) * (realPoints[0].Z - realPoints[1].Z);
 }
 
-void OmniTouchFingerTracker::findStrips(ReadLockedIplImagePtr& sobelPtr)
+void OmniTouchFingerTracker::findStrips()
 {
+	ReadLockedIplImagePtr sobelPtr = ipf->lockImageProduct(DepthSobeledProduct);
+
 	for (int i = 0; i < sobelPtr->height; i++)
 	{
 		strips.push_back(vector<Strip>());
@@ -155,10 +155,152 @@ void OmniTouchFingerTracker::findStrips(ReadLockedIplImagePtr& sobelPtr)
 			}
 		}
 	}
+
+	sobelPtr.release();
 }
 
-void OmniTouchFingerTracker::generateOutputImage(ReadLockedIplImagePtr& sobelPtr)
+//handhint: the result for estimating the hand position, in real world coordinate. int x, int y, int z, int pixelLength. pixel lenth is used as the measure of confidence.
+void OmniTouchFingerTracker::findFingers()
 {
+	vector<Strip*> stripBuffer;	//used to fill back
+	vector<Finger> fingers;
+
+	for (int i = 0; i < debugFindFingersResult->height; i++)
+	{
+		for (vector<Strip>::iterator it = strips[i].begin(); it != strips[i].end(); ++it)
+		{
+			if (it->visited)
+			{
+				continue;
+			}
+
+			stripBuffer.clear();
+			stripBuffer.push_back(&(*it));
+			it->visited = true;
+
+			//search down
+			int blankCounter = 0;
+			for (int si = i; si < debugFindFingersResult->height; si++)
+			{
+				Strip* currTop = stripBuffer[stripBuffer.size() - 1];
+
+				//search strip
+				bool stripFound = false;
+				for (vector<Strip>::iterator sIt = strips[si].begin(); sIt != strips[si].end(); ++sIt)
+				{
+					if (sIt->visited)
+					{
+						continue;
+					}
+
+					if (sIt->rightCol > currTop->leftCol && sIt->leftCol < currTop->rightCol)	//overlap!
+					{
+						stripBuffer.push_back(&(*sIt));
+						sIt->visited = true;
+						stripFound = true;
+						break;
+					}
+				}
+
+				if (!stripFound) //blank
+				{
+					blankCounter++;
+					if (blankCounter > STRIP_MAX_BLANK_PIXEL)
+					{
+						//Too much blank, give up
+						break;
+					}
+				}
+			}
+
+			//check length
+			Strip* first = stripBuffer[0];
+			int firstMidCol = (first->leftCol + first->rightCol) / 2;
+			Strip* last = stripBuffer[stripBuffer.size() - 1];
+			int lastMidCol = (last->leftCol + last->rightCol) / 2;
+
+			ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSourceProduct);
+			ushort depth = *ushortValAt(srcPtr, (first->row + last->row) / 2, (firstMidCol + lastMidCol) / 2);	//jst a try
+			srcPtr.release();
+						
+			double lengthSquared = distSquaredInRealWorld(
+				firstMidCol, first->row, depth, // *srcDepth(first->row, firstMidCol),
+				lastMidCol, last->row, depth //*srcDepth(last->row, lastMidCol),
+				);
+			int pixelLength = last->row - first->row +1;
+			
+			if (pixelLength >= FINGER_MIN_PIXEL_LENGTH 
+				&& lengthSquared >= fingerLengthMin * fingerLengthMin 
+				&& lengthSquared <= fingerLengthMax * fingerLengthMax)	//finger!
+			{
+				//fill back
+				int bufferPos = -1;
+				for (int row = first->row; row <= last->row; row++)
+				{
+					int leftCol, rightCol;
+					if (row == stripBuffer[bufferPos + 1]->row)	//find next detected row
+					{
+						bufferPos++;
+						leftCol = stripBuffer[bufferPos]->leftCol;
+						rightCol = stripBuffer[bufferPos]->rightCol;
+					}
+					else	//in blank area, interpolate
+					{
+						double ratio = (double)(row - stripBuffer[bufferPos]->row) / (double)(stripBuffer[bufferPos + 1]->row - stripBuffer[bufferPos]->row);
+						leftCol = stripBuffer[bufferPos]->leftCol + (stripBuffer[bufferPos + 1]->leftCol - stripBuffer[bufferPos]->leftCol) * ratio;
+						rightCol = stripBuffer[bufferPos]->rightCol + (stripBuffer[bufferPos + 1]->rightCol - stripBuffer[bufferPos]->rightCol) * ratio;
+					}
+
+					for (int col = leftCol; col <= rightCol; col++)
+					{
+						byte* dstPixel = rgb888ValAt(debugFindFingersResult, row, col);
+						dstPixel[0] = 255;
+						//bufferPixel(tmpPixelBuffer, row, col)[1] = 255;
+						dstPixel[2] = 255;
+					}
+				}
+
+				fingers.push_back(Finger(firstMidCol, first->row, depth, lastMidCol, last->row, depth));	//TODO: depth?
+			}
+		}
+	}
+
+	sort(fingers.begin(), fingers.end());
+	int i;
+	
+	/*for (i = 0; i < maxFingers && i < fingers.size(); i++)
+	{
+		resultPtr[2 * i] = fingers[i].tipX;
+		resultPtr[2 * i + 1] = fingers[i].tipY;
+	}*/
+	
+	//hand hint	TODO: if tip and end are not in the same depth
+	//if(fingers.size() > 0)
+	//{
+	//	double rx1, ry1, rx2, ry2;
+	//	convertProjectiveToRealWorld(fingers[0].tipX, fingers[0].tipY, fingers[0].tipZ, rx1, ry1, width, height);
+	//	convertProjectiveToRealWorld(fingers[0].endX, fingers[0].endY, fingers[0].endZ, rx2, ry2, width, height);
+	//	double scale = FINGER_TO_HAND_OFFSET / sqrt((rx2 - rx1) * (rx2 - rx1) + (ry2 - ry1) * (ry2 - ry1));
+
+	//	/*double rx = fingers[0].tipZ * realWorldXToZ;
+	//	double ry = fingers[0].tipZ * realWorldYToZ;
+	//	double dx = fingers[0].endX - fingers[0].tipX;
+	//	double dy = fingers[0].endY - fingers[0].tipY;
+	//	double scale = FINGER_TO_HAND_OFFSET / sqrt(rx * rx * dx * dx + ry * ry * dy * dy);
+	//	handHint[0] = fingers[0].tipX + (int)(scale * dx + 0.5);
+	//	handHint[1] = fingers[0].tipY + (int)(scale * dy + 0.5);*/
+
+	//	handHint[0] = rx1 + (rx2 - rx1) * scale;
+	//	handHint[1] = ry1 + (ry2 - ry1) * scale;
+
+	//	handHint[2] = fingers[0].tipZ;
+	//	handHint[3] = fingers[0].endY - fingers[0].tipY + 1;
+	//}
+}
+
+void OmniTouchFingerTracker::generateOutputImage()
+{
+	ReadLockedIplImagePtr sobelPtr = ipf->lockImageProduct(DepthSobeledProduct);
 	WriteLockedIplImagePtr dstPtr = ipf->lockWritableImageProduct(DebugOmniOutputProduct);
 
 	//generate histogram
@@ -234,4 +376,5 @@ void OmniTouchFingerTracker::generateOutputImage(ReadLockedIplImagePtr& sobelPtr
 	}
 
 	dstPtr.release();
+	sobelPtr.release();
 }
