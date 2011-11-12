@@ -8,7 +8,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <ToggleButton Name="rawVideoToggleButton" Content="RGB" Margin="5" Click="rawVideoToggleButton_Click"/>
                     <ToggleButton Name="depthVideoToggleButton" Content="Depth" Margin="5" Click="depthVideoToggleButton_Click"/>
-                    <!--<ToggleButton Name="multiTouchVideoToggleButton" Content="Multi-touch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>-->
+                    <ToggleButton Name="multiTouchVideoToggleButton" Content="OmniTouch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
@@ -18,7 +18,8 @@
                 <Button Name="captureButton" HorizontalAlignment="Left" Click="captureButton_Click">Capture</Button>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Multi-touch Settings">
+        -->
+        <GroupBox Header="OmniTouch Parameters">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -33,10 +34,10 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Name="calibrationButton" HorizontalAlignment="Left" VerticalAlignment="Center" Click="calibrationButton_Click" Margin="5">Calibrate</Button>
+                <!--<Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Name="calibrationButton" HorizontalAlignment="Left" VerticalAlignment="Center" Click="calibrationButton_Click" Margin="5">Calibrate</Button>-->
 
                 <Slider Grid.Row="1" Grid.Column="0" Name="threshold1Slider" Minimum="0" Maximum="10" HorizontalAlignment="Center" Orientation="Vertical" ValueChanged="thresholdSliders_ValueChanged" SmallChange="0.1" LargeChange="5" />
-                <TextBox Grid.Row="2" Grid.Column="0" Name="threshold1TextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBox Grid.Row="2" Name="threshold1TextBox" IsReadOnly="True" Margin="2,2,2,0" TextAlignment="Center" Height="22" VerticalAlignment="Top" />
                 <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center">MinWidth</Label>
 
                 <Slider Grid.Row="1" Grid.Column="1" Name="threshold2Slider" Minimum="0" Maximum="100" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="thresholdSliders_ValueChanged" SmallChange="1" LargeChange="5"/>
@@ -52,6 +53,7 @@
                 <Label Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center">MaxLength</Label>
             </Grid>
         </GroupBox>
+        <!--
         <GroupBox Header="Hand Tracking" Margin="5">
             <Grid>
                 <Grid.ColumnDefinitions>

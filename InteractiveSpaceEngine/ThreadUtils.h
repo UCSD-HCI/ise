@@ -63,4 +63,37 @@ public:
 
 typedef struct ReadLockedPtr<IplImage> ReadLockedIplImagePtr;
 
+template <class T>
+struct WriteLockedPtr
+{
+private:
+	T* obj;
+	WriteLock* writeLock;
+
+public:
+	WriteLockedPtr(T& obj, Mutex& mutex) : obj(&obj), writeLock(new WriteLock(mutex)) { }
+
+	inline T* operator-> ()
+	{
+		return obj;
+	}
+
+	inline T& operator* ()
+	{
+		return *obj;
+	}
+
+	inline operator T*()
+	{
+		return obj;
+	}
+
+	inline void release()
+	{
+		delete writeLock;
+	}
+};
+
+typedef struct WriteLockedPtr<IplImage> WriteLockedIplImagePtr;
+
 #endif

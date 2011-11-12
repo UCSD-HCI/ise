@@ -4,7 +4,7 @@
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL)
+InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), omniTouchFrameCount(-1)
 {
 }
 
@@ -28,6 +28,12 @@ void InteractiveSpaceEngine::dispose()
 		delete ipf;
 		ipf = NULL;
 	}
+
+	if (omniTracker != NULL)
+	{
+		delete omniTracker;
+		omniTracker = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -39,6 +45,13 @@ void InteractiveSpaceEngine::run()
 {
 	kinectSensor = new KinectSensor();
 	ipf = new ImageProcessingFactory(kinectSensor);
+
+	kinectSensor->setImageProcessingFactory(ipf);
+
+	omniTouchFrameCount = -1;
+
+	omniTracker = new OmniTouchFingerTracker(ipf);
+
 	threadStart();
 }
 
@@ -62,10 +75,20 @@ void InteractiveSpaceEngine::operator() ()
 		if( (cvWaitKey(10) & 255) == 27 ) break;
 	}*/
 
-	kinectSensor->threadJoin();
-	ipf->threadJoin();
+	while(true)
+	{
+		boost::this_thread::interruption_point();
+
+		if (ipf->getOmniTouchFrameCount() > omniTouchFrameCount)
+		{
+			//omniTracker->refresh();
+		}
+
+		boost::this_thread::yield();
+	}
 }
 
+/*
 int main()
 {
 	InteractiveSpaceEngine::sharedEngine()->run();
@@ -73,3 +96,4 @@ int main()
 	InteractiveSpaceEngine::sharedEngine()->stop();
 	return 0;
 }
+*/

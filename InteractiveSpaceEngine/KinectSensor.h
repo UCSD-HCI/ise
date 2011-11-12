@@ -5,28 +5,27 @@
 #include "ThreadUtils.h"
 #include "ThreadWorker.h"
 
+class ImageProcessingFactory;
+
 class KinectSensor : public ThreadWorker
 {
 private:
-	IplImage* rgbImg;
-	IplImage* depthImg;
-
 	xn::Context context;
 	xn::DepthGenerator depthGen;
 	xn::ImageGenerator rgbGen;
 
-	Mutex depthImgMutex;
-	Mutex rgbImgMutex;
 	Mutex frameCountMutex;
 
 	long long frameCount;
+
+	ImageProcessingFactory* ipf;
 
 public:
 	KinectSensor();
 	virtual ~KinectSensor();
 
-	inline ReadLockedIplImagePtr lockDepthImage() { return ReadLockedIplImagePtr(*depthImg, depthImgMutex); }
-	inline ReadLockedIplImagePtr lockRGBImage() { return ReadLockedIplImagePtr(*rgbImg, rgbImgMutex); }
+	void setImageProcessingFactory(ImageProcessingFactory* ipf);
+
 	inline long long getFrameCount() 
 	{
 		ReadLock frameCountLock(frameCountMutex);

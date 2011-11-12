@@ -22,12 +22,13 @@ namespace ControlPanel.NativeWrappers
         [DllImport(DLL_NAME)]
         public static extern unsafe int getRGBHeight();
 
-        
-
         [DllImport(DLL_NAME)]
         public static extern unsafe int getDepthWidth();
 
         [DllImport(DLL_NAME)]
         public static extern unsafe int getDepthHeight();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength);
     }
 }

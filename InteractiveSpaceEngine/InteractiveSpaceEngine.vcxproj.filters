@@ -33,6 +33,9 @@
     <ClInclude Include="DllWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OmniTouchFingerTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandDllWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OmniTouchFingerTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

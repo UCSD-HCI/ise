@@ -2,18 +2,9 @@
 #include "ThreadUtils.h"
 #include "InteractiveSpaceEngine.h"
 
-DLL_EXPORT ReadLockedWrapperPtr lockRgbSourceImage()
+DLL_EXPORT ReadLockedWrapperPtr lockFactoryImage(ImageProductType type)
 {
-	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->lockImageProduct(RGBSourceProduct);
-	ReadLockedWrapperPtr res;
-	res.obj = srcPtr->imageData;
-	res.readLock = srcPtr.getReadLock();
-	return res;
-}
-
-DLL_EXPORT ReadLockedWrapperPtr lockDepthSourceImage()
-{
-	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->lockImageProduct(DepthHistogramedProduct);
+	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->lockImageProduct(type);
 	ReadLockedWrapperPtr res;
 	res.obj = srcPtr->imageData;
 	res.readLock = srcPtr.getReadLock();

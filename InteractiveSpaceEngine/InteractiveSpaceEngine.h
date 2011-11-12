@@ -4,6 +4,7 @@
 #include <boost/thread.hpp>
 #include "KinectSensor.h"
 #include "ImageProcessingFactory.h"
+#include "OmniTouchFingerTracker.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -11,6 +12,10 @@ private:
 	static InteractiveSpaceEngine instance;
 	KinectSensor* kinectSensor;
 	ImageProcessingFactory* ipf;
+	
+	OmniTouchFingerTracker* omniTracker;
+
+	long long omniTouchFrameCount;
 
 	void dispose();
 
@@ -27,6 +32,7 @@ public:
 
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
+	inline OmniTouchFingerTracker* getOmniTouchFingerTracker() { return omniTracker; }
 };
 
 #endif

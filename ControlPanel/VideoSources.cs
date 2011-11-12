@@ -12,8 +12,9 @@ namespace ControlPanel
     public enum VideoSourceType
     {
         None = 0,
-        RGB = 1,
-        DepthHistogramed = 2,
+        RGB,
+        DepthHistogramed,
+        OmniTouch,
     }
 
     public class VideoSources
@@ -25,7 +26,7 @@ namespace ControlPanel
 
         private int rgbWidth, rgbHeight, depthWidth, depthHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -52,6 +53,7 @@ namespace ControlPanel
 
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthHistogramedSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
+            omniTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -63,6 +65,9 @@ namespace ControlPanel
 
                 case VideoSourceType.DepthHistogramed:
                     return DepthHistogramedSource;
+
+                case VideoSourceType.OmniTouch:
+                    return OmniTouchSource;
 
                 default:
                     return null;
@@ -77,7 +82,7 @@ namespace ControlPanel
                 {
                     if (rgbSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockRgbSourceImage();
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RGBSourceProduct);
                         rgbSource.Lock();
                         rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
                         rgbSource.Unlock();
@@ -97,7 +102,7 @@ namespace ControlPanel
                 {
                     if (depthHistogramedSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockDepthSourceImage();
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugDepthHistogramedProduct);
                         depthHistogramedSource.Lock();
                         depthHistogramedSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
                         depthHistogramedSource.Unlock();
@@ -106,6 +111,26 @@ namespace ControlPanel
                 }
 
                 return depthHistogramedSource;
+            }
+        }
+
+        public ImageSource OmniTouchSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (omniTouchSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugOmniOutputProduct);
+                        omniTouchSource.Lock();
+                        omniTouchSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight * 3, depthWidth * 3);
+                        omniTouchSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return omniTouchSource;
             }
         }
     }

@@ -1,9 +1,10 @@
 #include "KinectSensor.h"
 #include <highgui.h>
 #include <memory.h>
+#include "ImageProcessingFactory.h"
 using namespace xn;
 
-KinectSensor::KinectSensor() : frameCount(0)
+KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1)
 {
 	XnStatus rc;
 	EnumerationErrors errors;
@@ -15,11 +16,6 @@ KinectSensor::KinectSensor() : frameCount(0)
 
 	rc = context.FindExistingNode(XN_NODE_TYPE_IMAGE, rgbGen);
 	assert(rc == XN_STATUS_OK);	
-
-	rgbImg = createBlankRGBImage();
-	depthImg = createBlankDepthImage();
-
-	threadStart();
 }
 
 KinectSensor::~KinectSensor()
@@ -28,8 +24,14 @@ KinectSensor::~KinectSensor()
 	context.StopGeneratingAll();
 	context.Release();
 
-	cvReleaseImage(&rgbImg);
-	cvReleaseImage(&depthImg);
+	//cvReleaseImage(&rgbImg);
+	//cvReleaseImage(&depthImg);
+}
+
+void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
+{
+	this->ipf = ipf;
+	threadStart();
 }
 
 void KinectSensor::operator() ()
@@ -39,15 +41,18 @@ void KinectSensor::operator() ()
 		boost::this_thread::interruption_point();
 		context.WaitAndUpdateAll();
 		
-		WriteLock rgbLock(rgbImgMutex);
-		WriteLock depthLock(depthImgMutex);
+		WriteLockedIplImagePtr rgbPtr = ipf->lockWritableImageProduct(RGBSourceProduct);
+		WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
 		WriteLock frameLock(frameCountMutex);
 		//lock 3 resources at the same time to keep synchronization
 		
-		memcpy(rgbImg->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
-		memcpy(depthImg->imageData, depthGen.GetData(), depthGen.GetDataSize());
+		memcpy(rgbPtr->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
+		memcpy(depthPtr->imageData, depthGen.GetData(), depthGen.GetDataSize());
 
 		frameCount++;
+
+		depthPtr.release();
+		rgbPtr.release();
 	}
 }
 
