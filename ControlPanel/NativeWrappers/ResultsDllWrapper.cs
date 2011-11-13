@@ -18,6 +18,9 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe ReadLockedWrapperPtr lockFingers(int* fingerNum);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe ReadLockedWrapperPtr lockHands(int* handNum);
     }
 
 }

@@ -16,6 +16,9 @@ KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1)
 
 	rc = context.FindExistingNode(XN_NODE_TYPE_IMAGE, rgbGen);
 	assert(rc == XN_STATUS_OK);	
+
+	rc = context.FindExistingNode(XN_NODE_TYPE_HANDS, handsGen);
+	assert(rc == XN_STATUS_OK);
 }
 
 KinectSensor::~KinectSensor()
@@ -70,4 +73,46 @@ IplImage* KinectSensor::createBlankDepthImage()
 	XnStatus rc = depthGen.GetMapOutputMode(depthMapOutputMode);
 	assert(rc == XN_STATUS_OK);
 	return cvCreateImage(cvSize(depthMapOutputMode.nXRes, depthMapOutputMode.nYRes), IPL_DEPTH_16U, 1);
+}
+
+float KinectSensor::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2) const
+{
+	XnPoint3D perspPoints[2];
+	perspPoints[0].X = x1;
+	perspPoints[0].Y = y1;
+	perspPoints[0].Z = depth1;
+	perspPoints[1].X = x2;
+	perspPoints[1].Y = y2;
+	perspPoints[1].Z = depth2;
+
+	XnPoint3D realPoints[2];
+	depthGen.ConvertProjectiveToRealWorld(2, perspPoints, realPoints);
+
+	return (realPoints[0].X - realPoints[1].X) * (realPoints[0].X - realPoints[1].X) 
+		 + (realPoints[0].Y - realPoints[1].Y) * (realPoints[0].Y - realPoints[1].Y) 
+		 + (realPoints[0].Z - realPoints[1].Z) * (realPoints[0].Z - realPoints[1].Z);
+}
+
+FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) const
+{
+	XnPoint3D xnP;
+	xnP.X = p.x;
+	xnP.Y = p.y;
+	xnP.Z = p.z;
+	XnPoint3D projPoints[1] = {xnP};
+	XnPoint3D realPoints[1];
+	depthGen.ConvertProjectiveToRealWorld(1, projPoints, realPoints);
+	return FloatPoint3D(realPoints[0].X, realPoints[0].Y, realPoints[0].Z);
+}
+
+IntPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
+{
+	XnPoint3D xnP;
+	xnP.X = p.x;
+	xnP.Y = p.y;
+	xnP.Z = p.z;
+	XnPoint3D realPoints[1] = {xnP};
+	XnPoint3D projPoints[1];
+	depthGen.ConvertRealWorldToProjective(1, realPoints, projPoints);
+	return IntPoint3D((int)projPoints[0].X, (int)projPoints[0].Y, (int)projPoints[0].Z);
 }

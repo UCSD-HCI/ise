@@ -4,6 +4,7 @@
 #include <XnCppWrapper.h>
 #include "ThreadUtils.h"
 #include "ThreadWorker.h"
+#include "InteractiveSpaceTypes.h"
 
 class ImageProcessingFactory;
 
@@ -13,6 +14,7 @@ private:
 	xn::Context context;
 	xn::DepthGenerator depthGen;
 	xn::ImageGenerator rgbGen;
+	xn::HandsGenerator handsGen;
 
 	Mutex frameCountMutex;
 
@@ -38,6 +40,12 @@ public:
 	IplImage* createBlankDepthImage();	//create a blank image to store depth data
 
 	inline xn::DepthGenerator* getDepthGenerator() { return &depthGen; }
+	inline xn::HandsGenerator* getHandsGenerator() { return &handsGen; }
+
+	//parameters are in Kinect perspective
+	float distSquaredInRealWorld(int x1, int y1, int depth, int x2, int y2, int depth2) const;
+	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
+	IntPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
 };
 
 #endif

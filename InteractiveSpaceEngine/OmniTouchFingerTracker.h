@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "ImageProcessingFactory.h"
+#include "KinectSensor.h"
 
 #define FINGER_EDGE_THRESHOLD 1000
 #define STRIP_MAX_BLANK_PIXEL 10
@@ -38,7 +39,7 @@ class OmniTouchFingerTracker
 {
 private:
 	ImageProcessingFactory* ipf;
-	xn::DepthGenerator* depthGen;
+	const KinectSensor* kinectSensor;
 	
 	int* histogram;
 	int maxHistogramSize;
@@ -49,13 +50,12 @@ private:
 	std::vector<std::vector<OmniTouchStrip> > strips;
 	std::vector<OmniTouchFinger> fingers;
 	
-	float distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2);
 	void findStrips();
 	void findFingers();
 	void generateOutputImage();
 
 public:
-	OmniTouchFingerTracker(ImageProcessingFactory* ipf, xn::DepthGenerator* depthGen);
+	OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor);
 	virtual ~OmniTouchFingerTracker();
 	void refresh();
 

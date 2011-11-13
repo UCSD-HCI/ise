@@ -24,3 +24,12 @@ DLL_EXPORT ReadLockedWrapperPtr lockFingers(int* fingerNum)
 	res.readLock = fingersPtr.getReadLock();
 	return res;
 }
+
+DLL_EXPORT ReadLockedWrapperPtr lockHands(int* handNum)
+{
+	ReadLockedPtr<Hand*> handsPtr = InteractiveSpaceEngine::sharedEngine()->getHandTracker()->lockHands(handNum);
+	ReadLockedWrapperPtr res;
+	res.obj = *handsPtr;
+	res.readLock = handsPtr.getReadLock();
+	return res;
+}

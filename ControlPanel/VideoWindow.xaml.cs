@@ -23,12 +23,14 @@ namespace ControlPanel
         private BackgroundWorker refreshWorker;
         private VideoSourceType videoSourceType;
         private List<Ellipse> fingerPoints;
+        private List<Ellipse> handPoints;
 
         public VideoWindow()
         {
             InitializeComponent();
 
             fingerPoints = new List<Ellipse>();
+            handPoints = new List<Ellipse>();
         }
 
         public void SetVideo(VideoSourceType videoSourceType)
@@ -50,6 +52,21 @@ namespace ControlPanel
                     Opacity = 0,
                 };
                 fingerPoints.Add(ellipse);
+                canvas.Children.Add(ellipse);
+            }
+
+            //create hand points
+            for (int i = 0; i < NativeConstants.MAX_HAND_NUM; i++)
+            {
+                Ellipse ellipse = new Ellipse()
+                {
+                    Width = 50,
+                    Height = 50,
+                    Stroke = Brushes.White,
+                    StrokeThickness = 2,
+                    Opacity = 0,
+                };
+                handPoints.Add(ellipse);
                 canvas.Children.Add(ellipse);
             }
 
@@ -89,6 +106,29 @@ namespace ControlPanel
                     for (int i = fingerNum; i < fingerPoints.Count; i++)
                     {
                         fingerPoints[i].Opacity = 0;
+                    }
+
+                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                }
+
+                //draw hands
+                unsafe
+                {
+                    int handNum;
+                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockHands(&handNum);
+                    Hand* hands = (Hand*)ptr.IntPtr;
+
+                    for (int i = 0; i < handNum; i++)
+                    {
+                        Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x);
+                        Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y);
+                        handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
+                        handPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
+                    }
+
+                    for (int i = handNum; i < handPoints.Count; i++)
+                    {
+                        handPoints[i].Opacity = 0;
                     }
 
                     ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);

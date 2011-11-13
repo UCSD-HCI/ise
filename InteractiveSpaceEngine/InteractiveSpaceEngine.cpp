@@ -40,6 +40,12 @@ void InteractiveSpaceEngine::dispose()
 		delete fingerSelector;
 		fingerSelector = NULL;
 	}
+
+	if (handTracker != NULL)
+	{
+		delete handTracker;
+		handTracker = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -53,12 +59,11 @@ void InteractiveSpaceEngine::run()
 	ipf = new ImageProcessingFactory(kinectSensor);
 
 	kinectSensor->setImageProcessingFactory(ipf);
-
 	kinectSensorFrameCount = -1;
 
-	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor->getDepthGenerator());
-
-	fingerSelector = new FingerSelector(omniTracker, kinectSensor->getDepthGenerator());
+	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor);
+	fingerSelector = new FingerSelector(omniTracker, kinectSensor);
+	handTracker = new HandTracker(fingerSelector, kinectSensor->getHandsGenerator(), kinectSensor);
 
 	threadStart();
 }
@@ -80,6 +85,7 @@ void InteractiveSpaceEngine::operator() ()
 			ipf->refresh(kinectSensorFrameCount);
 			omniTracker->refresh();
 			fingerSelector->refresh();
+			handTracker->refresh();
 
 			kinectSensorFrameCount = newFrameCount;
 		}

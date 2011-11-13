@@ -89,6 +89,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IntColorConverter.cs" />
     <Compile Include="NativeWrappers\CommandDllWrapper.cs" />
     <Compile Include="NativeWrappers\NativeTypes.cs" />
     <Compile Include="NativeWrappers\ResultsDllWrapper.cs" />

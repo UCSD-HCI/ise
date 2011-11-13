@@ -6,6 +6,7 @@
 #include "ImageProcessingFactory.h"
 #include "OmniTouchFingerTracker.h"
 #include "FingerSelector.h"
+#include "HandTracker.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -16,6 +17,7 @@ private:
 	
 	OmniTouchFingerTracker* omniTracker;
 	FingerSelector* fingerSelector;
+	HandTracker* handTracker;
 
 	long long kinectSensorFrameCount;
 	
@@ -36,6 +38,7 @@ public:
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
 	inline OmniTouchFingerTracker* getOmniTouchFingerTracker() { return omniTracker; }
 	inline FingerSelector* getFingerSelector() { return fingerSelector; }
+	inline HandTracker* getHandTracker() { return handTracker; }
 };
 
 #endif

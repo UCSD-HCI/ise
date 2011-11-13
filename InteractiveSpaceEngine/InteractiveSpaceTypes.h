@@ -1,22 +1,11 @@
 #ifndef INTERACTIVE_SPACE_TYPES
 #define INTERACTIVE_SPACE_TYPES
 
-#include <XnCppWrapper.h>
-
 struct IntPoint3D
 {
 	int x, y, z;
 	IntPoint3D() { }
 	IntPoint3D(int x, int y, int z) : x(x), y(y), z(z) { }
-	
-	operator XnPoint3D()
-	{
-		XnPoint3D r;
-		r.X = x;
-		r.Y = y;
-		r.Z = z;
-		return r;
-	}
 };
 
 struct FloatPoint3D
@@ -24,15 +13,20 @@ struct FloatPoint3D
 	float x, y, z;
 	FloatPoint3D() { }
 	FloatPoint3D(float x, float y, float z) : x(x), y(y), z(z) { }
-	FloatPoint3D(const XnPoint3D& ref) : x(ref.X), y(ref.Y), z(ref.Z) { }
-	
-	operator XnPoint3D()
+	FloatPoint3D(const IntPoint3D& ref) : x(ref.x), y(ref.y), z(ref.z) { }
+};
+
+struct DoublePoint3D
+{
+	double x, y, z;
+	DoublePoint3D() { }
+	DoublePoint3D(double x, double y, double z) : x(x), y(y), z(z) { }
+	DoublePoint3D(const IntPoint3D& ref) : x(ref.x), y(ref.y), z(ref.z) { }
+	DoublePoint3D(const FloatPoint3D& ref) : x(ref.x), y(ref.y), z(ref.z) { }
+
+	operator FloatPoint3D()
 	{
-		XnPoint3D r;
-		r.X = x;
-		r.Y = y;
-		r.Z = z;
-		return r;
+		return FloatPoint3D((float)x, (float)y, (float)z);
 	}
 };
 

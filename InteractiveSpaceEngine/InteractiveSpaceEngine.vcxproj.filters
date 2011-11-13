@@ -42,6 +42,12 @@
     <ClInclude Include="InteractiveSpaceTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HandTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
@@ -63,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FingerSelector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HandTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

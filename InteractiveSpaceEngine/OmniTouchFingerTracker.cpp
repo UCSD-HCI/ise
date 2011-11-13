@@ -3,7 +3,7 @@
 using namespace std;
 using namespace xn;
 
-OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, xn::DepthGenerator* depthGen) : ipf(ipf), depthGen(depthGen), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0)
+OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0)
 {
 	maxHistogramSize = KINECT_MAX_DEPTH * 48 * 2;
 	histogram = new int[maxHistogramSize];
@@ -33,24 +33,6 @@ void OmniTouchFingerTracker::refresh()
 	findStrips();
 	findFingers();
 	generateOutputImage();
-}
-
-float OmniTouchFingerTracker::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2)
-{
-	XnPoint3D perspPoints[2];
-	perspPoints[0].X = x1;
-	perspPoints[0].Y = y1;
-	perspPoints[0].Z = depth1;
-	perspPoints[1].X = x2;
-	perspPoints[1].Y = y2;
-	perspPoints[1].Z = depth2;
-
-	XnPoint3D realPoints[2];
-	depthGen->ConvertProjectiveToRealWorld(2, perspPoints, realPoints);
-
-	return (realPoints[0].X - realPoints[1].X) * (realPoints[0].X - realPoints[1].X) 
-		 + (realPoints[0].Y - realPoints[1].Y) * (realPoints[0].Y - realPoints[1].Y) 
-		 + (realPoints[0].Z - realPoints[1].Z) * (realPoints[0].Z - realPoints[1].Z);
 }
 
 void OmniTouchFingerTracker::findStrips()
@@ -131,7 +113,7 @@ void OmniTouchFingerTracker::findStrips()
 					p1.Z = depth;
 
 
-					double distSquared = distSquaredInRealWorld(
+					double distSquared = kinectSensor->distSquaredInRealWorld(
 						partialMaxPos, i, depth,
 						partialMinPos, i, depth);
 
@@ -223,7 +205,7 @@ void OmniTouchFingerTracker::findFingers()
 			ushort depth = *ushortValAt(srcPtr, (first->row + last->row) / 2, (firstMidCol + lastMidCol) / 2);	//jst a try
 			srcPtr.release();
 						
-			double lengthSquared = distSquaredInRealWorld(
+			double lengthSquared = kinectSensor->distSquaredInRealWorld(
 				firstMidCol, first->row, depth, // *srcDepth(first->row, firstMidCol),
 				lastMidCol, last->row, depth //*srcDepth(last->row, lastMidCol),
 				);
@@ -266,36 +248,6 @@ void OmniTouchFingerTracker::findFingers()
 	}
 
 	sort(fingers.begin(), fingers.end());
-	int i;
-	
-	/*for (i = 0; i < maxFingers && i < fingers.size(); i++)
-	{
-		resultPtr[2 * i] = fingers[i].tipX;
-		resultPtr[2 * i + 1] = fingers[i].tipY;
-	}*/
-	
-	//hand hint	TODO: if tip and end are not in the same depth
-	//if(fingers.size() > 0)
-	//{
-	//	double rx1, ry1, rx2, ry2;
-	//	convertProjectiveToRealWorld(fingers[0].tipX, fingers[0].tipY, fingers[0].tipZ, rx1, ry1, width, height);
-	//	convertProjectiveToRealWorld(fingers[0].endX, fingers[0].endY, fingers[0].endZ, rx2, ry2, width, height);
-	//	double scale = FINGER_TO_HAND_OFFSET / sqrt((rx2 - rx1) * (rx2 - rx1) + (ry2 - ry1) * (ry2 - ry1));
-
-	//	/*double rx = fingers[0].tipZ * realWorldXToZ;
-	//	double ry = fingers[0].tipZ * realWorldYToZ;
-	//	double dx = fingers[0].endX - fingers[0].tipX;
-	//	double dy = fingers[0].endY - fingers[0].tipY;
-	//	double scale = FINGER_TO_HAND_OFFSET / sqrt(rx * rx * dx * dx + ry * ry * dy * dy);
-	//	handHint[0] = fingers[0].tipX + (int)(scale * dx + 0.5);
-	//	handHint[1] = fingers[0].tipY + (int)(scale * dy + 0.5);*/
-
-	//	handHint[0] = rx1 + (rx2 - rx1) * scale;
-	//	handHint[1] = ry1 + (ry2 - ry1) * scale;
-
-	//	handHint[2] = fingers[0].tipZ;
-	//	handHint[3] = fingers[0].endY - fingers[0].tipY + 1;
-	//}
 }
 
 void OmniTouchFingerTracker::generateOutputImage()
