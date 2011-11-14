@@ -33,6 +33,7 @@ namespace ControlPanel.NativeWrappers
 
         DebugDepthHistogramedProduct,
         DebugOmniOutputProduct,
+        DebugThresholdOutputProduct,
         ImageProductsCount
     }
 

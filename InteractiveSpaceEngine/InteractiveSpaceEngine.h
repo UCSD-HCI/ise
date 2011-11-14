@@ -5,6 +5,7 @@
 #include "KinectSensor.h"
 #include "ImageProcessingFactory.h"
 #include "OmniTouchFingerTracker.h"
+#include "ThresholdTouchFingerTracker.h"
 #include "FingerSelector.h"
 #include "HandTracker.h"
 
@@ -16,6 +17,7 @@ private:
 	ImageProcessingFactory* ipf;
 	
 	OmniTouchFingerTracker* omniTracker;
+	ThresholdTouchFingerTracker* thresholdFingerTracker;
 	FingerSelector* fingerSelector;
 	HandTracker* handTracker;
 
@@ -37,6 +39,7 @@ public:
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
 	inline OmniTouchFingerTracker* getOmniTouchFingerTracker() { return omniTracker; }
+	inline ThresholdTouchFingerTracker* getThresholdTouchFingerTracker() { return thresholdFingerTracker; }
 	inline FingerSelector* getFingerSelector() { return fingerSelector; }
 	inline HandTracker* getHandTracker() { return handTracker; }
 };

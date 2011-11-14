@@ -15,6 +15,7 @@ namespace ControlPanel
         RGB,
         DepthHistogramed,
         OmniTouch,
+        ThresholdTouch,
     }
 
     public class VideoSources
@@ -26,7 +27,7 @@ namespace ControlPanel
 
         private int rgbWidth, rgbHeight, depthWidth, depthHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -54,6 +55,7 @@ namespace ControlPanel
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthHistogramedSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
             omniTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
+            thresholdTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -131,6 +133,26 @@ namespace ControlPanel
                 }
 
                 return omniTouchSource;
+            }
+        }
+
+        public ImageSource ThresholdTouchSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (thresholdTouchSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugThresholdOutputProduct);
+                        thresholdTouchSource.Lock();
+                        thresholdTouchSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight * 3, depthWidth * 3);
+                        thresholdTouchSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return thresholdTouchSource;
             }
         }
     }

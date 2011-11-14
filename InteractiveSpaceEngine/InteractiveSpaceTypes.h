@@ -30,4 +30,6 @@ struct DoublePoint3D
 	}
 };
 
+typedef void (*Callback)();
+
 #endif

@@ -2,16 +2,25 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ControlPanel.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Threshold1" Type="System.Double" Scope="User">
+    <Setting Name="FingerMinWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
-    <Setting Name="Threshold2" Type="System.Double" Scope="User">
+    <Setting Name="FingerMaxWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">25</Value>
     </Setting>
-    <Setting Name="Threshold3" Type="System.Double" Scope="User">
+    <Setting Name="FingerMinLength" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="Threshold4" Type="System.Double" Scope="User">
+    <Setting Name="FingerMaxLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="NoiseThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="FingerThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="BlindThreshold" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

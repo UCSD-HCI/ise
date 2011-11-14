@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.InteropServices;
 using ControlPanel.NativeWrappers;
 
 namespace ControlPanel
@@ -20,8 +21,9 @@ namespace ControlPanel
     /// </summary>
     public partial class MainWindow : Window
     {
-        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow;
+        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow;
         private bool isSlidersValueLoaded;
+        private Action thresholdCalibrationFinishedCallback;
 
         public MainWindow()
         {
@@ -30,14 +32,19 @@ namespace ControlPanel
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            threshold1Slider.Value = Properties.Settings.Default.Threshold1;
-            threshold2Slider.Value = Properties.Settings.Default.Threshold2;
-            threshold3Slider.Value = Properties.Settings.Default.Threshold3;
-            threshold4Slider.Value = Properties.Settings.Default.Threshold4;
+            fingerMinWidthSlider.Value = Properties.Settings.Default.FingerMinWidth;
+            fingerMaxWidthSlider.Value = Properties.Settings.Default.FingerMaxWidth;
+            fingerMinLengthSlider.Value = Properties.Settings.Default.FingerMinLength;
+            fingerMaxLengthSlider.Value = Properties.Settings.Default.FingerMaxLength;
+
+            noiseThresholdSlider.Value = Properties.Settings.Default.NoiseThreshold;
+            fingerThresholdSlider.Value = Properties.Settings.Default.FingerThreshold;
+            blindThresholdSlider.Value = Properties.Settings.Default.BlindThreshold;
+
             isSlidersValueLoaded = true;
 
             CommandDllWrapper.engineRun();
-            NativeWrappers.CommandDllWrapper.setOmniTouchParameters(threshold1Slider.Value, threshold2Slider.Value, threshold3Slider.Value, threshold4Slider.Value);
+            NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -70,6 +77,11 @@ namespace ControlPanel
             handleVideoToggleButtonClick(multiTouchVideoToggleButton, ref multiTouchVideoWindow, VideoSourceType.OmniTouch);
         }
 
+        private void thresholdTouchVideoToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            handleVideoToggleButtonClick(thresholdTouchVideoToggleButton, ref thresholdTouchVideoWindow, VideoSourceType.ThresholdTouch);
+        }
+
         private void handleVideoToggleButtonClick(System.Windows.Controls.Primitives.ToggleButton button, ref VideoWindow window, VideoSourceType videoType)
         {
             if (button.IsChecked.GetValueOrDefault(false))
@@ -97,63 +109,141 @@ namespace ControlPanel
             }
         }
 
-        private void thresholdSliders_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void omniSliders_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             e.Handled = true;
 
-            if (sender == threshold1Slider)
+            if (sender == fingerMinWidthSlider)
             {
-                if (threshold2Slider.Value < e.NewValue - double.Epsilon)
+                if (fingerMaxWidthSlider.Value < e.NewValue - double.Epsilon)
                 {
-                    threshold2Slider.Value = e.NewValue;
+                    fingerMaxWidthSlider.Value = e.NewValue;
                 }
 
-                threshold1TextBox.Text = e.NewValue.ToString("0.00");
+                fingerMinWidthTextBox.Text = e.NewValue.ToString("0.00");
             }
-            else if (sender == threshold2Slider)
+            else if (sender == fingerMaxWidthSlider)
             {
-                if (e.NewValue < threshold1Slider.Value - double.Epsilon)
+                if (e.NewValue < fingerMinWidthSlider.Value - double.Epsilon)
                 {
                     e.Handled = false;
-                    threshold2Slider.Value = threshold1Slider.Value;
+                    fingerMaxWidthSlider.Value = fingerMinWidthSlider.Value;
                 }
                 else
                 {
-                    threshold2TextBox.Text = e.NewValue.ToString("0.00");
+                    fingerMaxWidthTextBox.Text = e.NewValue.ToString("0.00");
                 }
             }
-            else if (sender == threshold3Slider)
+            else if (sender == fingerMinLengthSlider)
             {
-                if (threshold4Slider.Value < e.NewValue - double.Epsilon)
+                if (fingerMaxLengthSlider.Value < e.NewValue - double.Epsilon)
                 {
-                    threshold4Slider.Value = e.NewValue;
+                    fingerMaxLengthSlider.Value = e.NewValue;
                 }
 
-                threshold3TextBox.Text = e.NewValue.ToString("0.00");
+                fingerMinLengthTextBox.Text = e.NewValue.ToString("0.00");
             }
-            else if (sender == threshold4Slider)
+            else if (sender == fingerMaxLengthSlider)
             {
-                if (e.NewValue < threshold3Slider.Value - double.Epsilon)
+                if (e.NewValue < fingerMinLengthSlider.Value - double.Epsilon)
                 {
                     e.Handled = false;
-                    threshold4Slider.Value = threshold3Slider.Value;
+                    fingerMaxLengthSlider.Value = fingerMinLengthSlider.Value;
                 }
                 else
                 {
-                    threshold4TextBox.Text = e.NewValue.ToString("0.00");
+                    fingerMaxLengthTextBox.Text = e.NewValue.ToString("0.00");
                 }
             }
 
             if (e.Handled && isSlidersValueLoaded)
             {
-                Properties.Settings.Default.Threshold1 = threshold1Slider.Value;
-                Properties.Settings.Default.Threshold2 = threshold2Slider.Value;
-                Properties.Settings.Default.Threshold3 = threshold3Slider.Value;
-                Properties.Settings.Default.Threshold4 = threshold4Slider.Value;
+                Properties.Settings.Default.FingerMinWidth = fingerMinWidthSlider.Value;
+                Properties.Settings.Default.FingerMaxWidth = fingerMaxWidthSlider.Value;
+                Properties.Settings.Default.FingerMinLength = fingerMinLengthSlider.Value;
+                Properties.Settings.Default.FingerMaxLength = fingerMaxLengthSlider.Value;
                 Properties.Settings.Default.Save();
 
-                NativeWrappers.CommandDllWrapper.setOmniTouchParameters(threshold1Slider.Value, threshold2Slider.Value, threshold3Slider.Value, threshold4Slider.Value);
+                NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
             }
         }
+
+        private void thresholdSliders_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            e.Handled = true;
+
+            if (sender == noiseThresholdSlider)
+            {
+                if (fingerThresholdSlider.Value < e.NewValue - double.Epsilon)
+                {
+                    fingerThresholdSlider.Value = e.NewValue;
+                }
+
+                if (blindThresholdSlider.Value < e.NewValue - double.Epsilon)
+                {
+                    blindThresholdSlider.Value = e.NewValue;
+                }
+
+                noiseThresholdTextBox.Text = e.NewValue.ToString("0.00");
+            }
+            else if (sender == fingerThresholdSlider)
+            {
+                if (e.NewValue < noiseThresholdSlider.Value - double.Epsilon)
+                {
+                    e.Handled = false;
+                    fingerThresholdSlider.Value = noiseThresholdSlider.Value;
+                }
+                else
+                {
+                    if (blindThresholdSlider.Value < e.NewValue - double.Epsilon)
+                    {
+                        blindThresholdSlider.Value = e.NewValue;
+                    }
+
+                    fingerThresholdTextBox.Text = e.NewValue.ToString("0.00");
+                }
+            }
+            else if (sender == blindThresholdSlider)
+            {
+                if (e.NewValue < fingerThresholdSlider.Value - double.Epsilon)
+                {
+                    e.Handled = false;
+                    blindThresholdSlider.Value = fingerThresholdSlider.Value;
+                }
+                else
+                {
+                    blindThresholdTextBox.Text = e.NewValue.ToString("0.00");
+                }
+            }
+
+            if (e.Handled && isSlidersValueLoaded)
+            {
+                Properties.Settings.Default.NoiseThreshold = noiseThresholdSlider.Value;
+                Properties.Settings.Default.FingerThreshold = fingerThresholdSlider.Value;
+                Properties.Settings.Default.BlindThreshold = blindThresholdSlider.Value;
+
+                NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
+            }
+        }
+
+        private void thresholdCalibrationButton_Click(object sender, RoutedEventArgs e)
+        {
+            calibrationButton.IsEnabled = false;
+            calibrationButton.Content = "Calibrating...";
+
+            thresholdCalibrationFinishedCallback = new Action(thresholdCalibration_Finihsed);
+            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(thresholdCalibrationFinishedCallback);
+            NativeWrappers.CommandDllWrapper.thresholdTouchCalibrate(callbackPtr);
+        }
+
+        private void thresholdCalibration_Finihsed()
+        {
+            Dispatcher.BeginInvoke((Action)delegate
+            {
+                calibrationButton.IsEnabled = true;
+                calibrationButton.Content = "Calibrate";
+            }, null);
+        }
+
     }
 }

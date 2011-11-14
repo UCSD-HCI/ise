@@ -26,48 +26,84 @@ namespace ControlPanel.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public double Threshold1 {
+        public double FingerMinWidth {
             get {
-                return ((double)(this["Threshold1"]));
+                return ((double)(this["FingerMinWidth"]));
             }
             set {
-                this["Threshold1"] = value;
+                this["FingerMinWidth"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("25")]
-        public double Threshold2 {
+        public double FingerMaxWidth {
             get {
-                return ((double)(this["Threshold2"]));
+                return ((double)(this["FingerMaxWidth"]));
             }
             set {
-                this["Threshold2"] = value;
+                this["FingerMaxWidth"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Threshold3 {
+        public double FingerMinLength {
             get {
-                return ((double)(this["Threshold3"]));
+                return ((double)(this["FingerMinLength"]));
             }
             set {
-                this["Threshold3"] = value;
+                this["FingerMinLength"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Threshold4 {
+        public double FingerMaxLength {
             get {
-                return ((double)(this["Threshold4"]));
+                return ((double)(this["FingerMaxLength"]));
             }
             set {
-                this["Threshold4"] = value;
+                this["FingerMaxLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double NoiseThreshold {
+            get {
+                return ((double)(this["NoiseThreshold"]));
+            }
+            set {
+                this["NoiseThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double FingerThreshold {
+            get {
+                return ((double)(this["FingerThreshold"]));
+            }
+            set {
+                this["FingerThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double BlindThreshold {
+            get {
+                return ((double)(this["BlindThreshold"]));
+            }
+            set {
+                this["BlindThreshold"] = value;
             }
         }
     }

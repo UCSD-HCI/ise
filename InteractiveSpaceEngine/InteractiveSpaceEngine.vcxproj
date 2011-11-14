@@ -133,6 +133,7 @@
     <ClInclude Include="InteractiveSpaceEngine.h" />
     <ClInclude Include="KinectSensor.h" />
     <ClInclude Include="ThreadUtils.h" />
+    <ClInclude Include="ThresholdTouchFingerTracker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandDllWrapper.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="KinectSensor.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
     <ClCompile Include="ResultsDllWrapper.cpp" />
+    <ClCompile Include="ThresholdTouchFingerTracker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

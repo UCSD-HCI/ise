@@ -35,6 +35,12 @@ void InteractiveSpaceEngine::dispose()
 		omniTracker = NULL;
 	}
 
+	if (thresholdFingerTracker != NULL)
+	{
+		delete thresholdFingerTracker;
+		thresholdFingerTracker = NULL;
+	}
+
 	if (fingerSelector != NULL)
 	{
 		delete fingerSelector;
@@ -63,6 +69,7 @@ void InteractiveSpaceEngine::run()
 
 	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor);
 	fingerSelector = new FingerSelector(omniTracker, kinectSensor);
+	thresholdFingerTracker = new ThresholdTouchFingerTracker();
 	handTracker = new HandTracker(fingerSelector, kinectSensor->getHandsGenerator(), kinectSensor);
 
 	threadStart();
@@ -84,6 +91,7 @@ void InteractiveSpaceEngine::operator() ()
 		{
 			ipf->refresh(kinectSensorFrameCount);
 			omniTracker->refresh();
+			thresholdFingerTracker->refresh();
 			fingerSelector->refresh();
 			handTracker->refresh();
 

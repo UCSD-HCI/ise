@@ -26,6 +26,7 @@ typedef enum
 
 	DebugDepthHistogramedProduct,
 	DebugOmniOutputProduct,
+	DebugThresholdOutputProduct,
 	ImageProductsCount
 } ImageProductType;
 

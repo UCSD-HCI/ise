@@ -1,5 +1,6 @@
 #include "DllWrapper.h"
 #include "InteractiveSpaceEngine.h"
+#include "InteractiveSpaceTypes.h"
 
 DLL_EXPORT void engineRun()
 {
@@ -34,4 +35,14 @@ DLL_EXPORT int getDepthHeight()
 DLL_EXPORT void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength)
 {
 	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setParameters(fingerMinWidth, fingerMaxWidth, fingerMinLength, fingerMaxLength);
+}
+
+DLL_EXPORT void setThresholdTouchParameters(double noiseThreshold, double fingerThreshold, double blindThreshold)
+{
+	InteractiveSpaceEngine::sharedEngine()->getThresholdTouchFingerTracker()->setParameters(noiseThreshold, fingerThreshold, blindThreshold);
+}
+
+DLL_EXPORT void thresholdTouchCalibrate(void* onFinihsedCallback)
+{
+	InteractiveSpaceEngine::sharedEngine()->getThresholdTouchFingerTracker()->calibrate((Callback)onFinihsedCallback);
 }
