@@ -97,20 +97,23 @@ void XN_CALLBACK_TYPE HandTracker::handCreateCB(xn::HandsGenerator& generator, X
 	if (minIndex >= 0)	//modify a hand to TrackingHand
 	{
 		Hand& hand = handTracker->hands[minIndex];
+		unsigned int hintId = hand.id;
+
 		hand.handType = TrackingHand;
 		hand.id = user;
 		hand.positionInRealWorld.x = pPosition->X;
 		hand.positionInRealWorld.y = pPosition->Y;
 		hand.positionInRealWorld.z = pPosition->Z;
 		hand.positionInKinectProj = handTracker->kinectSensor->convertRealWorldToProjective(hand.positionInRealWorld);
+
+		DEBUG("Hand create: " << user << " to hint " << hintId << ", distSquared " << minSquaredDist);
 	}
 	else
 	{
 		//cannot find any entry, give up
 		handTracker->handsGen->StopTracking(user);
+		DEBUG("Hand create: " << user << " failed");
 	}
-
-	DEBUG("Hand create: " << user);
 }
 
 void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie)
@@ -131,7 +134,7 @@ void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, X
 		handTracker->handsGen->StopTracking(user);
 	}
 
-	DEBUG("Hand update: " << user);
+	//DEBUG("Hand update: " << user);
 }
 
 void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, XnUserID user, XnFloat fTime, void* pCookie)
@@ -158,87 +161,83 @@ void HandTracker::refresh()
 		int handHintNum;
 		fingerSelector->getHandHints(&handHints, &handHintNum);
 
-		/*if (handNum + handHintNum <= MAX_HAND_NUM)	//all hints should be tracked
+		//compare hand hints and currently tracking hand. Sort them by confidence, and take the most MAX_HAND_NUM ones to track. 
+		vector<Hand> handCandidates;
+			
+		//add current hand
+		for (int i = 0; i < handNum; i++)
 		{
-			for (int i = 0; i < handHintNum; i++)
+			//penalty
+			if (hands[i].handType == TrackRequestedHandHint)
 			{
-				addHandHint(handHints[i].positionInRealWorld, handHints[i].confidence);
+				hands[i].confidence -= HAND_REQUEST_CONFIDENCE_PENALTY;
 			}
+
+			handCandidates.push_back(hands[i]);
 		}
-		else*/
-		{
-			//compare hand hints and currently tracking hand. Sort them by confidence, and take the most MAX_HAND_NUM ones to track. 
-			vector<Hand> handCandidates;
-
-			{
-				ReadLock(handsMutex);
-
-				//add current hand
-				for (int i = 0; i < handNum; i++)
-				{
-					handCandidates.push_back(hands[i]);
-				}
 			
 
-				for (int i = 0; i < handHintNum; i++)
+		for (int i = 0; i < handHintNum; i++)
+		{
+			//check if new hint is very near to a current traking hand
+			bool duplicated = false;
+			for (int j = 0; j < handNum; j++)
+			{
+				if (kinectSensor->distSquaredInRealWorld(handHints[i].positionInRealWorld, hands[j].positionInRealWorld) <= HAND_TRACK_MAX_MOVING_DIST * HAND_TRACK_MAX_MOVING_DIST)
 				{
-					//check if new hint is very near to a current traking hand
-					bool duplicated = false;
-					for (int j = 0; j < handNum; j++)
-					{
-						if (kinectSensor->distSquaredInRealWorld(handHints[i].positionInRealWorld, hands[j].positionInRealWorld) <= HAND_TRACK_MAX_MOVING_DIST * HAND_TRACK_MAX_MOVING_DIST)
-						{
-							duplicated = true;
-							break;
-						}
-					}
-					if (duplicated)
-					{
-						continue;
-					}
-
-					Hand h;
-					h.handType = NewHandHint;
-					h.id = 0;
-					h.positionInRealWorld = handHints[i].positionInRealWorld;
-					h.confidence = handHints[i].confidence;
-
-					handCandidates.push_back(h);
+					duplicated = true;
+					break;
 				}
 			}
-
-			sort(handCandidates.begin(), handCandidates.end());
-
-			//search from the first MAX_HAND_NUM ones. If there is hand hints, find victim to replace
-			int hitPtr = MAX_HAND_NUM - 1;
-			int victimPtr = handCandidates.size() - 1;
-
-			for (; hitPtr >= 0; hitPtr--)
+			if (duplicated)
 			{
-				if (handCandidates[hitPtr].handType == NewHandHint)	//new hand hint, need to track
-				{
-					for(; victimPtr >= MAX_HAND_NUM && handCandidates[victimPtr].handType == NewHandHint; victimPtr--);	//move to a victim
-					if (victimPtr >= MAX_HAND_NUM)	
-					{
-						if (handCandidates[hitPtr].confidence - handCandidates[victimPtr].confidence > HAND_CHANGE_CONFIDENCE_THRESHOLD)
-						{
-							if (handCandidates[victimPtr].handType == TrackingHand)
-							{
-								idToStopTracking.push_back(handCandidates[victimPtr].id);
-							}
-							removeHand(handCandidates[victimPtr].handType, handCandidates[victimPtr].id);
-							victimPtr--;
+				continue;
+			}
 
-							addHandHint(handCandidates[hitPtr].positionInRealWorld, handCandidates[hitPtr].confidence);
-						}
-					}
-					else if (handNum < MAX_HAND_NUM) //no victim found, but have space
+			Hand h;
+			h.handType = NewHandHint;
+			h.id = 0;
+			h.positionInRealWorld = handHints[i].positionInRealWorld;
+			h.confidence = handHints[i].confidence;
+
+			handCandidates.push_back(h);
+		}
+
+
+		sort(handCandidates.begin(), handCandidates.end());
+
+		//search from the first MAX_HAND_NUM ones. If there is hand hints, find victim to replace
+		int hitPtr = (handCandidates.size() < MAX_HAND_NUM) ? handCandidates.size() - 1 : MAX_HAND_NUM - 1;
+		int victimPtr = handCandidates.size() - 1;
+
+		for (; hitPtr >= 0; hitPtr--)
+		{
+			if (handCandidates[hitPtr].handType == NewHandHint)	//new hand hint, need to track
+			{
+				for(; victimPtr >= MAX_HAND_NUM && handCandidates[victimPtr].handType == NewHandHint; victimPtr--);	//move to a victim
+				if (victimPtr >= MAX_HAND_NUM)	
+				{
+					if (handCandidates[hitPtr].confidence - handCandidates[victimPtr].confidence > HAND_CHANGE_CONFIDENCE_THRESHOLD)
 					{
+						if (handCandidates[victimPtr].handType == TrackingHand)
+						{
+							idToStopTracking.push_back(handCandidates[victimPtr].id);
+						}
+
+						DEBUG("Hand victim: " << handCandidates[victimPtr].id);
+						removeHand(handCandidates[victimPtr].handType, handCandidates[victimPtr].id);
+						victimPtr--;
+
 						addHandHint(handCandidates[hitPtr].positionInRealWorld, handCandidates[hitPtr].confidence);
 					}
 				}
+				else if (handNum < MAX_HAND_NUM) //no victim found, but have space
+				{
+					addHandHint(handCandidates[hitPtr].positionInRealWorld, handCandidates[hitPtr].confidence);
+				}
 			}
 		}
+		
 	}
 
 	for (vector<int>::const_iterator it = idToStopTracking.begin(); it != idToStopTracking.end(); ++it)
