@@ -123,7 +123,7 @@ namespace ControlPanel
                         Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x);
                         Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y);
                         handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
-                        handPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
+                        handPoints[i].Fill = hands[i].HandType == HandType.NewHandHint ? Brushes.Black : new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
                     }
 
                     for (int i = handNum; i < handPoints.Count; i++)

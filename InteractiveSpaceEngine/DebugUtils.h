@@ -8,7 +8,7 @@
 #define DEBUG( s )            \
 {                             \
    std::ostringstream os;    \
-   os << s;                   \
+   os << s << endl;                   \
    OutputDebugString( os.str().c_str() );  \
 }
 

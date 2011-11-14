@@ -93,6 +93,11 @@ float KinectSensor::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, i
 		 + (realPoints[0].Z - realPoints[1].Z) * (realPoints[0].Z - realPoints[1].Z);
 }
 
+float KinectSensor::distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const
+{
+	return distSquaredInRealWorld(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+}
+
 FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) const
 {
 	XnPoint3D xnP;

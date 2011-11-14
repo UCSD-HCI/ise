@@ -7,8 +7,9 @@
 #include <XnCppWrapper.h>	//troubled with HandsGenerator callbacks...
 #include <vector>
 
-#define MAX_HAND_NUM 2
-#define HAND_CHANGE_CONFIDENCE_THRESHOLD 20
+#define MAX_HAND_NUM 2	//wrapper const
+#define HAND_CHANGE_CONFIDENCE_THRESHOLD 40
+#define HAND_TRACK_MAX_MOVING_DIST 100
 
 typedef enum
 {
@@ -47,7 +48,7 @@ private:
 
 	void addHandHint(FloatPoint3D& positionInRealWorld, double confidence);
 	//Hand* addHandTracking();
-	void removeHand(unsigned int id);
+	void removeHand(HandType handType, unsigned int id);
 	Hand* findHand(HandType handType, unsigned int id);
 
 public:

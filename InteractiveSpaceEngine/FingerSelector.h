@@ -11,7 +11,7 @@
 #define MAX_HAND_HINT_NUM 2
 
 #define FINGER_TO_HAND_OFFSET 100
-#define HAND_RADIUS 300
+#define HAND_RADIUS 150
 
 typedef struct Finger
 {

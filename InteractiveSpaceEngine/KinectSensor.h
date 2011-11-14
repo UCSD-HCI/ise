@@ -44,6 +44,7 @@ public:
 
 	//parameters are in Kinect perspective
 	float distSquaredInRealWorld(int x1, int y1, int depth, int x2, int y2, int depth2) const;
+	float distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const;
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	IntPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
 };
