@@ -8,11 +8,13 @@
 #include "ThresholdTouchFingerTracker.h"
 #include "FingerSelector.h"
 #include "HandTracker.h"
+#include "Calibrator.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
 private:
 	static InteractiveSpaceEngine instance;
+
 	KinectSensor* kinectSensor;
 	ImageProcessingFactory* ipf;
 	
@@ -20,6 +22,8 @@ private:
 	ThresholdTouchFingerTracker* thresholdFingerTracker;
 	FingerSelector* fingerSelector;
 	HandTracker* handTracker;
+
+	Calibrator* calibrator;
 
 	long long kinectSensorFrameCount;
 	
@@ -42,6 +46,7 @@ public:
 	inline ThresholdTouchFingerTracker* getThresholdTouchFingerTracker() { return thresholdFingerTracker; }
 	inline FingerSelector* getFingerSelector() { return fingerSelector; }
 	inline HandTracker* getHandTracker() { return handTracker; }
+	inline Calibrator* getCalibrator() { return calibrator; }
 };
 
 #endif

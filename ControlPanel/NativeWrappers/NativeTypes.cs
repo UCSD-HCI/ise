@@ -119,4 +119,6 @@ namespace ControlPanel.NativeWrappers
         public IntPoint3D PositionInKinectProj { get { return positionInKinectProj; } }
         public double Confidence { get { return confidence; } }
     }
+
+    public unsafe delegate void CalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum);
 }

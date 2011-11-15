@@ -72,6 +72,7 @@ public:
 	}
 
 	void refresh(long long kinectSensorFrameCount);
+	void refreshDepthHistogramed();	//for calibration
 };
 
 #endif

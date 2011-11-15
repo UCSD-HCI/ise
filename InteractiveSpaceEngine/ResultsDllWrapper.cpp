@@ -33,3 +33,21 @@ DLL_EXPORT ReadLockedWrapperPtr lockHands(int* handNum)
 	res.readLock = handsPtr.getReadLock();
 	return res;
 }
+
+DLL_EXPORT ReadLockedWrapperPtr lockCalibrationRGBImage()
+{
+	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->lockRGBImage();
+	ReadLockedWrapperPtr res;
+	res.obj = srcPtr->imageData;
+	res.readLock = srcPtr.getReadLock();
+	return res;
+}
+
+DLL_EXPORT ReadLockedWrapperPtr lockCalibrationDepthImage()
+{
+	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->lockDepthImage();
+	ReadLockedWrapperPtr res;
+	res.obj = srcPtr->imageData;
+	res.readLock = srcPtr.getReadLock();
+	return res;
+}

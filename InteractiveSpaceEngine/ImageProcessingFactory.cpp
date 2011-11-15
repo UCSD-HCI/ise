@@ -31,31 +31,34 @@ ImageProcessingFactory::~ImageProcessingFactory()
 	}
 }
 
+void ImageProcessingFactory::refreshDepthHistogramed()
+{
+	WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
+	ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+				
+	updateDepthHistogram(depthSrc);
+
+	IplImage* dst = products[DebugDepthHistogramedProduct];
+
+	for (int y = 0; y < depthSrc->height; ++y)
+	{
+		ushort* srcPtr = (ushort*)(depthSrc->imageData + y * depthSrc->widthStep);
+		byte* dstPtr = (byte*)(dst->imageData + y * dst->widthStep);
+		for (int x = 0; x < depthSrc->width; ++x, ++srcPtr, ++dstPtr)
+		{
+			*dstPtr = depthHistogram[*srcPtr];
+		}
+	}
+
+	depthSrc.release();
+}
+
 void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 {
 	if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
 	{
 		//DepthHisogramedProduct
-		{
-			WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
-			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
-				
-			updateDepthHistogram(depthSrc);
-
-			IplImage* dst = products[DebugDepthHistogramedProduct];
-
-			for (int y = 0; y < depthSrc->height; ++y)
-			{
-				ushort* srcPtr = (ushort*)(depthSrc->imageData + y * depthSrc->widthStep);
-				byte* dstPtr = (byte*)(dst->imageData + y * dst->widthStep);
-				for (int x = 0; x < depthSrc->width; ++x, ++srcPtr, ++dstPtr)
-				{
-					*dstPtr = depthHistogram[*srcPtr];
-				}
-			}
-
-			depthSrc.release();
-		}
+		refreshDepthHistogramed();
 
 		//sobel for OmniTouch
 		{

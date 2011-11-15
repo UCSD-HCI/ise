@@ -46,3 +46,18 @@ DLL_EXPORT void thresholdTouchCalibrate(void* onFinihsedCallback)
 {
 	InteractiveSpaceEngine::sharedEngine()->getThresholdTouchFingerTracker()->calibrate((Callback)onFinihsedCallback);
 }
+
+DLL_EXPORT void systemCalibrationStart()
+{
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->startCalibration();
+}
+
+DLL_EXPORT void systemCalibrationStop()
+{
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->stopCalibration();
+}
+
+DLL_EXPORT void systemCalibrationDetectChessboardCorner(void* onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols)
+{
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->detectRGBChessboard((CalibrationFinishedCallback)onFinishedCallback, refCorners, rows, cols);
+}

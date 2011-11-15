@@ -32,4 +32,6 @@ struct DoublePoint3D
 
 typedef void (*Callback)();
 
+typedef void (*CalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum);
+
 #endif

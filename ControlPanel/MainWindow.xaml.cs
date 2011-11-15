@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using ControlPanel.NativeWrappers;
+using System.Diagnostics;
 
 namespace ControlPanel
 {
@@ -22,6 +23,7 @@ namespace ControlPanel
     public partial class MainWindow : Window
     {
         private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow;
+        private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
 
@@ -43,6 +45,9 @@ namespace ControlPanel
 
             isSlidersValueLoaded = true;
 
+            projectorFeedbackWindow = new ProjectorFeedbackWindow();
+            projectorFeedbackWindow.Show();
+
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
         }
@@ -57,6 +62,21 @@ namespace ControlPanel
             if (depthVideoWindow != null)
             {
                 depthVideoWindow.Close();
+            }
+
+            if (multiTouchVideoWindow != null)
+            {
+                multiTouchVideoWindow.Close();
+            }
+
+            if (thresholdTouchVideoWindow != null)
+            {
+                thresholdTouchVideoWindow.Close();
+            }
+
+            if (projectorFeedbackWindow != null)
+            {
+                projectorFeedbackWindow.Close();
             }
 
             CommandDllWrapper.engineStop();
@@ -243,6 +263,13 @@ namespace ControlPanel
                 calibrationButton.IsEnabled = true;
                 calibrationButton.Content = "Calibrate";
             }, null);
+        }
+
+        private void systemCalibrateButton_Click(object sender, RoutedEventArgs e)
+        {
+            CalibrationWindow caliWin = new CalibrationWindow();
+            caliWin.ProjectorFeedbackWindow = projectorFeedbackWindow;
+            caliWin.Show();
         }
 
     }

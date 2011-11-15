@@ -36,5 +36,14 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void thresholdTouchCalibrate(IntPtr onFinihsedCallback);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void systemCalibrationStart();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void systemCalibrationStop();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void systemCalibrationDetectChessboardCorner(IntPtr onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols);
     }
 }

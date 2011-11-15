@@ -4,7 +4,7 @@
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), kinectSensorFrameCount(-1)
+InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1)
 {
 }
 
@@ -52,6 +52,12 @@ void InteractiveSpaceEngine::dispose()
 		delete handTracker;
 		handTracker = NULL;
 	}
+
+	if (calibrator != NULL)
+	{
+		delete calibrator;
+		calibrator = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -72,6 +78,8 @@ void InteractiveSpaceEngine::run()
 	thresholdFingerTracker = new ThresholdTouchFingerTracker();
 	handTracker = new HandTracker(fingerSelector, kinectSensor->getHandsGenerator(), kinectSensor);
 
+	calibrator = new Calibrator(kinectSensor, ipf);
+
 	threadStart();
 }
 
@@ -86,20 +94,36 @@ void InteractiveSpaceEngine::operator() ()
 	{
 		boost::this_thread::interruption_point();
 
-		long long newFrameCount = kinectSensor->getFrameCount();
-		if (newFrameCount > kinectSensorFrameCount)
+		if (calibrator->isCalibrating())
 		{
-			ipf->refresh(kinectSensorFrameCount);
-			omniTracker->refresh();
-			thresholdFingerTracker->refresh();
-			fingerSelector->refresh();
-			handTracker->refresh();
-
-			kinectSensorFrameCount = newFrameCount;
+			long long newFrameCount = kinectSensor->getFrameCount();
+			if (newFrameCount > kinectSensorFrameCount)
+			{
+				ipf->refreshDepthHistogramed();
+				calibrator->refresh();
+			}
+			else
+			{
+				boost::this_thread::yield();
+			}
 		}
 		else
 		{
-			boost::this_thread::yield();
+			long long newFrameCount = kinectSensor->getFrameCount();
+			if (newFrameCount > kinectSensorFrameCount)
+			{
+				ipf->refresh(kinectSensorFrameCount);
+				omniTracker->refresh();
+				thresholdFingerTracker->refresh();
+				fingerSelector->refresh();
+				handTracker->refresh();
+
+				kinectSensorFrameCount = newFrameCount;
+			}
+			else
+			{
+				boost::this_thread::yield();
+			}
 		}
 	}
 }

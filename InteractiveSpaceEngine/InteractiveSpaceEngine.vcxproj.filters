@@ -51,6 +51,9 @@
     <ClInclude Include="ThresholdTouchFingerTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Calibrator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ThresholdTouchFingerTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Calibrator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
