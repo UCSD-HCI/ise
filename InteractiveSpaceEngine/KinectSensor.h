@@ -34,6 +34,8 @@ public:
 		return frameCount; 
 	}
 
+	inline void start() { threadStart(); }
+
 	virtual void operator() ();	//thread worker
 
 	IplImage* createBlankRGBImage();		//create a blank image to store rgb data

@@ -107,17 +107,18 @@ namespace ControlPanel
                 checkPointEllipses = new List<Ellipse>(checkPointNum);
                 for (int i = 0; i < checkPointNum; i++)
                 {
-                    checkPointEllipses[i] = new Ellipse()
+                    Ellipse e = new Ellipse()
                     {
                         Width = 10,
                         Height = 10,
-                        Stroke = Brushes.Yellow,
+                        Stroke = Brushes.Red,
                         StrokeThickness = 2
                     };
+                    checkPointEllipses.Add(e);
 
-                    globalCanvas.Children.Add(checkPointEllipses[i]);
-                    Canvas.SetLeft(checkPointEllipses[i], checkPoints[i].x);
-                    Canvas.SetTop(checkPointEllipses[i], checkPoints[i].y);
+                    globalCanvas.Children.Add(e);
+                    Canvas.SetLeft(e, checkPoints[i].x);
+                    Canvas.SetTop(e, checkPoints[i].y);
                 }
             }, null);
         }

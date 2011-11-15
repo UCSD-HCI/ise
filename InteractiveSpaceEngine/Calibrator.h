@@ -47,10 +47,10 @@ private:
 	//rgb perp
 	CvMat* rgbSurfHomography;
 
-	static void convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count);	//for findHomography
-	static void convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count);	//for findHomography
-	static void convertCvPointsToCvArr(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count);	//for perspective transform, src
-	static void convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count);	//for perspective transform, dst
+	void convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count);	//for findHomography
+	void convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count);	//for findHomography
+	void convertCvPointsToCvArr(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count);	//for perspective transform, src
+	void convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count);	//for perspective transform, dst
 
 public:
 	Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf);

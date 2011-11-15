@@ -12,6 +12,23 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 		IPL_DEPTH_8U, 1);
 
 	rgbSurfHomography = cvCreateMat(3, 3, CV_64FC1);
+
+
+	//for debug
+	const int cornersCount = 28;
+
+	chessboardCorners = new CvPoint2D32f[cornersCount];
+
+	averageChessboardCorners = new CvPoint2D32f[cornersCount];
+
+	chessboardRefCorners = new FloatPoint3D[cornersCount];
+	chessboardCheckPoints = new FloatPoint3D[cornersCount];
+
+	homoEstiSrc = cvCreateMat(cornersCount, 2, CV_32FC1);
+	homoEstiDst = cvCreateMat(cornersCount, 2, CV_32FC1);
+
+	homoTransSrc = cvCreateMat(1, cornersCount, CV_32FC2);
+	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);
 }
 
 Calibrator::~Calibrator()
@@ -75,11 +92,17 @@ void Calibrator::startCalibration()
 void Calibrator::detectRGBChessboard(CalibrationFinishedCallback onRGBChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols)
 {
 	this->onRGBChessboardDetectedCallback = onRGBChessboardDetectedCallback;
+	
 	this->chessboardRows = rows;
 	this->chessboardCols = cols;
 
 	int cornersCount = (chessboardRows - 1) * (chessboardCols - 1);
 
+	//for debug
+	memset(averageChessboardCorners, 0, sizeof(CvPoint2D32f) * cornersCount);
+	memcpy(chessboardRefCorners, refCorners, sizeof(FloatPoint3D) * cornersCount);
+
+	/*
 	if (chessboardCorners != NULL)
 	{
 		delete chessboardCorners;
@@ -128,7 +151,7 @@ void Calibrator::detectRGBChessboard(CalibrationFinishedCallback onRGBChessboard
 	{
 		cvReleaseMat(&homoTransDst);
 	}
-	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);
+	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);*/
 
 	chessboardCapturedFrame = 0;
 
@@ -147,6 +170,7 @@ void Calibrator::refresh()
 		{
 			WriteLock wLock(rgbImgMutex);
 			ReadLockedIplImagePtr rgbInIpf = ipf->lockImageProduct(RGBSourceProduct);
+			ReadLockedIplImagePtr depthInIpf = ipf->lockImageProduct(DepthSourceProduct);
 			cvCopyImage(rgbInIpf, rgbImg);
 
 			if (state == DetectingRGBChessboard)
@@ -171,7 +195,16 @@ void Calibrator::refresh()
 					{
 						//finished, find homography
 						convertCvPointsToCvMat(averageChessboardCorners, homoEstiSrc, cornerCount);
-						convertFloatPoint3DToCvMat(chessboardRefCorners, homoEstiDst, cornerCount);
+						//convertFloatPoint3DToCvMat(chessboardRefCorners, homoEstiDst, cornerCount);
+
+						for (int i = 0; i < cornerCount; i++)
+						{
+							float* rowPtr = homoEstiDst->data.fl + i * homoEstiDst->step / sizeof(float);
+							rowPtr[0] = chessboardRefCorners[i].x;
+							rowPtr[1] = chessboardRefCorners[i].y;
+						}
+
+
 						cvFindHomography(homoEstiSrc, homoEstiDst, rgbSurfHomography);
 
 						if (onRGBChessboardDetectedCallback != NULL)
@@ -193,6 +226,7 @@ void Calibrator::refresh()
 			}
 
 			rgbInIpf.release();
+			depthInIpf.release();
 		}
 	}
 
@@ -212,7 +246,7 @@ void Calibrator::convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvM
 	//CvMat* result = cvCreateMat(count, 2, CV_32FC1);
 	for (int i = 0; i < count; i++)
 	{
-		float* rowPtr = cvMat->data.fl + i * cvMat->step;
+		float* rowPtr = cvMat->data.fl + i * cvMat->step / sizeof(float);
 		rowPtr[0] = floatPoints[i].x;
 		rowPtr[1] = floatPoints[i].y;
 	}
@@ -240,7 +274,7 @@ void Calibrator::convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvM
 	//CvMat* result = cvCreateMat(count, 2, CV_32FC1);
 	for (int i = 0; i < count; i++)
 	{
-		float* rowPtr = cvMat->data.fl + i * cvMat->step;
+		float* rowPtr = cvMat->data.fl + i * cvMat->step / sizeof(float);
 		rowPtr[0] = cvPoints[i].x;
 		rowPtr[1] = cvPoints[i].y;
 	}
