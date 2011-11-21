@@ -13,12 +13,19 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <my:ZoomableVideoUserControl x:Name="rgbVideo" Grid.Row="0" Grid.Column="0"/>
-        <my:ZoomableVideoUserControl x:Name="depthVideo" Grid.Row="0" Grid.Column="1"/>
+        <my:ZoomableVideoUserControl x:Name="rgbVideo" Grid.Row="0" Grid.Column="0" MouseMove="video_MouseMove" MouseLeave="video_MouseLeave"/>
+        <my:ZoomableVideoUserControl x:Name="depthVideo" Grid.Row="0" Grid.Column="1" MouseMove="video_MouseMove" MouseLeave="video_MouseLeave" MouseUp="depthVideo_MouseUp"/>
         <my:ZoomableVideoUserControl x:Name="motionVideo" Grid.Row="1" Grid.Column="0"/>
         
-        <Grid Grid.Row="1" Grid.Column="1">
-            
+        <Grid Grid.Row="1" Grid.Column="1" Margin="30,30,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="calibrateDepthButton" VerticalAlignment="Center" Click="calibrateDepthButton_Click" IsEnabled="False" Margin="10">Calibrate Depth Camera</Button>
+                <Button Name="calibrateDepthSaveButton" Margin="10" Click="calibrateDepthSaveButton_Click" IsEnabled="False">Save</Button>
+                <Button Name="calibrateDepthLoadButton" Margin="10" Click="calibrateDepthLoadButton_Click" IsEnabled="False">Load</Button>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

@@ -48,6 +48,19 @@ namespace ControlPanel.NativeWrappers
     }
 
     /// <summary>
+    /// <remarks>Calibrator.h, CalibratedCoordinateSystem</remarks>
+    /// </summary>
+    public enum CalibratedCoordinateSystem
+    {
+	    Table2D = 0,
+	    Table3D,
+	    RGB2D,
+	    Depth2D,
+	    Depth3D,
+	    Motion2D
+    };
+
+    /// <summary>
     /// <remarks>ThreadUtils.h, ReadLockedWrapperPtr</remarks>
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -120,5 +133,5 @@ namespace ControlPanel.NativeWrappers
         public double Confidence { get { return confidence; } }
     }
 
-    public unsafe delegate void CalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum);
+    public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 }

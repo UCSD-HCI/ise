@@ -59,5 +59,22 @@ DLL_EXPORT void systemCalibrationStop()
 
 DLL_EXPORT void systemCalibrationDetectChessboardCorner(void* onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols)
 {
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->detectRGBChessboard((CalibrationFinishedCallback)onFinishedCallback, refCorners, rows, cols);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->detectRGBChessboard((RGBCalibrationFinishedCallback)onFinishedCallback, refCorners, rows, cols);
+}
+
+DLL_EXPORT void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount)
+{
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->calibrateDepthCamera(depthCorners, refCorners, cornerCount);
+}
+
+DLL_EXPORT void transformPoints(FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace)
+{
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(srcPoints, dstPoints, pointNum, srcSpace, dstSpace);
+}
+
+DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace)
+{
+	FloatPoint3D result;
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&srcPoint, &result, 1, srcSpace, dstSpace);
+	return result;
 }

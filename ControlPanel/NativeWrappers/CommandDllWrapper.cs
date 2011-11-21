@@ -45,5 +45,14 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void systemCalibrationDetectChessboardCorner(IntPtr onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void transformPoints(FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace);
     }
 }

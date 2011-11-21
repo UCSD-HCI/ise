@@ -32,6 +32,6 @@ struct DoublePoint3D
 
 typedef void (*Callback)();
 
-typedef void (*CalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum);
+typedef void (*RGBCalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 
 #endif

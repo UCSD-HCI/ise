@@ -2,8 +2,8 @@
 #include <assert.h>
 
 Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) : kinectSensor(kinectSensor), state(CalibratorNotInit), ipf(ipf),
-	chessboardCorners(NULL), averageChessboardCorners(NULL), chessboardRefCorners(NULL), chessboardCheckPoints(NULL), rgbSurfHomography(NULL), 
-	homoEstiSrc(NULL), homoEstiDst(NULL), homoTransSrc(NULL), homoTransDst(NULL)
+	chessboardCorners(NULL), averageChessboardCorners(NULL), chessboardRefCorners(NULL), chessboardCheckPoints(NULL), chessboardDepthRefCorners(NULL), 
+	homoEstiSrc(NULL), homoEstiDst(NULL), homoTransSrc(NULL), homoTransDst(NULL) 
 {
 	rgbImg = kinectSensor->createBlankRGBImage();
 	grayImg = cvCreateImage(cvSize(ipf->getImageProductWidth(RGBSourceProduct), ipf->getImageProductHeight(RGBSourceProduct)),
@@ -12,10 +12,12 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 		IPL_DEPTH_8U, 1);
 
 	rgbSurfHomography = cvCreateMat(3, 3, CV_64FC1);
-
+	depthSurfHomography = cvCreateMat(3, 3, CV_64FC1);
+	rgbSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
+	depthSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
 
 	//for debug
-	const int cornersCount = 28;
+	const int cornersCount = CORNER_COUNT;	//FIXME
 
 	chessboardCorners = new CvPoint2D32f[cornersCount];
 
@@ -23,6 +25,7 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 
 	chessboardRefCorners = new FloatPoint3D[cornersCount];
 	chessboardCheckPoints = new FloatPoint3D[cornersCount];
+	chessboardDepthRefCorners = new FloatPoint3D[cornersCount];
 
 	homoEstiSrc = cvCreateMat(cornersCount, 2, CV_32FC1);
 	homoEstiDst = cvCreateMat(cornersCount, 2, CV_32FC1);
@@ -38,29 +41,38 @@ Calibrator::~Calibrator()
 	cvReleaseImage(&grayImg);
 
 	cvReleaseMat(&rgbSurfHomography);
+	cvReleaseMat(&depthSurfHomography);
+	cvReleaseMat(&rgbSurfHomographyInversed);
+	cvReleaseMat(&depthSurfHomographyInversed);
 
 	if (chessboardCorners != NULL)
 	{
-		delete chessboardCorners;
+		delete [] chessboardCorners;
 		chessboardCorners = NULL;
 	}
 
 	if (averageChessboardCorners != NULL)
 	{
-		delete averageChessboardCorners;
+		delete [] averageChessboardCorners;
 		averageChessboardCorners = NULL;
 	}
 
 	if (chessboardRefCorners != NULL)
 	{
-		delete chessboardRefCorners;
+		delete [] chessboardRefCorners;
 		chessboardRefCorners = NULL;
 	}
 
 	if (chessboardCheckPoints != NULL)
 	{
-		delete chessboardCheckPoints;
+		delete [] chessboardCheckPoints;
 		chessboardCheckPoints = NULL;
+	}
+
+	if (chessboardDepthRefCorners != NULL)
+	{
+		delete [] chessboardDepthRefCorners;
+		chessboardDepthRefCorners = NULL;
 	}
 
 	if (homoEstiSrc != NULL)
@@ -89,7 +101,7 @@ void Calibrator::startCalibration()
 	state = CalibratorStarted;
 }
 
-void Calibrator::detectRGBChessboard(CalibrationFinishedCallback onRGBChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols)
+void Calibrator::detectRGBChessboard(RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols)
 {
 	this->onRGBChessboardDetectedCallback = onRGBChessboardDetectedCallback;
 	
@@ -194,26 +206,20 @@ void Calibrator::refresh()
 					if (chessboardCapturedFrame >= CHESSBOARD_CAPTURE_FRAMES)
 					{
 						//finished, find homography
-						convertCvPointsToCvMat(averageChessboardCorners, homoEstiSrc, cornerCount);
-						//convertFloatPoint3DToCvMat(chessboardRefCorners, homoEstiDst, cornerCount);
-
-						for (int i = 0; i < cornerCount; i++)
-						{
-							float* rowPtr = homoEstiDst->data.fl + i * homoEstiDst->step / sizeof(float);
-							rowPtr[0] = chessboardRefCorners[i].x;
-							rowPtr[1] = chessboardRefCorners[i].y;
-						}
-
-
+						convertCvPointsToCvMat(averageChessboardCorners, homoEstiDst, cornerCount);
+						convertFloatPoint3DToCvMat(chessboardRefCorners, homoEstiSrc, cornerCount);
+						
 						cvFindHomography(homoEstiSrc, homoEstiDst, rgbSurfHomography);
+						cvInvert(rgbSurfHomography, rgbSurfHomographyInversed);
 
 						if (onRGBChessboardDetectedCallback != NULL)
 						{
 							convertCvPointsToCvArr(averageChessboardCorners, homoTransSrc, cornerCount);
-							cvPerspectiveTransform(homoTransSrc, homoTransDst, rgbSurfHomography);
+							cvPerspectiveTransform(homoTransSrc, homoTransDst, rgbSurfHomographyInversed);
 							convertCvArrToFloatPoint3D(homoTransDst, chessboardCheckPoints, cornerCount);
+							convertCvPointsToFloatPoint3D(averageChessboardCorners, chessboardDepthRefCorners, cornerCount);
 
-							onRGBChessboardDetectedCallback(chessboardCheckPoints, cornerCount);
+							onRGBChessboardDetectedCallback(chessboardCheckPoints, cornerCount, chessboardDepthRefCorners, cornerCount);
 						}
 
 						state = RGBCalibrated;
@@ -241,75 +247,144 @@ void Calibrator::refresh()
 	}
 }
 
-void Calibrator::convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count)
+void Calibrator::calibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount)
 {
-	//CvMat* result = cvCreateMat(count, 2, CV_32FC1);
+	assert(cornerCount == CORNER_COUNT);
+
+	convertFloatPoint3DToCvMat(refCorners, homoEstiSrc, cornerCount);
+	convertFloatPoint3DToCvMat(depthCorners, homoEstiDst, cornerCount);
+						
+	cvFindHomography(homoEstiSrc, homoEstiDst, depthSurfHomography);
+	cvInvert(depthSurfHomography, depthSurfHomographyInversed);
+
+	state = AllCalibrated;
+}
+
+void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace) const
+{
+	//TODO 3D
+
+	if (pointNum == 0)
+	{
+		return;
+	}
+
+	CvMat* srcArr = cvCreateMat(1, pointNum, CV_32FC2);
+	CvMat* tableSurfaceArr = cvCreateMat(1, pointNum, CV_32FC2);
+	CvMat* dstArr = cvCreateMat(1, pointNum, CV_32FC2);
+
+	convertFloatPoint3DToCvArr(srcPoints, srcArr, pointNum);
+	
+	//transform to table surface
+	if (srcSpace != Table2D)
+	{
+		CvMat* homo;
+		switch(srcSpace)
+		{
+		case RGB2D:
+			homo = rgbSurfHomographyInversed;
+			break;
+
+		case Depth2D:
+			homo = depthSurfHomographyInversed;
+			break;
+
+		default:
+			assert(0);	//not implemented
+			break;
+		}
+
+		cvPerspectiveTransform(srcArr, tableSurfaceArr, homo);
+	}
+	else
+	{
+		cvCopy(srcArr, tableSurfaceArr);
+	}
+
+	//transform to target
+	if (dstSpace != Table2D)
+	{
+		CvMat* homo;
+		switch(dstSpace)
+		{
+		case RGB2D:
+			homo = rgbSurfHomography;
+			break;
+
+		case Depth2D:
+			homo = depthSurfHomography;
+			break;
+
+		default:
+			assert(0);	//not implemented
+			break;
+		}
+
+		cvPerspectiveTransform(tableSurfaceArr, dstArr, homo);
+	}
+	else
+	{
+		cvCopy(tableSurfaceArr, dstArr);
+	}
+
+	convertCvArrToFloatPoint3D(dstArr, dstPoints, pointNum);
+	
+	cvReleaseMat(&srcArr);
+	cvReleaseMat(&tableSurfaceArr);
+	cvReleaseMat(&dstArr);
+}
+
+void Calibrator::convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count) const
+{
 	for (int i = 0; i < count; i++)
 	{
 		float* rowPtr = cvMat->data.fl + i * cvMat->step / sizeof(float);
 		rowPtr[0] = floatPoints[i].x;
 		rowPtr[1] = floatPoints[i].y;
 	}
-	
-	
-	/*CvMat* result = cvCreateMat(2, count, CV_32FC1);
-	
-	float* rowPtr = result->data.fl;
-	for (int i = 0; i < count; i++, rowPtr++)
-	{
-		*rowPtr = floatPoints[i].x;
-	}
-	
-	rowPtr = result->data.fl + result->step;
-	for (int i = 0; i < count; i++, rowPtr++)
-	{
-		*rowPtr = floatPoints[i].y;
-	}*/
-
-	//return result;
 }
 
-void Calibrator::convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count)
+void Calibrator::convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count) const
 {
-	//CvMat* result = cvCreateMat(count, 2, CV_32FC1);
 	for (int i = 0; i < count; i++)
 	{
 		float* rowPtr = cvMat->data.fl + i * cvMat->step / sizeof(float);
 		rowPtr[0] = cvPoints[i].x;
 		rowPtr[1] = cvPoints[i].y;
 	}
-
-	/*CvMat* result = cvCreateMat(2, count, CV_32FC1);
-	
-	float* rowPtr = result->data.fl;
-	for (int i = 0; i < count; i++, rowPtr++)
-	{
-		*rowPtr = cvPoints[i].x;
-	}
-	
-	rowPtr = result->data.fl + result->step;
-	for (int i = 0; i < count; i++, rowPtr++)
-	{
-		*rowPtr = cvPoints[i].y;
-	}*/
-
-	//return result;
 }
 
-void Calibrator::convertCvPointsToCvArr(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count)
+void Calibrator::convertCvPointsToFloatPoint3D(const CvPoint2D32f* cvPoints, FloatPoint3D* floatPoints, int count) const
 {
-	//CvMat* result = cvCreateMat(1, count, CV_32FC2);
+	for (int i = 0; i < count; i++)
+	{
+		floatPoints[i].x = cvPoints[i].x;
+		floatPoints[i].y = cvPoints[i].y;
+		floatPoints[i].z = 0;
+	}
+}
+
+void Calibrator::convertCvPointsToCvArr(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count) const
+{
 	float* ptr = cvMat->data.fl;
 	for (int i = 0; i < count; i++, ptr+=2)
 	{
 		ptr[0] = cvPoints[i].x;
 		ptr[1] = cvPoints[i].y;
 	}
-
-	//return result;
 }
 
-void Calibrator::convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count)
+void Calibrator::convertFloatPoint3DToCvArr(const FloatPoint3D* floatPoints, CvMat* cvMat, int count) const
+{
+	float* ptr = cvMat->data.fl;
+	for (int i = 0; i < count; i++, ptr+=2)
+	{
+		ptr[0] = floatPoints[i].x;
+		ptr[1] = floatPoints[i].y;
+	}
+}
+
+void Calibrator::convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count) const
 {
 	assert(cvMat->rows == 1);
 	float* ptr = cvMat->data.fl;

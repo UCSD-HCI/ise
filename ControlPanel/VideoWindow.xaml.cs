@@ -20,6 +20,12 @@ namespace ControlPanel
     /// </summary>
     public partial class VideoWindow : Window
     {
+        public const int CHESSBOARD_ROWS = 5;
+        public const int CHESSBOARD_COLS = 8;
+
+        private const double HAND_RADIUS = 25;
+        private const double FINGER_RADIUS = 5;
+
         private BackgroundWorker refreshWorker;
         private VideoSourceType videoSourceType;
         private List<Ellipse> fingerPoints;
@@ -44,8 +50,8 @@ namespace ControlPanel
             {
                 Ellipse ellipse = new Ellipse()
                 {
-                    Width = 10,
-                    Height = 10,
+                    Width = FINGER_RADIUS * 2,
+                    Height = FINGER_RADIUS * 2,
                     Fill = Brushes.Orange,
                     Stroke = Brushes.White,
                     StrokeThickness = 2,
@@ -60,8 +66,8 @@ namespace ControlPanel
             {
                 Ellipse ellipse = new Ellipse()
                 {
-                    Width = 50,
-                    Height = 50,
+                    Width = HAND_RADIUS * 2,
+                    Height = HAND_RADIUS * 2,
                     Stroke = Brushes.White,
                     StrokeThickness = 2,
                     Opacity = 0,
@@ -96,11 +102,41 @@ namespace ControlPanel
                     ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
                     Finger* fingers = (Finger*)ptr.IntPtr;
 
-                    for (int i = 0; i < fingerNum; i++)
+                    if (videoSourceType == VideoSourceType.RGB) //transform points
                     {
-                        Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
-                        Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
-                        fingerPoints[i].Opacity = 1.0;
+                        FloatPoint3D[] kinectPoints = new FloatPoint3D[fingerNum];
+                        FloatPoint3D[] rgbPoints = new FloatPoint3D[fingerNum];
+
+                        for (int i = 0; i < fingerNum; i++)
+                        {
+                            kinectPoints[i] = new FloatPoint3D()
+                            {
+                                x = fingers[i].PositionInKinectPersp.x,
+                                y = fingers[i].PositionInKinectPersp.y,
+                                z = 0
+                            };
+                        }
+
+                        fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, rgbPointsPtr = rgbPoints)
+                        {
+                            CommandDllWrapper.transformPoints(kinectPointsPtr, rgbPointsPtr, fingerNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.RGB2D);
+                        }
+
+                        for (int i = 0; i < fingerNum; i++)
+                        {
+                            Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
+                            Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
+                            fingerPoints[i].Opacity = 1.0;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < fingerNum; i++)
+                        {
+                            Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
+                            Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
+                            fingerPoints[i].Opacity = 1.0;
+                        }
                     }
 
                     for (int i = fingerNum; i < fingerPoints.Count; i++)
@@ -120,8 +156,8 @@ namespace ControlPanel
 
                     for (int i = 0; i < handNum; i++)
                     {
-                        Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x);
-                        Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y);
+                        Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x - HAND_RADIUS);
+                        Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y - HAND_RADIUS);
                         handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
                         handPoints[i].Fill = hands[i].HandType == HandType.NewHandHint ? Brushes.Black : new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
                     }
