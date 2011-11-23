@@ -10,6 +10,7 @@
 #include "HandTracker.h"
 #include "Calibrator.h"
 #include "MotionCameraController.h"
+#include "MotionCameraTracker.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -25,6 +26,7 @@ private:
 	ThresholdTouchFingerTracker* thresholdFingerTracker;
 	FingerSelector* fingerSelector;
 	HandTracker* handTracker;
+	MotionCameraTracker* motionCameraTracker;
 
 	Calibrator* calibrator;
 
@@ -51,6 +53,7 @@ public:
 	inline HandTracker* getHandTracker() { return handTracker; }
 	inline Calibrator* getCalibrator() { return calibrator; }
 	inline MotionCameraController* getMotionCameraController() { return motionCameraController; }
+	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
 };
 
 #endif
