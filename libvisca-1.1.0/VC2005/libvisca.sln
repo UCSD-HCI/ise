@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libvisca", "libvisca.vcxproj", "{279DADCF-F9B4-4351-973B-439E8715C35B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visca_cli", "visca_cli.vcxproj", "{4CD46905-117E-43F5-B52E-EFD3E914A380}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visca_demo", "..\visca_demo\visca_demo.vcxproj", "{F0F6991B-727E-411B-985A-A55D754B6942}"
+	ProjectSection(ProjectDependencies) = postProject
+		{279DADCF-F9B4-4351-973B-439E8715C35B} = {279DADCF-F9B4-4351-973B-439E8715C35B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{279DADCF-F9B4-4351-973B-439E8715C35B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{279DADCF-F9B4-4351-973B-439E8715C35B}.Debug|Win32.Build.0 = Debug|Win32
+		{279DADCF-F9B4-4351-973B-439E8715C35B}.Release|Win32.ActiveCfg = Release|Win32
+		{279DADCF-F9B4-4351-973B-439E8715C35B}.Release|Win32.Build.0 = Release|Win32
+		{4CD46905-117E-43F5-B52E-EFD3E914A380}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4CD46905-117E-43F5-B52E-EFD3E914A380}.Debug|Win32.Build.0 = Debug|Win32
+		{4CD46905-117E-43F5-B52E-EFD3E914A380}.Release|Win32.ActiveCfg = Release|Win32
+		{4CD46905-117E-43F5-B52E-EFD3E914A380}.Release|Win32.Build.0 = Release|Win32
+		{F0F6991B-727E-411B-985A-A55D754B6942}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F0F6991B-727E-411B-985A-A55D754B6942}.Debug|Win32.Build.0 = Debug|Win32
+		{F0F6991B-727E-411B-985A-A55D754B6942}.Release|Win32.ActiveCfg = Release|Win32
+		{F0F6991B-727E-411B-985A-A55D754B6942}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

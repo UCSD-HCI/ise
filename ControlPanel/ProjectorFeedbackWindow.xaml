@@ -13,5 +13,6 @@
         </Canvas>
         <Canvas Name="fingerCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </Canvas>
+        <Rectangle Name="HitTestLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Black" Opacity="0.01"/>
     </Grid>
 </Window>

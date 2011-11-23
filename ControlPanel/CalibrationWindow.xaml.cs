@@ -46,7 +46,7 @@ namespace ControlPanel
         private FloatPoint3D[] refCorners;
         private FloatPoint3D? testPointInTableSurface = null;
 
-        private Ellipse testPointRGB = null, testPointDepth = null;
+        private Ellipse testPointRGB = null, testPointDepth = null, testPointTable = null;
 
         public CalibrationWindow()
         {
@@ -70,6 +70,10 @@ namespace ControlPanel
             refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
 
+            ProjectorFeedbackWindow.HitTestLayer.MouseMove += new MouseEventHandler(HitTestLayer_MouseMove);
+            ProjectorFeedbackWindow.HitTestLayer.MouseLeave += new MouseEventHandler(HitTestLayer_MouseLeave);
+            ProjectorFeedbackWindow.HitTestLayer.MouseDown += new MouseButtonEventHandler(HitTestLayer_MouseDown);
+
             refCorners = ProjectorFeedbackWindow.ShowChessboard();
             CommandDllWrapper.systemCalibrationStart();
             unsafe
@@ -83,6 +87,15 @@ namespace ControlPanel
             }
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            ProjectorFeedbackWindow.HitTestLayer.MouseMove -= HitTestLayer_MouseMove;
+            ProjectorFeedbackWindow.HitTestLayer.MouseLeave -= HitTestLayer_MouseLeave;
+            ProjectorFeedbackWindow.HitTestLayer.MouseDown -= HitTestLayer_MouseDown;
+
+            ProjectorFeedbackWindow.globalCanvas.Children.Remove(testPointTable);
+        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -218,6 +231,51 @@ namespace ControlPanel
             refreshTestPoint();
         }
 
+        private void video_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (isAllCalibrated && testPointInTableSurface.HasValue)
+            {
+                unsafe
+                {
+                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value);
+                }
+            }
+        }
+
+        void HitTestLayer_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isAllCalibrated)
+            {
+                Point mousePos = e.GetPosition(sender as Rectangle);
+                testPointInTableSurface = new FloatPoint3D()
+                {
+                    x = (float)mousePos.X,
+                    y = (float)mousePos.Y,
+                    z = 0
+                };
+
+                refreshTestPoint();
+            }
+        }
+
+        void HitTestLayer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            testPointInTableSurface = null;
+            refreshTestPoint();
+        }
+
+        void HitTestLayer_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (isAllCalibrated && testPointInTableSurface.HasValue)
+            {
+                unsafe
+                {
+                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value);
+                }
+            }
+        }
+
+
         private void refreshTestPoint()
         {
             if (testPointRGB == null)
@@ -227,7 +285,8 @@ namespace ControlPanel
                     Fill = Brushes.Yellow,
                     Opacity = 0.8,
                     Width = TEST_POINT_RADIUS * 2,
-                    Height = TEST_POINT_RADIUS * 2
+                    Height = TEST_POINT_RADIUS * 2,
+                    Visibility = Visibility.Hidden,
                 };
                 rgbVideo.UiCanvas.Children.Add(testPointRGB);
             }
@@ -239,9 +298,23 @@ namespace ControlPanel
                     Fill = Brushes.Yellow,
                     Opacity = 0.8,
                     Width = TEST_POINT_RADIUS * 2,
-                    Height = TEST_POINT_RADIUS * 2
+                    Height = TEST_POINT_RADIUS * 2,
+                    Visibility = Visibility.Hidden,
                 };
                 depthVideo.UiCanvas.Children.Add(testPointDepth);
+            }
+
+            if (testPointTable == null)
+            {
+                testPointTable = new Ellipse
+                {
+                    Fill = Brushes.Yellow,
+                    Opacity = 0.8,
+                    Width = TEST_POINT_RADIUS * 2,
+                    Height = TEST_POINT_RADIUS * 2,
+                    Visibility = Visibility.Hidden,
+                };
+                ProjectorFeedbackWindow.globalCanvas.Children.Add(testPointTable);
             }
 
             if (testPointInTableSurface.HasValue)
@@ -253,17 +326,26 @@ namespace ControlPanel
                     depthPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.Depth2D);
                 }
 
+                Canvas.SetLeft(testPointTable, testPointInTableSurface.Value.x - TEST_POINT_RADIUS);
+                Canvas.SetTop(testPointTable, testPointInTableSurface.Value.y - TEST_POINT_RADIUS);
+
                 Canvas.SetLeft(testPointRGB, rgbPos.x - TEST_POINT_RADIUS);
                 Canvas.SetTop(testPointRGB, rgbPos.y - TEST_POINT_RADIUS);
 
                 Canvas.SetLeft(testPointDepth, depthPos.x - TEST_POINT_RADIUS);
                 Canvas.SetTop(testPointDepth, depthPos.y - TEST_POINT_RADIUS);
 
+                testPointTable.Visibility = Visibility.Visible;
                 testPointRGB.Visibility = Visibility.Visible;
                 testPointDepth.Visibility = Visibility.Visible;
+
+                realCoordLabel.Content = testPointInTableSurface.ToString();
+                rgbCoordLabel.Content = rgbPos.ToString();
+                depthCoordLabel.Content = depthPos.ToString();
             }
             else
             {
+                testPointTable.Visibility = Visibility.Hidden;
                 testPointRGB.Visibility = Visibility.Hidden;
                 testPointDepth.Visibility = Visibility.Hidden;
             }
@@ -368,6 +450,11 @@ namespace ControlPanel
         {
             public double x;
             public double y;
+        }
+
+        private void rgbVideo_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

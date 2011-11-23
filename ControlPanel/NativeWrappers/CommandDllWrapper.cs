@@ -54,5 +54,8 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void motionCameraCenterAt(FloatPoint3D pointInTalbeSurface);
     }
 }

@@ -78,3 +78,8 @@ DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordina
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&srcPoint, &result, 1, srcSpace, dstSpace);
 	return result;
 }
+
+DLL_EXPORT void motionCameraCenterAt(FloatPoint3D pointInTalbeSurface)
+{
+	InteractiveSpaceEngine::sharedEngine()->getMotionCameraController()->centerAt(pointInTalbeSurface);
+}

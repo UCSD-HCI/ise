@@ -90,6 +90,10 @@ namespace ControlPanel.NativeWrappers
     unsafe public struct FloatPoint3D
     {
         public float x, y, z;
+        public override string ToString()
+        {
+            return string.Format("{0:0.00},{1:0.00},{2:0.00}", x, y, z);
+        }
     }
 
     /// <summary>
