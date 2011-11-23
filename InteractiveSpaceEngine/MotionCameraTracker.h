@@ -7,6 +7,7 @@
 #include "MotionCameraController.h"
 
 #define HAND_MOVING_RADIUS 50
+#define TRACKING_CONFIDENCE 100
 
 class MotionCameraTracker
 {
