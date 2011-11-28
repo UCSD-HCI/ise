@@ -152,6 +152,9 @@
     <ClCompile Include="ResultsDllWrapper.cpp" />
     <ClCompile Include="ThresholdTouchFingerTracker.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="OpenNIConfig.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

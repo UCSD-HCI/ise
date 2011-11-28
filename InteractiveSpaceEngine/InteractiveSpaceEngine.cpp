@@ -146,3 +146,9 @@ void InteractiveSpaceEngine::operator() ()
 		}
 	}
 }
+
+int main()
+{
+
+	return 0;
+}
