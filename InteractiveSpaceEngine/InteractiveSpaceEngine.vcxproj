@@ -65,15 +65,15 @@
     <IncludePath>C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\Wander\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\Wander\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\Wander\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\Wander\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\$(Configuration);$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
