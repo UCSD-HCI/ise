@@ -50,6 +50,7 @@ namespace ControlPanel
 
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
+            NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -241,6 +242,7 @@ namespace ControlPanel
                 Properties.Settings.Default.NoiseThreshold = noiseThresholdSlider.Value;
                 Properties.Settings.Default.FingerThreshold = fingerThresholdSlider.Value;
                 Properties.Settings.Default.BlindThreshold = blindThresholdSlider.Value;
+                Properties.Settings.Default.Save();
 
                 NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
             }

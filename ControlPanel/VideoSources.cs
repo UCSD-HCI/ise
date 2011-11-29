@@ -71,6 +71,9 @@ namespace ControlPanel
                 case VideoSourceType.OmniTouch:
                     return OmniTouchSource;
 
+                case VideoSourceType.ThresholdTouch:
+                    return ThresholdTouchSource;
+
                 default:
                     return null;
             }

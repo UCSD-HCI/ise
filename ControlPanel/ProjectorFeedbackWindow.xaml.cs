@@ -137,6 +137,7 @@ namespace ControlPanel
                         Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
                         Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
                         fingerPoints[i].Opacity = 1.0;
+                        fingerPoints[i].Fill = fingers[i].FingerType == FingerType.OmniFinger ? Brushes.Orange : Brushes.Purple;
                     }
 
 

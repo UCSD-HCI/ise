@@ -48,6 +48,15 @@ namespace ControlPanel.NativeWrappers
     }
 
     /// <summary>
+    /// <remarks>FingerSelector.h, FingerType</remarks>
+    /// </summary>
+    public enum FingerType
+    {
+        OmniFinger,
+        ThresholdFinger
+    }
+
+    /// <summary>
     /// <remarks>Calibrator.h, CalibratedCoordinateSystem</remarks>
     /// </summary>
     public enum CalibratedCoordinateSystem
@@ -105,17 +114,20 @@ namespace ControlPanel.NativeWrappers
         private int id;
         private FloatPoint3D positionInRealWorld;
         private IntPoint3D positionInKinectProj;
+        private FingerType fingerType;
 
-        public Finger(int id, FloatPoint3D positionInRealWorld, IntPoint3D positionInKinectPersp)
+        public Finger(int id, FloatPoint3D positionInRealWorld, IntPoint3D positionInKinectPersp, FingerType fingerType)
         {
             this.id = id;
             this.positionInKinectProj = positionInKinectPersp;
             this.positionInRealWorld = positionInRealWorld;
+            this.fingerType = fingerType;
         }
 
         public int ID { get { return id; } }
         public FloatPoint3D PositionInRealWorld { get { return positionInRealWorld; } }
         public IntPoint3D PositionInKinectPersp { get { return positionInKinectProj; } }
+        public FingerType FingerType { get { return fingerType; } }
     }
     
     /// <summary>

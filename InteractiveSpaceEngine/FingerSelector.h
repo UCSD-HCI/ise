@@ -4,6 +4,7 @@
 #include <vector>
 #include "InteractiveSpaceTypes.h"
 #include "OmniTouchFingerTracker.h"
+#include "ThresholdTouchFingerTracker.h"
 #include "ThreadUtils.h"
 #include "KinectSensor.h"
 
@@ -13,11 +14,18 @@
 #define FINGER_TO_HAND_OFFSET 100
 #define HAND_RADIUS 150
 
+typedef enum
+{
+	OmniFinger,
+	ThresholdFinger,
+} FingerType;
+
 typedef struct Finger
 {
 	int id;
 	FloatPoint3D positionInRealWorld;
 	IntPoint3D positionInKinectProj;
+	FingerType fingerType;
 } Finger;
 
 typedef struct HandHint
@@ -62,6 +70,7 @@ class FingerSelector
 {
 private:
 	OmniTouchFingerTracker* omniTracker;
+	ThresholdTouchFingerTracker* thresholdTracker;
 	const KinectSensor* kinectSensor;
 
 	Finger fingers[MAX_FINGER_NUM];
@@ -75,7 +84,7 @@ private:
 	void generateHandHints();
 
 public:
-	FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor);
+	FingerSelector(OmniTouchFingerTracker* omniTracker, ThresholdTouchFingerTracker* thresholdTracker, const KinectSensor* kinectSensor);
 	virtual ~FingerSelector();
 	void refresh();
 

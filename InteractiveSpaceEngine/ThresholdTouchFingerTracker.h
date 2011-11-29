@@ -2,16 +2,32 @@
 #define THRESHOLD_TOUCH_FINGER_TRACKER_H
 
 #include "InteractiveSpaceTypes.h"
+#include "KinectSensor.h"
+#include "ImageProcessingFactory.h"
+#include <cv.h>
+#include <vector>
 
-#define CALIBRATION_FRAMES 5
+#define CALIBRATION_FRAMES 50
+#define MAX_THRESHOLD_FINGER_NUM 10
+#define MIN_BLOCK_SIZE 50
+
+//just for DEMO
+#define CROP_HEIGHT_MIN 115
+#define CROP_HEIGHT_MAX 360
+
 
 typedef enum 
 {
 	ThresholdTouchNoCalibration,
 	ThresholdTouchCalibrationRequested,
-	ThresholdTouchFirstFrameCaptured,
 	ThresholdTouchCalibrationFinished,
 } ThresholdTouchCalibrationState;
+
+typedef struct ThresholdTouchFinger
+{
+	int x, y, z;
+	double confidence;
+};
 
 class ThresholdTouchFingerTracker
 {
@@ -26,17 +42,26 @@ private:
         * Table (height = 0)           ===============
     */
 	double noiseThreshold, fingerThreshold, blindThreshold;
+
+	KinectSensor* sensor;
+	ImageProcessingFactory* ipf;
+
 	Callback onCalibrationFinishedCallback;
 	int calibratedFrame;
 	ThresholdTouchCalibrationState calibrationState;
+	IplImage* surfaceDepthMap;
+	IplImage* segmentVisitFlag;
+
+	std::vector<ThresholdTouchFinger> fingers;
 
 	void generateOutputImage();
 public:
-	ThresholdTouchFingerTracker();
+	ThresholdTouchFingerTracker(KinectSensor* sensor, ImageProcessingFactory* ipf);
 	virtual ~ThresholdTouchFingerTracker();
 
 	void calibrate(Callback onFinishedCallback);
 	void refresh();
+	void extractFingers();
 
 	inline void setParameters(double noiseThreshold, double fingerThreshold, double blindThreshold)
 	{
@@ -44,6 +69,13 @@ public:
 		this->fingerThreshold = fingerThreshold;
 		this->blindThreshold = blindThreshold;
 	}
+
+	inline double getNoiseThreshold() const { return noiseThreshold; } 
+	inline double getFingerThreshold() const { return fingerThreshold; }
+	inline double getBlindThreshold() const { return blindThreshold; }
+	inline const IplImage* getSurfaceDepthMap() const { return surfaceDepthMap; }
+	inline bool isCalibrated() const { return calibrationState == ThresholdTouchCalibrationFinished; }
+	inline const std::vector<ThresholdTouchFinger>& getFingers() const { return fingers; }
 };
 
 #endif

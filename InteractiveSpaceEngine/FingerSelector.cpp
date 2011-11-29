@@ -1,7 +1,8 @@
 #include "FingerSelector.h"
 using namespace std;
 
-FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), kinectSensor(kinectSensor), fingerNum(0), handHintNum(0)
+FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, ThresholdTouchFingerTracker* thresholdTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), thresholdTracker(thresholdTracker),
+	kinectSensor(kinectSensor), fingerNum(0), handHintNum(0)
 {
 
 }
@@ -13,15 +14,27 @@ FingerSelector::~FingerSelector()
 void FingerSelector::refresh()
 {
 	WriteLock wLock(fingersMutex);
-	int i;
-	for (i = 0; i < MAX_FINGER_NUM && i < omniTracker->getFingers().size(); i++)
+	int i = 0;
+	for (int j = 0; i < MAX_FINGER_NUM && j < omniTracker->getFingers().size(); i++, j++)
 	{
-		fingers[i].positionInKinectProj.x = omniTracker->getFingers()[i].tipX;
-		fingers[i].positionInKinectProj.y = omniTracker->getFingers()[i].tipY;
-		fingers[i].positionInKinectProj.z = omniTracker->getFingers()[i].tipZ;
+		fingers[i].positionInKinectProj.x = omniTracker->getFingers()[j].tipX;
+		fingers[i].positionInKinectProj.y = omniTracker->getFingers()[j].tipY;
+		fingers[i].positionInKinectProj.z = omniTracker->getFingers()[j].tipZ;
 
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
+		fingers[i].fingerType = OmniFinger;
 	}
+
+	for (int j = 0; i < MAX_FINGER_NUM && j < thresholdTracker->getFingers().size(); i++, j++)
+	{
+		fingers[i].positionInKinectProj.x = thresholdTracker->getFingers()[j].x;
+		fingers[i].positionInKinectProj.y = thresholdTracker->getFingers()[j].y;
+		fingers[i].positionInKinectProj.z = thresholdTracker->getFingers()[j].z;
+
+		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
+		fingers[i].fingerType = ThresholdFinger;
+	}
+
 	fingerNum = i;
 	
 	generateHandHints();

@@ -127,6 +127,7 @@ namespace ControlPanel
                             Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
                             Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
                             fingerPoints[i].Opacity = 1.0;
+                            fingerPoints[i].Fill = fingers[i].FingerType == FingerType.OmniFinger ? Brushes.Orange : Brushes.Purple;
                         }
                     }
                     else
@@ -136,6 +137,7 @@ namespace ControlPanel
                             Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
                             Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
                             fingerPoints[i].Opacity = 1.0;
+                            fingerPoints[i].Fill = fingers[i].FingerType == FingerType.OmniFinger ? Brushes.Orange : Brushes.Purple;
                         }
                     }
 

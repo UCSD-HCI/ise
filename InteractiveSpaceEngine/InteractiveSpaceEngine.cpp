@@ -89,8 +89,10 @@ void InteractiveSpaceEngine::run()
 	calibrator = new Calibrator(kinectSensor, ipf);
 
 	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor);
-	fingerSelector = new FingerSelector(omniTracker, kinectSensor);
-	thresholdFingerTracker = new ThresholdTouchFingerTracker();
+	thresholdFingerTracker = new ThresholdTouchFingerTracker(kinectSensor, ipf);
+	ipf->setThresholdTouchFingerTracker(thresholdFingerTracker);
+	fingerSelector = new FingerSelector(omniTracker, thresholdFingerTracker, kinectSensor);
+
 	handTracker = new HandTracker(fingerSelector, kinectSensor->getHandsGenerator(), kinectSensor);
 
 	motionCameraController = new MotionCameraController();
