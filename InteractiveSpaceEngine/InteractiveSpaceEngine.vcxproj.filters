@@ -60,6 +60,12 @@
     <ClInclude Include="MotionCameraTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FingerEventsGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FingerPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
@@ -96,6 +102,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MotionCameraTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FingerEventsGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FingerPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,6 +14,11 @@ struct FloatPoint3D
 	FloatPoint3D() { }
 	FloatPoint3D(float x, float y, float z) : x(x), y(y), z(z) { }
 	FloatPoint3D(const IntPoint3D& ref) : x(ref.x), y(ref.y), z(ref.z) { }
+
+	double squaredDistanceTo(const FloatPoint3D& ref) const
+	{
+		return (x - ref.x) * (x - ref.x) + (y - ref.y) * (y - ref.y) + (z - ref.z) * (z - ref.z);
+	}
 };
 
 struct DoublePoint3D

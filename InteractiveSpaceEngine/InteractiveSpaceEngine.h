@@ -11,6 +11,7 @@
 #include "Calibrator.h"
 #include "MotionCameraController.h"
 #include "MotionCameraTracker.h"
+#include "FingerEventsGenerator.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -25,6 +26,7 @@ private:
 	OmniTouchFingerTracker* omniTracker;
 	ThresholdTouchFingerTracker* thresholdFingerTracker;
 	FingerSelector* fingerSelector;
+	FingerEventsGenerator* fingerEventsGenerator;
 	HandTracker* handTracker;
 	MotionCameraTracker* motionCameraTracker;
 
@@ -54,6 +56,7 @@ public:
 	inline Calibrator* getCalibrator() { return calibrator; }
 	inline MotionCameraController* getMotionCameraController() { return motionCameraController; }
 	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
+	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
 };
 
 #endif

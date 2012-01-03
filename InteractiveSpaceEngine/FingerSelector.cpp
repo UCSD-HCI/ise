@@ -23,6 +23,7 @@ void FingerSelector::refresh()
 
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
 		fingers[i].fingerType = OmniFinger;
+		fingers[i].id = 0;
 	}
 
 	for (int j = 0; i < MAX_FINGER_NUM && j < thresholdTracker->getFingers().size(); i++, j++)
@@ -32,7 +33,9 @@ void FingerSelector::refresh()
 		fingers[i].positionInKinectProj.z = thresholdTracker->getFingers()[j].z;
 
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
+		fingers[i].positionInRealWorld.z = 0;	//on surface, always 0
 		fingers[i].fingerType = ThresholdFinger;
+		fingers[i].id = 0;	//FingerEventsGenerator will assign id
 	}
 
 	fingerNum = i;

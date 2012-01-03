@@ -88,6 +88,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -125,6 +126,8 @@
     <ClInclude Include="Calibrator.h" />
     <ClInclude Include="DebugUtils.h" />
     <ClInclude Include="DllWrapper.h" />
+    <ClInclude Include="FingerEventsGenerator.h" />
+    <ClInclude Include="FingerPath.h" />
     <ClInclude Include="FingerSelector.h" />
     <ClInclude Include="HandTracker.h" />
     <ClInclude Include="InteractiveSpaceTypes.h" />
@@ -141,6 +144,8 @@
   <ItemGroup>
     <ClCompile Include="Calibrator.cpp" />
     <ClCompile Include="CommandDllWrapper.cpp" />
+    <ClCompile Include="FingerEventsGenerator.cpp" />
+    <ClCompile Include="FingerPath.cpp" />
     <ClCompile Include="FingerSelector.cpp" />
     <ClCompile Include="HandTracker.cpp" />
     <ClCompile Include="ImageProcessingFactory.cpp" />

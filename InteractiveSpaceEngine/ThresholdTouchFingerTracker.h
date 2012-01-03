@@ -7,7 +7,12 @@
 #include <cv.h>
 #include <vector>
 
+#ifdef DEBUG
+#define CALIBRATION_FRAMES 10
+#else
 #define CALIBRATION_FRAMES 50
+#endif
+
 #define MAX_THRESHOLD_FINGER_NUM 10
 #define MIN_BLOCK_SIZE 50
 

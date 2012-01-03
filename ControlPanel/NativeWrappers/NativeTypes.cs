@@ -150,4 +150,33 @@ namespace ControlPanel.NativeWrappers
     }
 
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
+
+    /// <summary>
+    /// <remarks>FingerEventsGenerator.h, FingerEventType</remarks>
+    /// </summary>
+    public enum FingerEventType
+    {
+	    FingerMove,
+	    FingerDown,
+	    FingerUp,
+
+	    //These two are ignored currently because we only process on-surface fingers.
+	    FingerCaptured,
+	    FingerLost
+    };
+
+    /// <summary>
+    /// <remarks>FingerEventsGenerator.h, FingerEvent</remarks>
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    unsafe public struct FingerEvent
+    {
+	    private int id;
+	    private FloatPoint3D position;
+	    private FingerEventType eventType;
+
+        public int ID { get { return id; } }
+        public FloatPoint3D Position { get { return position; } }
+        public FingerEventType EventType { get { return eventType; } }
+    };
 }

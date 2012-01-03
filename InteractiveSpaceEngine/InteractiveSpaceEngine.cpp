@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL)
+	motionCameraTracker(NULL), fingerEventsGenerator(NULL)
 {
 }
 
@@ -71,6 +71,12 @@ void InteractiveSpaceEngine::dispose()
 		delete motionCameraTracker;
 		motionCameraTracker = NULL;
 	}
+
+	if (fingerEventsGenerator != NULL)
+	{
+		delete fingerEventsGenerator;
+		fingerEventsGenerator = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -92,6 +98,7 @@ void InteractiveSpaceEngine::run()
 	thresholdFingerTracker = new ThresholdTouchFingerTracker(kinectSensor, ipf);
 	ipf->setThresholdTouchFingerTracker(thresholdFingerTracker);
 	fingerSelector = new FingerSelector(omniTracker, thresholdFingerTracker, kinectSensor);
+	fingerEventsGenerator = new FingerEventsGenerator(fingerSelector);
 
 	handTracker = new HandTracker(fingerSelector, kinectSensor->getHandsGenerator(), kinectSensor);
 
@@ -136,6 +143,7 @@ void InteractiveSpaceEngine::operator() ()
 				omniTracker->refresh();
 				thresholdFingerTracker->refresh();
 				fingerSelector->refresh();
+				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
 				motionCameraTracker->refresh();				
 
