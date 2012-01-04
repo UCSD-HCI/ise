@@ -1,5 +1,7 @@
 #include "Calibrator.h"
 #include <assert.h>
+#include <fstream>
+using namespace std;
 
 Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) : kinectSensor(kinectSensor), state(CalibratorNotInit), ipf(ipf),
 	chessboardCorners(NULL), averageChessboardCorners(NULL), chessboardRefCorners(NULL), chessboardCheckPoints(NULL), chessboardDepthRefCorners(NULL), 
@@ -15,6 +17,12 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 	depthSurfHomography = cvCreateMat(3, 3, CV_64FC1);
 	rgbSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
 	depthSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
+	if (load())
+	{
+		cvInvert(rgbSurfHomography, rgbSurfHomographyInversed);
+		cvInvert(depthSurfHomography, depthSurfHomographyInversed);
+		state = AllCalibrated;
+	}
 
 	//for debug
 	const int cornersCount = CORNER_COUNT;	//FIXME
@@ -258,6 +266,8 @@ void Calibrator::calibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* 
 	cvInvert(depthSurfHomography, depthSurfHomographyInversed);
 
 	state = AllCalibrated;
+
+	save();
 }
 
 void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace) const
@@ -395,3 +405,35 @@ void Calibrator::convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* fl
 		floatPoints[i].z = 0;
 	}
 }
+
+void Calibrator::save() const
+{
+	cvSave("rgbSurfHomography.xml", rgbSurfHomography);
+	cvSave("depthSurfHomography.xml", depthSurfHomography);
+}
+
+bool Calibrator::load()
+{
+	if (!fileExists("depthSurfHomography.xml") || !fileExists("rgbSurfHomography.xml"))
+	{
+		return false;
+	}
+	
+	rgbSurfHomography = (CvMat*)cvLoad("rgbSurfHomography.xml");
+	depthSurfHomography = (CvMat*)cvLoad("depthSurfHomography.xml");
+	return true;
+}
+
+bool Calibrator::fileExists(const char* path) const
+{
+	ifstream fin(path);
+	if (!fin)
+	{
+		return false;
+	}
+	else
+	{
+		fin.close();
+		return true;
+	}
+} 

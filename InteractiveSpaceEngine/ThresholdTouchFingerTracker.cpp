@@ -1,5 +1,6 @@
 #include <memory.h>
 #include "ThresholdTouchFingerTracker.h"
+#include <fstream>
 using namespace std;
 
 ThresholdTouchFingerTracker::ThresholdTouchFingerTracker(KinectSensor* sensor, ImageProcessingFactory* ipf) : sensor(sensor), ipf(ipf), 
@@ -8,6 +9,11 @@ ThresholdTouchFingerTracker::ThresholdTouchFingerTracker(KinectSensor* sensor, I
 	CvSize depthSize = cvSize(ipf->getImageProductWidth(DepthSourceProduct), ipf->getImageProductHeight(DepthSourceProduct));
 	surfaceDepthMap = cvCreateImage(depthSize, IPL_DEPTH_64F, 1);
 	segmentVisitFlag = cvCreateImage(depthSize, IPL_DEPTH_8U, 1);
+
+	if(loadCalibration())
+	{
+		calibrationState = ThresholdTouchCalibrationFinished;
+	}
 }
 
 ThresholdTouchFingerTracker::~ThresholdTouchFingerTracker()
@@ -48,6 +54,8 @@ void ThresholdTouchFingerTracker::refresh()
 		{
 			calibrationState = ThresholdTouchCalibrationFinished;
 			onCalibrationFinishedCallback();
+
+			saveCalibration();
 		}
 	}
 	else
@@ -189,4 +197,24 @@ void ThresholdTouchFingerTracker::extractFingers()
 
 		fingers.push_back(f);
 	}
+}
+
+bool ThresholdTouchFingerTracker::loadCalibration()
+{
+	ifstream fin("thresholdSurfaceMap.xml");
+	if(!fin)
+	{
+		return false;
+	}
+	else
+	{
+		fin.close();
+	}
+
+	surfaceDepthMap = (IplImage*)cvLoad("thresholdSurfaceMap.xml");
+}
+
+void ThresholdTouchFingerTracker::saveCalibration() const
+{
+	cvSave("thresholdSurfaceMap.xml", surfaceDepthMap);
 }

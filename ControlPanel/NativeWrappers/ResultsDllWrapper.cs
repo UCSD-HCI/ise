@@ -27,6 +27,9 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe ReadLockedWrapperPtr lockCalibrationDepthImage();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe float getFPS();
     }
 
 }

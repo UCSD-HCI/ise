@@ -2,6 +2,7 @@
 #define INTERACTIVE_SPACE_ENGINE_H
 
 #include <boost/thread.hpp>
+#include <boost/timer.hpp>
 #include "KinectSensor.h"
 #include "ImageProcessingFactory.h"
 #include "OmniTouchFingerTracker.h"
@@ -33,7 +34,11 @@ private:
 	Calibrator* calibrator;
 
 	long long kinectSensorFrameCount;
-	
+	int fpsCounter;
+	boost::timer fpsTimer;
+	float fps;
+	Mutex fpsMutex;
+
 	void dispose();
 
 public:
@@ -57,6 +62,12 @@ public:
 	inline MotionCameraController* getMotionCameraController() { return motionCameraController; }
 	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
+
+	inline float getFPS() 
+	{
+		ReadLock rLock(fpsMutex);
+		return fps; 
+	}
 };
 
 #endif

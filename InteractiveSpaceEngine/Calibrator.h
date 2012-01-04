@@ -69,6 +69,10 @@ private:
 	void convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count) const;	//for perspective transform, dst
 	void convertCvPointsToFloatPoint3D(const CvPoint2D32f* cvPoints, FloatPoint3D* floatPoints, int count) const;
 
+	void save() const;
+	bool load();
+	bool fileExists(const char* path) const;
+
 public:
 	Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf);
 	virtual ~Calibrator();
@@ -85,7 +89,7 @@ public:
 
 	inline bool isCalibrating() 
 	{
-		return state != CalibratorNotInit && state != CalibratorStopped; 
+		return state != CalibratorNotInit && state != CalibratorStopped && state != AllCalibrated;
 	}
 
 	inline ReadLockedIplImagePtr lockRGBImage()

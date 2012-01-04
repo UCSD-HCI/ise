@@ -51,3 +51,8 @@ DLL_EXPORT ReadLockedWrapperPtr lockCalibrationDepthImage()
 	res.readLock = srcPtr.getReadLock();
 	return res;
 }
+
+DLL_EXPORT float getFPS()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getFPS();
+}

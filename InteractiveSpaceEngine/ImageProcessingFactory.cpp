@@ -66,7 +66,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 		refreshDepthHistogramed();
 
 		//sobel for OmniTouch
-		{
+		if (false) {
 			WriteLock wLock(productsMutex[DepthSobeledProduct]);
 			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
 				

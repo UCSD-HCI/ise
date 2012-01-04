@@ -60,6 +60,8 @@ private:
 	std::vector<ThresholdTouchFinger> fingers;
 
 	void generateOutputImage();
+	void saveCalibration() const;
+	bool loadCalibration();
 public:
 	ThresholdTouchFingerTracker(KinectSensor* sensor, ImageProcessingFactory* ipf);
 	virtual ~ThresholdTouchFingerTracker();

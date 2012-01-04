@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL), fingerEventsGenerator(NULL)
+	motionCameraTracker(NULL), fingerEventsGenerator(NULL), fps(0)
 {
 }
 
@@ -106,6 +106,9 @@ void InteractiveSpaceEngine::run()
 
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 
+	fpsCounter = 0;
+	fpsTimer.restart();
+
 	kinectSensor->start();
 	threadStart();
 }
@@ -140,14 +143,24 @@ void InteractiveSpaceEngine::operator() ()
 			if (newFrameCount > kinectSensorFrameCount)
 			{
 				ipf->refresh(kinectSensorFrameCount);
-				omniTracker->refresh();
+				//omniTracker->refresh();
 				thresholdFingerTracker->refresh();
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
-				handTracker->refresh();
-				motionCameraTracker->refresh();				
+				//handTracker->refresh();
+				//motionCameraTracker->refresh();				
 
 				kinectSensorFrameCount = newFrameCount;
+				fpsCounter++;
+
+				double elapsed = fpsTimer.elapsed();
+				if (elapsed > 1.0f)
+				{
+					WriteLock wLock(fpsMutex);
+					fps = fpsCounter / elapsed;
+					fpsTimer.restart();
+					fpsCounter = 0;
+				}
 			}
 			else
 			{

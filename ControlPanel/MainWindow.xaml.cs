@@ -26,6 +26,7 @@ namespace ControlPanel
         private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
+        private System.Threading.Timer fpsTimer;
 
         public MainWindow()
         {
@@ -46,11 +47,14 @@ namespace ControlPanel
             isSlidersValueLoaded = true;
 
             projectorFeedbackWindow = new ProjectorFeedbackWindow();
-            projectorFeedbackWindow.Show();
 
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
             NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
+
+            projectorFeedbackWindow.Show();
+
+            fpsTimer = new System.Threading.Timer(new System.Threading.TimerCallback(fpsTimer_Tick), null, 0, 1000);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -272,6 +276,14 @@ namespace ControlPanel
             CalibrationWindow caliWin = new CalibrationWindow();
             caliWin.ProjectorFeedbackWindow = projectorFeedbackWindow;
             caliWin.Show();
+        }
+
+        private void fpsTimer_Tick(object state)
+        {
+            Dispatcher.BeginInvoke((Action)delegate()
+            {
+                fpsLabel.Content = NativeWrappers.ResultsDllWrapper.getFPS().ToString("0.00");
+            }, null);
         }
 
     }

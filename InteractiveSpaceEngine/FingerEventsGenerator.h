@@ -6,7 +6,7 @@
 #include "FingerPath.h"
 #include "ThreadUtils.h"
 
-#define TRACK_RADIUS 30
+#define TRACK_RADIUS 100
 #define PATH_IDLE_FRAMES 3	//A path will survive for PATH_IDLE_FRAMES since there is no new point assigned to it
 
 typedef enum
