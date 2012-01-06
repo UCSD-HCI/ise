@@ -19,7 +19,8 @@
 //just for DEMO
 #define CROP_HEIGHT_MIN 115
 #define CROP_HEIGHT_MAX 360
-
+#define CROP_WIDTH_MIN 20
+#define CROP_WIDTH_MAX 620
 
 typedef enum 
 {

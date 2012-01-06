@@ -7,7 +7,7 @@ FingerEventsGenerator::FingerEventsGenerator(FingerSelector* fingerSelector) : f
 void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPoint3D& position)
 {
 	events[eventNum].eventType = type;
-	events[eventNum].id = lastId;
+	events[eventNum].id = id;
 	events[eventNum].position = position;
 	eventNum++;
 }
@@ -62,7 +62,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			nearestPath->addPoint(finger.positionInRealWorld, newFrameCount);
 			finger.id = nearestPath->getID();
 			
-			addEvent(FingerMove, lastId, finger.positionInRealWorld);
+			addEvent(FingerMove, finger.id, finger.positionInRealWorld);
 		}
 	}
 

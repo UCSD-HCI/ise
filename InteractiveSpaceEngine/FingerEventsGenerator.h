@@ -53,10 +53,10 @@ public:
 	/**
 	 * @remark The caller should check if events of this frame has already consumed
 	 */
-	inline ReadLockedPtr<FingerEvent*> lockEvents(int* eventNumPtr, int* frame)
+	inline ReadLockedPtr<FingerEvent*> lockEvents(int* eventNumPtr, long long* frame)
 	{
 		*eventNumPtr = eventNum;
-		*frame = (int)frameCount;	//FIXME: Int64 to Int32? 
+		*frame = frameCount;	
 		return ReadLockedPtr<FingerEvent*>(events, eventsMutex);
 	}
 };

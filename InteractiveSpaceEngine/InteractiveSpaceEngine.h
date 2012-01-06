@@ -34,10 +34,11 @@ private:
 	Calibrator* calibrator;
 
 	long long kinectSensorFrameCount;
+	volatile long long engineFrameCount;
+	
 	int fpsCounter;
 	boost::timer fpsTimer;
-	float fps;
-	Mutex fpsMutex;
+	volatile float fps;
 
 	void dispose();
 
@@ -63,9 +64,12 @@ public:
 	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
 
-	inline float getFPS() 
+	inline long long getFrameCount() 
 	{
-		ReadLock rLock(fpsMutex);
+		return engineFrameCount; 
+	}
+	inline float getFPS()
+	{
 		return fps; 
 	}
 };

@@ -285,6 +285,5 @@ namespace ControlPanel
                 fpsLabel.Content = NativeWrappers.ResultsDllWrapper.getFPS().ToString("0.00");
             }, null);
         }
-
     }
 }

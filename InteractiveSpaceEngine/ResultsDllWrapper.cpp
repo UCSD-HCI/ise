@@ -52,6 +52,20 @@ DLL_EXPORT ReadLockedWrapperPtr lockCalibrationDepthImage()
 	return res;
 }
 
+DLL_EXPORT ReadLockedWrapperPtr lockFingerEvents(int* fingerNum, long long* frame)
+{
+	ReadLockedPtr<FingerEvent*> fingerEventsPtr = InteractiveSpaceEngine::sharedEngine()->getFingerEventsGenerator()->lockEvents(fingerNum, frame);
+	ReadLockedWrapperPtr res;
+	res.obj = *fingerEventsPtr;
+	res.readLock = fingerEventsPtr.getReadLock();
+	return res;
+}
+
+DLL_EXPORT long long getEngineFrameCount()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getFrameCount();
+}
+
 DLL_EXPORT float getFPS()
 {
 	return InteractiveSpaceEngine::sharedEngine()->getFPS();

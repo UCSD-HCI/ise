@@ -86,14 +86,15 @@ void ThresholdTouchFingerTracker::extractFingers()
 	ReadLockedIplImagePtr src = ipf->lockImageProduct(DepthOpenedProduct);
 	ReadLockedIplImagePtr depth = ipf->lockImageProduct(DepthSourceProduct);
 
-	int width = src->width;
+	int left = CROP_WIDTH_MIN;
+	int right = CROP_WIDTH_MAX;
 	int bottom = CROP_HEIGHT_MAX;
 	int top = CROP_HEIGHT_MIN;
 
 	//find blocks
 	for (int i = top; i < bottom; i++)
 	{
-		for (int j = 0; j < width; j++)
+		for (int j = left; j < right; j++)
 		{
 			if (*(segmentVisitFlag->imageData + i * segmentVisitFlag->widthStep + j))
 			{
@@ -129,7 +130,7 @@ void ThresholdTouchFingerTracker::extractFingers()
 
 					 for (int nj = curr.x - 1; nj <= curr.x + 1; nj++)
 					 {
-						 if ( (ni == 0 && nj == 0) || (nj < 0 || nj >= width) || 
+						 if ( (ni == 0 && nj == 0) || (nj < left || nj >= right) || 
 							 *(segmentVisitFlag->imageData + ni * segmentVisitFlag->widthStep + nj))
 						 {
 							 continue;	//skip self, out of bound point and visited point
