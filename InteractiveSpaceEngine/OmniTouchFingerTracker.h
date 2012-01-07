@@ -5,10 +5,17 @@
 #include "ImageProcessingFactory.h"
 #include "KinectSensor.h"
 
-#define FINGER_EDGE_THRESHOLD 1000
+#define TOUCHED_FINGER_EDGE_THRESHOLD 200
+#define FINGER_EDGE_THRESHOLD 200 //1000
 #define STRIP_MAX_BLANK_PIXEL 10
 #define FINGER_MIN_PIXEL_LENGTH 10
 #define FINGER_TO_HAND_OFFSET 100   //in millimeters
+
+//just for DEMO
+#define OMNI_CROP_TOP 85
+#define OMNI_CROP_BOTTOM 415
+#define OMNI_CROP_LEFT 0
+#define OMNI_CROP_RIGHT 640
 
 typedef enum
 {

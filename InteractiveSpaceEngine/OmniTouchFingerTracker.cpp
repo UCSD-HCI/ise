@@ -39,14 +39,19 @@ void OmniTouchFingerTracker::findStrips()
 {
 	ReadLockedIplImagePtr sobelPtr = ipf->lockImageProduct(DepthSobeledProduct);
 
-	for (int i = 0; i < sobelPtr->height; i++)
+	for (int i = 0; i < OMNI_CROP_TOP; i++)
+	{
+		strips.push_back(vector<OmniTouchStrip>());
+	}
+
+	for (int i = OMNI_CROP_TOP; i < OMNI_CROP_BOTTOM; i++)
 	{
 		strips.push_back(vector<OmniTouchStrip>());
 
 		StripState state = StripSmooth;
 		int partialMin, partialMax;
 		int partialMinPos, partialMaxPos;
-		for (int j = 0; j < sobelPtr->width; j++)
+		for (int j = OMNI_CROP_LEFT; j < OMNI_CROP_RIGHT; j++)
 		{
 			int currVal = *intValAt(sobelPtr, i, j);
 
@@ -147,7 +152,7 @@ void OmniTouchFingerTracker::findFingers()
 	vector<OmniTouchStrip*> stripBuffer;	//used to fill back
 	fingers.clear();
 
-	for (int i = 0; i < debugFindFingersResult->height; i++)
+	for (int i = OMNI_CROP_TOP; i < OMNI_CROP_BOTTOM; i++)
 	{
 		for (vector<OmniTouchStrip>::iterator it = strips[i].begin(); it != strips[i].end(); ++it)
 		{
@@ -162,7 +167,7 @@ void OmniTouchFingerTracker::findFingers()
 
 			//search down
 			int blankCounter = 0;
-			for (int si = i; si < debugFindFingersResult->height; si++)
+			for (int si = i; si < OMNI_CROP_BOTTOM; si++)
 			{
 				OmniTouchStrip* currTop = stripBuffer[stripBuffer.size() - 1];
 

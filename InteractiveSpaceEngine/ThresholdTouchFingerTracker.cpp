@@ -86,10 +86,10 @@ void ThresholdTouchFingerTracker::extractFingers()
 	ReadLockedIplImagePtr src = ipf->lockImageProduct(DepthOpenedProduct);
 	ReadLockedIplImagePtr depth = ipf->lockImageProduct(DepthSourceProduct);
 
-	int left = CROP_WIDTH_MIN;
-	int right = CROP_WIDTH_MAX;
-	int bottom = CROP_HEIGHT_MAX;
-	int top = CROP_HEIGHT_MIN;
+	int left = THRESHOLD_CROP_LEFT;
+	int right = THRESHOLD_CROP_RIGHT;
+	int bottom = THRESHOLD_CROP_BOTTOM;
+	int top = THRESHOLD_CROP_TOP;
 
 	//find blocks
 	for (int i = top; i < bottom; i++)

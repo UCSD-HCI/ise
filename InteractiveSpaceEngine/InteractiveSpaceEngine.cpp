@@ -144,11 +144,11 @@ void InteractiveSpaceEngine::operator() ()
 			if (newFrameCount > kinectSensorFrameCount)
 			{
 				ipf->refresh(kinectSensorFrameCount);
-				//omniTracker->refresh();
+				omniTracker->refresh();
 				thresholdFingerTracker->refresh();
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
-				//handTracker->refresh();
+				handTracker->refresh();
 				//motionCameraTracker->refresh();				
 
 				kinectSensorFrameCount = newFrameCount;
