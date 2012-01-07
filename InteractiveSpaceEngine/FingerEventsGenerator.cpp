@@ -23,7 +23,11 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 	{
 		Finger& finger = (*fingers)[i];
 
-		if(finger.fingerType != ThresholdFinger)
+		/*if(finger.fingerType != ThresholdFinger)
+		{
+			continue;
+		}*/
+		if (finger.fingerState != FingerOnSurface)
 		{
 			continue;
 		}

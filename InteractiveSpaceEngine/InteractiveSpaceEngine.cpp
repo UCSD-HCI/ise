@@ -145,7 +145,7 @@ void InteractiveSpaceEngine::operator() ()
 			{
 				ipf->refresh(kinectSensorFrameCount);
 				omniTracker->refresh();
-				thresholdFingerTracker->refresh();
+				//thresholdFingerTracker->refresh();
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();

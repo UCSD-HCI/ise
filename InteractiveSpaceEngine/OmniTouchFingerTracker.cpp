@@ -1,4 +1,5 @@
 #include "OmniTouchFingerTracker.h"
+#include <deque>
 #include <math.h>
 using namespace std;
 using namespace xn;
@@ -9,6 +10,7 @@ OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, cons
 	histogram = new int[maxHistogramSize];
 
 	debugFindFingersResult = cvCreateImage(cvSize(ipf->getImageProductWidth(DepthSourceProduct), ipf->getImageProductHeight(DepthSourceProduct)), IPL_DEPTH_8U, 3);
+	floodVisitedFlag = cvCreateImage(cvSize(ipf->getImageProductWidth(DepthSourceProduct), ipf->getImageProductHeight(DepthSourceProduct)), IPL_DEPTH_8U, 1);
 }
 
 OmniTouchFingerTracker::~OmniTouchFingerTracker()
@@ -32,6 +34,7 @@ void OmniTouchFingerTracker::refresh()
 	memset(debugFindFingersResult->imageData, 0, debugFindFingersResult->widthStep * debugFindFingersResult->height);
 	findStrips();
 	findFingers();
+	floodHitTest();
 	generateOutputImage();
 }
 
@@ -108,7 +111,7 @@ void OmniTouchFingerTracker::findStrips()
 				}
 				else
 				{
-					ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSourceProduct);
+					ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
 					ushort depth = *ushortValAt(srcPtr, i, (partialMaxPos + partialMinPos) / 2);	//use the middle point of the strip to measure depth, assuming it is the center of the finger
 					srcPtr.release();
 
@@ -206,8 +209,8 @@ void OmniTouchFingerTracker::findFingers()
 			OmniTouchStrip* last = stripBuffer[stripBuffer.size() - 1];
 			int lastMidCol = (last->leftCol + last->rightCol) / 2;
 
-			ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSourceProduct);
-			ushort depth = *ushortValAt(srcPtr, (first->row + last->row) / 2, (firstMidCol + lastMidCol) / 2);	//jst a try
+			ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
+			ushort depth = *ushortValAt(srcPtr, (first->row + last->row) / 2, (firstMidCol + lastMidCol) / 2);	//just a try
 			srcPtr.release();
 						
 			double lengthSquared = kinectSensor->distSquaredInRealWorld(
@@ -253,6 +256,68 @@ void OmniTouchFingerTracker::findFingers()
 	}
 
 	sort(fingers.begin(), fingers.end());
+}
+
+void OmniTouchFingerTracker::floodHitTest()
+{
+	int neighborOffset[3][2] =
+	{
+		{-1, 0},
+		{1, 0},
+		{0, -1}
+	};
+
+	ReadLockedIplImagePtr depthPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
+	for (vector<OmniTouchFinger>::iterator it = fingers.begin(); it != fingers.end(); ++it)
+	{
+		deque<IntPoint3D> dfsQueue;
+		int area = 0;
+		memset(floodVisitedFlag->imageData, 0, floodVisitedFlag->imageSize);
+
+		ushort tipDepth = *ushortValAt(depthPtr, it->tipY, it->tipX);
+		dfsQueue.push_back(IntPoint3D(it->tipX, it->tipY, it->tipZ));
+
+		while(!dfsQueue.empty())
+		{
+			FloatPoint3D centerPoint = dfsQueue.front();
+			dfsQueue.pop_front();
+
+			for (int i = 0; i < 3; i++)
+			{
+				int row = centerPoint.y + neighborOffset[i][1];
+				int col = centerPoint.x + neighborOffset[i][0];
+
+				if (row < 0 || row >= depthPtr->height || col < 0 || col >= depthPtr->width || *byteValAt(floodVisitedFlag, row, col) > 0)
+				{
+					continue;
+				}
+
+				ushort neiborDepth = *ushortValAt(depthPtr, row, col);
+				if (abs(neiborDepth - centerPoint.z) > CLICK_FLOOD_MAX_GRAD)
+				{
+					continue;					
+				}
+
+
+				dfsQueue.push_back(IntPoint3D(col, row, neiborDepth));
+				area++;
+				*byteValAt(floodVisitedFlag, row, col) = 255;
+
+				byte* dstPixel = rgb888ValAt(debugFindFingersResult, row, col);
+				dstPixel[0] = 255;
+				dstPixel[1] = 255;
+				dstPixel[2] = 0;
+			}
+
+			if (area >= CLICK_FLOOD_AREA)
+			{
+				it->isOnSurface = true;
+				break;
+			}
+		}
+	}
+
+	depthPtr.release();
 }
 
 void OmniTouchFingerTracker::generateOutputImage()

@@ -10,6 +10,8 @@
 #define STRIP_MAX_BLANK_PIXEL 10
 #define FINGER_MIN_PIXEL_LENGTH 10
 #define FINGER_TO_HAND_OFFSET 100   //in millimeters
+#define CLICK_FLOOD_AREA 500
+#define CLICK_FLOOD_MAX_GRAD 30
 
 //just for DEMO
 #define OMNI_CROP_TOP 85
@@ -37,8 +39,9 @@ typedef struct OmniTouchFinger
 {
 	int tipX, tipY, tipZ;
 	int endX, endY, endZ;
-	struct OmniTouchFinger(int tipX, int tipY, int tipZ, int endX, int endY, int endZ) : tipX(tipX), tipY(tipY), tipZ(tipZ), endX(endX), endY(endY), endZ(endZ) { }
+	struct OmniTouchFinger(int tipX, int tipY, int tipZ, int endX, int endY, int endZ) : tipX(tipX), tipY(tipY), tipZ(tipZ), endX(endX), endY(endY), endZ(endZ), isOnSurface(false) { }
 	bool operator<(const OmniTouchFinger& ref) const { return endY - tipY > ref.endY - ref.tipY; }	//sort more to less
+	bool isOnSurface;
 } OmniTouchFinger;
 
 
@@ -54,12 +57,14 @@ private:
 	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax;
 
 	IplImage* debugFindFingersResult;
+	IplImage* floodVisitedFlag;
 	std::vector<std::vector<OmniTouchStrip> > strips;
 	std::vector<OmniTouchFinger> fingers;
 	
 	void findStrips();
 	void findFingers();
 	void generateOutputImage();
+	void floodHitTest();
 
 public:
 	OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor);

@@ -20,12 +20,19 @@ typedef enum
 	ThresholdFinger,
 } FingerType;
 
+typedef enum
+{
+	FingerHovering,
+	FingerOnSurface
+} FingerState;
+
 typedef struct Finger
 {
 	int id;
 	FloatPoint3D positionInRealWorld;
 	IntPoint3D positionInKinectProj;
 	FingerType fingerType;
+	FingerState fingerState;
 } Finger;
 
 typedef struct HandHint

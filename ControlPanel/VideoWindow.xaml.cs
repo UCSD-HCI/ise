@@ -140,13 +140,14 @@ namespace ControlPanel
                     for (int i = 0; i < fingerNum; i++)
                     {
                         fingerPoints[i].Opacity = 1.0;
-                        if (fingers[i].FingerType == FingerType.OmniFinger)
+                        /*if (fingers[i].FingerType == FingerType.OmniFinger)
                         {
                             fingerPoints[i].Fill = Brushes.Orange;
                         }
-                        else if (fingers[i].ID == 0)
+                        else*/
+                        if (fingers[i].ID == 0)
                         {
-                            fingerPoints[i].Fill = Brushes.Gray;
+                            fingerPoints[i].Fill = Brushes.Orange;
                         }
                         else
                         {

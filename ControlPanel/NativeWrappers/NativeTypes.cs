@@ -25,7 +25,8 @@ namespace ControlPanel.NativeWrappers
     public enum ImageProductType
     {
         RGBSourceProduct,
-        DepthSourceProduct,
+        DepthSourceProduct,	//this depth data is from the Kinect thread
+        DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
 
         DepthThresholdFilteredProduct,
         DepthOpenedProduct,
@@ -54,6 +55,12 @@ namespace ControlPanel.NativeWrappers
     {
         OmniFinger,
         ThresholdFinger
+    }
+
+    public enum FingerState
+    {
+	    FingerHovering,
+	    FingerOnSurface
     }
 
     /// <summary>
@@ -115,13 +122,15 @@ namespace ControlPanel.NativeWrappers
         private FloatPoint3D positionInRealWorld;
         private IntPoint3D positionInKinectProj;
         private FingerType fingerType;
+        private FingerState fingerState;
 
-        public Finger(int id, FloatPoint3D positionInRealWorld, IntPoint3D positionInKinectPersp, FingerType fingerType)
+        public Finger(int id, FloatPoint3D positionInRealWorld, IntPoint3D positionInKinectPersp, FingerType fingerType, FingerState fingerState)
         {
             this.id = id;
             this.positionInKinectProj = positionInKinectPersp;
             this.positionInRealWorld = positionInRealWorld;
             this.fingerType = fingerType;
+            this.fingerState = fingerState;
         }
 
         public int ID { get { return id; } }

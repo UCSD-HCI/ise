@@ -23,6 +23,7 @@ void FingerSelector::refresh()
 
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
 		fingers[i].fingerType = OmniFinger;
+		fingers[i].fingerState = omniTracker->getFingers()[j].isOnSurface ? FingerOnSurface : FingerHovering;
 		fingers[i].id = 0;
 	}
 
@@ -35,6 +36,7 @@ void FingerSelector::refresh()
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
 		fingers[i].positionInRealWorld.z = 0;	//on surface, always 0
 		fingers[i].fingerType = ThresholdFinger;
+		fingers[i].fingerState = FingerOnSurface;
 		fingers[i].id = 0;	//FingerEventsGenerator will assign id
 	}
 

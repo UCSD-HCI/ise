@@ -11,6 +11,7 @@
 typedef unsigned short ushort;
 typedef unsigned char byte;
 
+#define byteValAt(imgPtr, row, col) ((byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + col))
 #define ushortValAt(imgPtr, row, col) ((ushort*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 2))
 #define intValAt(imgPtr, row, col) ((int*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 4))
 #define rgb888ValAt(imgPtr, row, col) ((byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 3))
@@ -20,7 +21,8 @@ class ThresholdTouchFingerTracker;
 typedef enum 
 {
 	RGBSourceProduct,
-	DepthSourceProduct,
+	DepthSourceProduct,	//this depth data is from the Kinect thread
+	DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
 	
 	DepthThresholdFilteredProduct,
 	DepthOpenedProduct,

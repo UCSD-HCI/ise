@@ -11,6 +11,7 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kin
 
 	products[RGBSourceProduct] = kinectSensor->createBlankRGBImage();
 	products[DepthSourceProduct] = kinectSensor->createBlankDepthImage();
+	products[DepthSynchronizedProduct] = kinectSensor->createBlankDepthImage();
 
 	CvSize rgbSize = cvSize(products[RGBSourceProduct]->width, products[RGBSourceProduct]->height);
 	CvSize depthSize = cvSize(products[DepthSourceProduct]->width, products[DepthSourceProduct]->height);
@@ -39,7 +40,7 @@ ImageProcessingFactory::~ImageProcessingFactory()
 void ImageProcessingFactory::refreshDepthHistogramed()
 {
 	WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
-	ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+	ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSynchronizedProduct);
 				
 	updateDepthHistogram(depthSrc);
 
@@ -62,13 +63,20 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 {
 	if (kinectSensor->getFrameCount() > kinectSensorFrameCount)
 	{
+		{
+			WriteLock wLock(productsMutex[DepthSynchronizedProduct]);
+			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+			cvCopy(depthSrc, products[DepthSynchronizedProduct]);
+			depthSrc.release();
+		}
+
 		//DepthHisogramedProduct
 		refreshDepthHistogramed();
 
 		//sobel for OmniTouch
 		{
 			WriteLock wLock(productsMutex[DepthSobeledProduct]);
-			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSynchronizedProduct);
 				
 			depthSobel(depthSrc, products[DepthSobeledProduct]);
 
@@ -82,7 +90,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 			WriteLock wLockDebug(productsMutex[DebugThresholdOutputProduct]);
 			WriteLock wLockOpen(productsMutex[DepthOpenedProduct]);
 
-			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
+			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSynchronizedProduct);
 			depthThresholdFilter(depthSrc, products[DepthThresholdFilteredProduct], products[DebugThresholdOutputProduct]);
 			depthSrc.release();
 

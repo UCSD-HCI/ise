@@ -32,7 +32,7 @@ void HandTracker::addHandHint(FloatPoint3D& positionInRealWorld, double confiden
 	
 	handNum++;
 
-	DEBUG("Add hand hint " << nextHintId << " width confidence " << confidence);
+	//DEBUG("Add hand hint " << nextHintId << " width confidence " << confidence);
 }
 
 //Hand* addHandTracking();
@@ -106,13 +106,13 @@ void XN_CALLBACK_TYPE HandTracker::handCreateCB(xn::HandsGenerator& generator, X
 		hand.positionInRealWorld.z = pPosition->Z;
 		hand.positionInKinectProj = handTracker->kinectSensor->convertRealWorldToProjective(hand.positionInRealWorld);
 
-		DEBUG("Hand create: " << user << " to hint " << hintId << ", distSquared " << minSquaredDist);
+		//DEBUG("Hand create: " << user << " to hint " << hintId << ", distSquared " << minSquaredDist);
 	}
 	else
 	{
 		//cannot find any entry, give up
 		handTracker->handsGen->StopTracking(user);
-		DEBUG("Hand create: " << user << " failed");
+		//DEBUG("Hand create: " << user << " failed");
 	}
 }
 
@@ -133,8 +133,6 @@ void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, X
 	{
 		handTracker->handsGen->StopTracking(user);
 	}
-
-	//DEBUG("Hand update: " << user);
 }
 
 void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, XnUserID user, XnFloat fTime, void* pCookie)
@@ -147,7 +145,7 @@ void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, 
 	{
 		handTracker->removeHand(TrackingHand, user);
 	}
-	DEBUG("Hand destroy: " << user);
+	//DEBUG("Hand destroy: " << user);
 }
 
 void HandTracker::refresh()
@@ -224,7 +222,7 @@ void HandTracker::refresh()
 							idToStopTracking.push_back(handCandidates[victimPtr].id);
 						}
 
-						DEBUG("Hand victim: " << handCandidates[victimPtr].id);
+						//DEBUG("Hand victim: " << handCandidates[victimPtr].id);
 						removeHand(handCandidates[victimPtr].handType, handCandidates[victimPtr].id);
 						victimPtr--;
 
