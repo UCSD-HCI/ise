@@ -34,8 +34,9 @@ namespace ControlPanel
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
 
         private bool isAllCalibrated = false;
+        private ProjectorFeedbackWindow projectorFeedbackWindow;
 
-        public ProjectorFeedbackWindow ProjectorFeedbackWindow { get; set; }
+        //public ProjectorFeedbackWindow ProjectorFeedbackWindow { get; set; }
 
         int rgbWidth, rgbHeight, depthWidth, depthHeight;
 
@@ -70,11 +71,13 @@ namespace ControlPanel
             refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
 
-            ProjectorFeedbackWindow.HitTestLayer.MouseMove += new MouseEventHandler(HitTestLayer_MouseMove);
-            ProjectorFeedbackWindow.HitTestLayer.MouseLeave += new MouseEventHandler(HitTestLayer_MouseLeave);
-            ProjectorFeedbackWindow.HitTestLayer.MouseDown += new MouseButtonEventHandler(HitTestLayer_MouseDown);
+            projectorFeedbackWindow = new ProjectorFeedbackWindow();
+            projectorFeedbackWindow.Show();
+            projectorFeedbackWindow.HitTestLayer.MouseMove += new MouseEventHandler(HitTestLayer_MouseMove);
+            projectorFeedbackWindow.HitTestLayer.MouseLeave += new MouseEventHandler(HitTestLayer_MouseLeave);
+            projectorFeedbackWindow.HitTestLayer.MouseDown += new MouseButtonEventHandler(HitTestLayer_MouseDown);
 
-            refCorners = ProjectorFeedbackWindow.ShowChessboard();
+            refCorners = projectorFeedbackWindow.ShowChessboard();
             CommandDllWrapper.systemCalibrationStart();
             unsafe
             {
@@ -90,16 +93,18 @@ namespace ControlPanel
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
-            ProjectorFeedbackWindow.HitTestLayer.MouseMove -= HitTestLayer_MouseMove;
-            ProjectorFeedbackWindow.HitTestLayer.MouseLeave -= HitTestLayer_MouseLeave;
-            ProjectorFeedbackWindow.HitTestLayer.MouseDown -= HitTestLayer_MouseDown;
+            projectorFeedbackWindow.HitTestLayer.MouseMove -= HitTestLayer_MouseMove;
+            projectorFeedbackWindow.HitTestLayer.MouseLeave -= HitTestLayer_MouseLeave;
+            projectorFeedbackWindow.HitTestLayer.MouseDown -= HitTestLayer_MouseDown;
 
-            ProjectorFeedbackWindow.globalCanvas.Children.Remove(testPointTable);
+            projectorFeedbackWindow.globalCanvas.Children.Remove(testPointTable);
+
+            projectorFeedbackWindow.Close();
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            ProjectorFeedbackWindow.HideChecssboard();
+            //ProjectorFeedbackWindow.HideChecssboard();
             CommandDllWrapper.systemCalibrationStop();
         }
 
@@ -140,7 +145,7 @@ namespace ControlPanel
 
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {
-            ProjectorFeedbackWindow.DrawCheckpoints(checkPoints, checkPointNum);
+            projectorFeedbackWindow.DrawCheckpoints(checkPoints, checkPointNum);
 
             //draw depth ref corners
             Dispatcher.BeginInvoke((Action)delegate()
@@ -314,7 +319,7 @@ namespace ControlPanel
                     Height = TEST_POINT_RADIUS * 2,
                     Visibility = Visibility.Hidden,
                 };
-                ProjectorFeedbackWindow.globalCanvas.Children.Add(testPointTable);
+                projectorFeedbackWindow.globalCanvas.Children.Add(testPointTable);
             }
 
             if (testPointInTableSurface.HasValue)

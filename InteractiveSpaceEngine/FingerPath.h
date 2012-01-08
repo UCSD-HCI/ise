@@ -13,6 +13,7 @@ private:
 	std::deque<FloatPoint3D> points;
 	int id;
 	long long lastUpdateFrame;
+	int padding;
 
 public:
 	FingerPath(int id);

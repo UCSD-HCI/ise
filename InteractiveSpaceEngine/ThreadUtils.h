@@ -24,23 +24,23 @@ template <class T>
 struct ReadLockedPtr
 {
 private:
-	const T* obj;
+	const T const * obj;
 	ReadLock* readLock;
 
 public:
 	ReadLockedPtr(const T& obj, Mutex& mutex) : obj(&obj), readLock(new ReadLock(mutex)) { }
 
-	inline const T* operator-> () 
+	inline const T* operator-> () const
 	{
 		return obj;
 	}
 
-	inline const T& operator* ()
+	inline const T& operator* () const
 	{
 		return *obj;
 	}
 
-	inline operator const T*()	//convert to normal ptr
+	inline operator const T*() const	//convert to normal ptr
 	{
 		return obj;
 	}
@@ -50,7 +50,7 @@ public:
 		delete readLock;
 	}
 
-	inline const T* getObj()
+	inline const T* getObj() const
 	{
 		return obj;
 	}

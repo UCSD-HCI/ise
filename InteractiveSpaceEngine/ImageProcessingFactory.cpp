@@ -36,11 +36,11 @@ ImageProcessingFactory::~ImageProcessingFactory()
 		}
 	}
 }
-
+ 
 void ImageProcessingFactory::refreshDepthHistogramed()
 {
 	WriteLock wLock(productsMutex[DebugDepthHistogramedProduct]);
-	ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSynchronizedProduct);
+	ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSourceProduct);
 				
 	updateDepthHistogram(depthSrc);
 
@@ -84,6 +84,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 		}
 
 		//threshold for ThresholdTouch
+		/*
 		if (thresholdTouchFingerTracker != NULL && thresholdTouchFingerTracker->isCalibrated())
 		{
 			WriteLock wLockFilter(productsMutex[DepthThresholdFilteredProduct]);
@@ -103,6 +104,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 			cvCvtColor(depthHisto, products[DebugThresholdOutputProduct], CV_GRAY2RGB);
 			depthHisto.release();
 		}
+		*/
 	}
 }
 

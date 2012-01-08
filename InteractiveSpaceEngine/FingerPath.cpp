@@ -1,6 +1,6 @@
 #include "FingerPath.h"
 
-FingerPath::FingerPath(int id) : id(id), points(PATH_LENGTH)
+FingerPath::FingerPath(int id) : id(id)
 {
 }
 

@@ -17,11 +17,12 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 	eventNum = 0;
 
 	int fingerNum;
-	ReadLockedPtr<Finger*> fingers = fingerSelector->lockFingers(&fingerNum);
+	ReadLockedPtr<Finger*> fingersPtr = fingerSelector->lockFingers(&fingerNum);
+	Finger* fingers = *fingersPtr;	//to go around a weird bug that visiting paths will modify fingersPtr.obj in debug mode
 
 	for (int i = 0; i < fingerNum; i++)
 	{
-		Finger& finger = (*fingers)[i];
+		Finger& finger = fingers[i];
 
 		/*if(finger.fingerType != ThresholdFinger)
 		{
@@ -35,23 +36,29 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		//search nearest path
 		double minSquDist = TRACK_RADIUS * TRACK_RADIUS;
 		std::vector<FingerPath>::iterator nearestPath = paths.end();
+		//int nearestIndex = -1;
 
 		for (std::vector<FingerPath>::iterator it = paths.begin(); it != paths.end(); ++it)
+		//for (int i = 0; i < paths.size(); i++)
 		{
 			if (it->getLastUpdateFrame() == newFrameCount)
+			//if (paths[i].getLastUpdateFrame() == newFrameCount)
 			{
 				continue;	//this path is already dispatched to a point
 			}
 
 			double currSquDist = finger.positionInRealWorld.squaredDistanceTo(it->getEndPoint());
+			//double currSquDist = finger.positionInRealWorld.squaredDistanceTo(paths[i].getEndPoint());
 			if (currSquDist < minSquDist)
 			{
 				minSquDist = currSquDist;
 				nearestPath = it;
+				//nearestIndex = i;
 			}
 		}
 
 		if (nearestPath == paths.end())	//no path found, create a new path
+		//if (nearestIndex == -1)
 		{
 			lastId++;
 			FingerPath newPath(lastId);
@@ -64,7 +71,9 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		else	//add this point to an existing path
 		{
 			nearestPath->addPoint(finger.positionInRealWorld, newFrameCount);
+			//paths[nearestIndex].addPoint(finger.positionInRealWorld, newFrameCount);
 			finger.id = nearestPath->getID();
+			//finger.id = paths[nearestIndex].getID();
 			
 			addEvent(FingerMove, finger.id, finger.positionInRealWorld);
 		}
@@ -87,5 +96,5 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 
 	frameCount = newFrameCount;
 
-	fingers.release();
+	fingersPtr.release();
 }
