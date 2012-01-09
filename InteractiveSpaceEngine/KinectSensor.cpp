@@ -110,7 +110,7 @@ FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) c
 	return FloatPoint3D(realPoints[0].X, realPoints[0].Y, realPoints[0].Z);
 }
 
-IntPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
+FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
 {
 	XnPoint3D xnP;
 	xnP.X = p.x;
@@ -119,5 +119,5 @@ IntPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) con
 	XnPoint3D realPoints[1] = {xnP};
 	XnPoint3D projPoints[1];
 	depthGen.ConvertRealWorldToProjective(1, realPoints, projPoints);
-	return IntPoint3D((int)projPoints[0].X, (int)projPoints[0].Y, (int)projPoints[0].Z);
+	return FloatPoint3D(projPoints[0].X, projPoints[0].Y, projPoints[0].Z);
 }

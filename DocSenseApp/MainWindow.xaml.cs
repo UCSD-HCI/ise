@@ -21,7 +21,8 @@ namespace DocSenseApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private InteractiveSpaceDLL sdk;
+        private InteractiveSpaceProviderDLL sdk;
+        private ProjectorFeedbackWindow feedbackWindow;
 
         public MainWindow()
         {
@@ -30,13 +31,18 @@ namespace DocSenseApp
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            sdk = new InteractiveSpaceDLL();
+            sdk = new InteractiveSpaceProviderDLL();
             sdk.Connect();
 
             sdk.CreateFingerTracker();
             sdk.FingerTracker.FingerDown += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerDown);
             sdk.FingerTracker.FingerUp += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerUp);
             sdk.FingerTracker.FingerMove += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerMove);
+
+            feedbackWindow = new ProjectorFeedbackWindow();
+            feedbackWindow.Show();
+
+            feedbackWindow.SpaceProvider = sdk;
         }
 
         void FingerTracker_FingerMove(object sender, InteractiveSpaceSDK.FingerEventArgs e)
@@ -56,6 +62,7 @@ namespace DocSenseApp
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            feedbackWindow.Close();
             sdk.Close();
         }
     }

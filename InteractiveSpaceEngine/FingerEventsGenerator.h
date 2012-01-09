@@ -24,9 +24,13 @@ struct FingerEvent
 {
 	int id;
 	/**
-	 * Finger position in real world
+	 * Finger position in Kinect real world
 	 */
 	FloatPoint3D position;
+	/**
+	 * Finger position in Table2D coordinate
+	 */
+	FloatPoint3D positionTable2D;
 	FingerEventType eventType;
 };
 
@@ -46,6 +50,7 @@ private:
 	FingerSelector* fingerSelector;
 
 	void addEvent(FingerEventType type, int id, const FloatPoint3D& position);
+	void addEvent(FingerEventType type, const Finger& finger);
 public:
 	FingerEventsGenerator(FingerSelector* fingerSelector);
 	void refresh(long long newFrameCount);

@@ -182,10 +182,12 @@ namespace ControlPanel.NativeWrappers
     {
 	    private int id;
 	    private FloatPoint3D position;
+        private FloatPoint3D positionTable2D;
 	    private FingerEventType eventType;
 
         public int ID { get { return id; } }
         public FloatPoint3D Position { get { return position; } }
+        public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
         public FingerEventType EventType { get { return eventType; } }
     };
 }

@@ -1,4 +1,5 @@
 #include "FingerEventsGenerator.h"
+#include "InteractiveSpaceEngine.h"
 
 FingerEventsGenerator::FingerEventsGenerator(FingerSelector* fingerSelector) : fingerSelector(fingerSelector), eventNum(0), frameCount(0), lastId(0)
 {
@@ -9,6 +10,22 @@ void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPo
 	events[eventNum].eventType = type;
 	events[eventNum].id = id;
 	events[eventNum].position = position;
+
+	FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(position);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&pointProj, &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
+	
+	eventNum++;
+}
+
+void FingerEventsGenerator::addEvent(FingerEventType type, const Finger& finger)
+{
+	events[eventNum].eventType = type;
+	events[eventNum].id = finger.id;
+	events[eventNum].position = finger.positionInRealWorld;
+
+	FloatPoint3D pointProj = finger.positionInKinectProj;
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
+
 	eventNum++;
 }
 
@@ -66,7 +83,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			finger.id = lastId;
 			paths.push_back(newPath);
 
-			addEvent(FingerDown, lastId, finger.positionInRealWorld);
+			addEvent(FingerDown, finger);
 		}
 		else	//add this point to an existing path
 		{
@@ -75,7 +92,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			finger.id = nearestPath->getID();
 			//finger.id = paths[nearestIndex].getID();
 			
-			addEvent(FingerMove, finger.id, finger.positionInRealWorld);
+			addEvent(FingerMove, finger);
 		}
 	}
 

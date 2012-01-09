@@ -34,7 +34,6 @@ void FingerSelector::refresh()
 		fingers[i].positionInKinectProj.z = thresholdTracker->getFingers()[j].z;
 
 		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
-		fingers[i].positionInRealWorld.z = 0;	//on surface, always 0
 		fingers[i].fingerType = ThresholdFinger;
 		fingers[i].fingerState = FingerOnSurface;
 		fingers[i].id = 0;	//FingerEventsGenerator will assign id

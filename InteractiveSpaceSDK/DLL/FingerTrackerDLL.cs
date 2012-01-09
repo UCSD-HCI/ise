@@ -37,21 +37,21 @@ namespace InteractiveSpaceSDK.DLL
                         case FingerEventType.FingerMove:
                             if (fingerMove != null)
                             {
-                                fingerMove(this, new FingerEventArgs(e.ID, new Point3D(e.Position.x, e.Position.y, e.Position.z)));
+                                fingerMove(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
                             }
                             break;
 
                         case FingerEventType.FingerUp:
                             if (fingerUp != null)
                             {
-                                fingerUp(this, new FingerEventArgs(e.ID, new Point3D(e.Position.x, e.Position.y, e.Position.z)));
+                                fingerUp(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
                             }
                             break;
 
                         case FingerEventType.FingerDown:
                             if (fingerDown != null)
                             {
-                                fingerDown(this, new FingerEventArgs(e.ID, new Point3D(e.Position.x, e.Position.y, e.Position.z)));
+                                fingerDown(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
                             }
                             break;
 

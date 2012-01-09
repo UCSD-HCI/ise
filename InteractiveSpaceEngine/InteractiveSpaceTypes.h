@@ -19,6 +19,11 @@ struct FloatPoint3D
 	{
 		return (x - ref.x) * (x - ref.x) + (y - ref.y) * (y - ref.y) + (z - ref.z) * (z - ref.z);
 	}
+
+	operator IntPoint3D()
+	{
+		return IntPoint3D((int)x, (int)y, (int)z);
+	}
 };
 
 struct DoublePoint3D
