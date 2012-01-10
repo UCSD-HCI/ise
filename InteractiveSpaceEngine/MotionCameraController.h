@@ -16,6 +16,8 @@ typedef unsigned int uint;
 #define TILT_MIN -299
 
 #define VISCA_SERIAL_PORT "COM1"
+#define VISCA_PAN_TILT_IN_MOVE_MASK 0x8A80
+#define VISCA_PAN_TILT_IN_MOVE 0x0400
 
 //calibration data
 #define MOTION_CAMERA_ORIGIN_X 1027.00
@@ -51,6 +53,11 @@ private:
 	ViscaPanTiltCommand pendingPanTiltCmd;
 	bool isPanTiltPending;
 	Mutex panTiltCmdMutex;
+
+	inline bool checkPanTiltInMoveByStatus(ushort status)
+	{
+		return (status & VISCA_PAN_TILT_IN_MOVE_MASK) == VISCA_PAN_TILT_IN_MOVE;
+	}
 
 public:
 	MotionCameraController();
