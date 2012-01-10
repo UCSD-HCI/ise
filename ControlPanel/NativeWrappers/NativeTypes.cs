@@ -35,6 +35,9 @@ namespace ControlPanel.NativeWrappers
         DebugDepthHistogramedProduct,
         DebugOmniOutputProduct,
         DebugThresholdOutputProduct,
+
+        MotionCameraSourceProduct,
+
         ImageProductsCount
     }
 

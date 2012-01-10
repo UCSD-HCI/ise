@@ -95,97 +95,101 @@ namespace ControlPanel
             {
                 videoImage.Source = VideoSources.SharedVideoSources.GetSource(videoSourceType);
 
-                //draw fingers
-                unsafe
+                if (videoSourceType != VideoSourceType.MotionCamera)
                 {
-                    int fingerNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
-                    Finger* fingers = (Finger*)ptr.IntPtr;
-
-                    if (videoSourceType == VideoSourceType.RGB) //transform points
+                    //draw fingers
+                    unsafe
                     {
-                        FloatPoint3D[] kinectPoints = new FloatPoint3D[fingerNum];
-                        FloatPoint3D[] rgbPoints = new FloatPoint3D[fingerNum];
+                        int fingerNum;
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
+                        Finger* fingers = (Finger*)ptr.IntPtr;
 
-                        for (int i = 0; i < fingerNum; i++)
+                        if (videoSourceType == VideoSourceType.RGB) //transform points
                         {
-                            kinectPoints[i] = new FloatPoint3D()
+                            FloatPoint3D[] kinectPoints = new FloatPoint3D[fingerNum];
+                            FloatPoint3D[] rgbPoints = new FloatPoint3D[fingerNum];
+
+                            for (int i = 0; i < fingerNum; i++)
                             {
-                                x = fingers[i].PositionInKinectPersp.x,
-                                y = fingers[i].PositionInKinectPersp.y,
-                                z = 0
-                            };
-                        }
+                                kinectPoints[i] = new FloatPoint3D()
+                                {
+                                    x = fingers[i].PositionInKinectPersp.x,
+                                    y = fingers[i].PositionInKinectPersp.y,
+                                    z = 0
+                                };
+                            }
 
-                        fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, rgbPointsPtr = rgbPoints)
-                        {
-                            CommandDllWrapper.transformPoints(kinectPointsPtr, rgbPointsPtr, fingerNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.RGB2D);
-                        }
+                            fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, rgbPointsPtr = rgbPoints)
+                            {
+                                CommandDllWrapper.transformPoints(kinectPointsPtr, rgbPointsPtr, fingerNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.RGB2D);
+                            }
 
-                        for (int i = 0; i < fingerNum; i++)
-                        {
-                            Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
-                            Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < fingerNum; i++)
-                        {
-                            Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
-                            Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
-                        }
-                    }
-
-                    for (int i = 0; i < fingerNum; i++)
-                    {
-                        fingerPoints[i].Opacity = 1.0;
-                        /*if (fingers[i].FingerType == FingerType.OmniFinger)
-                        {
-                            fingerPoints[i].Fill = Brushes.Orange;
-                        }
-                        else*/
-                        if (fingers[i].ID == 0)
-                        {
-                            fingerPoints[i].Fill = Brushes.Orange;
+                            for (int i = 0; i < fingerNum; i++)
+                            {
+                                Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
+                                Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
+                            }
                         }
                         else
                         {
-                            fingerPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor(fingers[i].ID));
+                            for (int i = 0; i < fingerNum; i++)
+                            {
+                                Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
+                                Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
+                            }
                         }
+
+                        for (int i = 0; i < fingerNum; i++)
+                        {
+                            fingerPoints[i].Opacity = 1.0;
+                            /*if (fingers[i].FingerType == FingerType.OmniFinger)
+                            {
+                                fingerPoints[i].Fill = Brushes.Orange;
+                            }
+                            else*/
+                            if (fingers[i].ID == 0)
+                            {
+                                fingerPoints[i].Fill = Brushes.Orange;
+                            }
+                            else
+                            {
+                                fingerPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor(fingers[i].ID));
+                            }
+                        }
+
+                        for (int i = fingerNum; i < fingerPoints.Count; i++)
+                        {
+                            fingerPoints[i].Opacity = 0;
+                        }
+
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
 
-                    for (int i = fingerNum; i < fingerPoints.Count; i++)
+                    //draw hands
+                    unsafe
                     {
-                        fingerPoints[i].Opacity = 0;
+                        int handNum;
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockHands(&handNum);
+                        Hand* hands = (Hand*)ptr.IntPtr;
+
+                        for (int i = 0; i < handNum; i++)
+                        {
+                            Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x - HAND_RADIUS);
+                            Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y - HAND_RADIUS);
+                            handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
+                            handPoints[i].Fill = hands[i].HandType == HandType.NewHandHint ? Brushes.Black : new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
+                        }
+
+                        for (int i = handNum; i < handPoints.Count; i++)
+                        {
+                            handPoints[i].Opacity = 0;
+                        }
+
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
-
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                }
-
-                //draw hands
-                unsafe
-                {
-                    int handNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockHands(&handNum);
-                    Hand* hands = (Hand*)ptr.IntPtr;
-
-                    for (int i = 0; i < handNum; i++)
-                    {
-                        Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x - HAND_RADIUS);
-                        Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y - HAND_RADIUS);
-                        handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
-                        handPoints[i].Fill = hands[i].HandType == HandType.NewHandHint ? Brushes.Black : new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
-                    }
-
-                    for (int i = handNum; i < handPoints.Count; i++)
-                    {
-                        handPoints[i].Opacity = 0;
-                    }
-
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
             });
+
         }
 
         private void videoImage_MouseDown(object sender, MouseButtonEventArgs e)

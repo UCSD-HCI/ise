@@ -2,7 +2,8 @@
 #include "ThresholdTouchFingerTracker.h"
 #include <stdio.h>
 
-ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kinectSensor(kinectSensor), thresholdTouchFingerTracker(NULL)
+ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor, MotionCameraReader* motionCameraReader) 
+	: kinectSensor(kinectSensor), motionCameraReader(motionCameraReader), thresholdTouchFingerTracker(NULL)
 {
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
@@ -12,6 +13,7 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) : kin
 	products[RGBSourceProduct] = kinectSensor->createBlankRGBImage();
 	products[DepthSourceProduct] = kinectSensor->createBlankDepthImage();
 	products[DepthSynchronizedProduct] = kinectSensor->createBlankDepthImage();
+	products[MotionCameraSourceProduct] = motionCameraReader->createImage();
 
 	CvSize rgbSize = cvSize(products[RGBSourceProduct]->width, products[RGBSourceProduct]->height);
 	CvSize depthSize = cvSize(products[DepthSourceProduct]->width, products[DepthSourceProduct]->height);

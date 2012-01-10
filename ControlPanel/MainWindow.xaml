@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ControlPanel.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="InteractiveSpace Control Panel" Height="604" Width="325" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="InteractiveSpace Control Panel" Height="604" Width="413" Loaded="Window_Loaded" Closing="Window_Closing">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Preview Video" Margin="5">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5">
@@ -10,6 +10,7 @@
                     <ToggleButton Name="depthVideoToggleButton" Content="Depth" Margin="5" Click="depthVideoToggleButton_Click"/>
                     <ToggleButton Name="multiTouchVideoToggleButton" Content="OmniTouch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>
                     <ToggleButton Name="thresholdTouchVideoToggleButton" Content="ThresholdTouch" Margin="5" Click="thresholdTouchVideoToggleButton_Click"/>
+                    <ToggleButton Name="motionCameraVideoToggleButton" Content="MotionCamera" Margin="5" Click="motionCameraVideoToggleButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

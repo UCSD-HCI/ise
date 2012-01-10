@@ -16,6 +16,7 @@ namespace ControlPanel
         DepthHistogramed,
         OmniTouch,
         ThresholdTouch,
+        MotionCamera,
     }
 
     public class VideoSources
@@ -25,9 +26,9 @@ namespace ControlPanel
 
         private static VideoSources instance = null;
 
-        private int rgbWidth, rgbHeight, depthWidth, depthHeight;
+        private int rgbWidth, rgbHeight, depthWidth, depthHeight, motionCameraWidth, motionCameraHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource, motionCameraSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -50,12 +51,16 @@ namespace ControlPanel
                 rgbHeight = CommandDllWrapper.getRGBHeight();
                 depthWidth = CommandDllWrapper.getDepthWidth();
                 depthHeight = CommandDllWrapper.getDepthHeight();
+                motionCameraWidth = CommandDllWrapper.getMotionCameraWidth();
+                motionCameraHeight = CommandDllWrapper.getMotionCameraHeight();
             }
 
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthHistogramedSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
             omniTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             thresholdTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
+
+            motionCameraSource = new WriteableBitmap(motionCameraWidth, motionCameraHeight, DPI_X, DPI_Y, PixelFormats.Bgr24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -73,6 +78,9 @@ namespace ControlPanel
 
                 case VideoSourceType.ThresholdTouch:
                     return ThresholdTouchSource;
+
+                case VideoSourceType.MotionCamera:
+                    return MotionCameraSource;
 
                 default:
                     return null;
@@ -156,6 +164,27 @@ namespace ControlPanel
                 }
 
                 return thresholdTouchSource;
+            }
+        }
+
+
+        public ImageSource MotionCameraSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (motionCameraSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.MotionCameraSourceProduct);
+                        motionCameraSource.Lock();
+                        motionCameraSource.WritePixels(new Int32Rect(0, 0, motionCameraWidth, motionCameraHeight), ptr.IntPtr, motionCameraWidth * motionCameraHeight * 3, motionCameraWidth * 3);
+                        motionCameraSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return motionCameraSource;
             }
         }
     }

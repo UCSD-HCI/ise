@@ -22,7 +22,7 @@ namespace ControlPanel
     /// </summary>
     public partial class MainWindow : Window
     {
-        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow;
+        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow;
         //private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
@@ -105,6 +105,11 @@ namespace ControlPanel
         private void thresholdTouchVideoToggleButton_Click(object sender, RoutedEventArgs e)
         {
             handleVideoToggleButtonClick(thresholdTouchVideoToggleButton, ref thresholdTouchVideoWindow, VideoSourceType.ThresholdTouch);
+        }
+
+        private void motionCameraVideoToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            handleVideoToggleButtonClick(motionCameraVideoToggleButton, ref motionCameraVideoWindow, VideoSourceType.MotionCamera);
         }
 
         private void handleVideoToggleButtonClick(System.Windows.Controls.Primitives.ToggleButton button, ref VideoWindow window, VideoSourceType videoType)

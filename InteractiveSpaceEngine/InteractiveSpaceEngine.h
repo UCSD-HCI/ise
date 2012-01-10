@@ -13,6 +13,7 @@
 #include "MotionCameraController.h"
 #include "MotionCameraTracker.h"
 #include "FingerEventsGenerator.h"
+#include "MotionCameraReader.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -23,6 +24,7 @@ private:
 	KinectSensor* kinectSensor;
 	ImageProcessingFactory* ipf;
 	MotionCameraController* motionCameraController;
+	MotionCameraReader* motionCameraReader;
 	
 	OmniTouchFingerTracker* omniTracker;
 	ThresholdTouchFingerTracker* thresholdFingerTracker;
@@ -63,6 +65,7 @@ public:
 	inline MotionCameraController* getMotionCameraController() { return motionCameraController; }
 	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
+	inline MotionCameraReader* getMotionCameraReader() { return motionCameraReader; }
 
 	inline long long getFrameCount() 
 	{

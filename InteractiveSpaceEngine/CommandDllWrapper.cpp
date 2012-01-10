@@ -32,6 +32,16 @@ DLL_EXPORT int getDepthHeight()
 	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(DepthSourceProduct);
 }
 
+DLL_EXPORT int getMotionCameraWidth()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductWidth(MotionCameraSourceProduct);
+}
+
+DLL_EXPORT int getMotionCameraHeight()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(MotionCameraSourceProduct);
+}
+
 DLL_EXPORT void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength)
 {
 	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setParameters(fingerMinWidth, fingerMaxWidth, fingerMinLength, fingerMaxLength);
