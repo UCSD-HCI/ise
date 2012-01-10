@@ -91,7 +91,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			//paths[nearestIndex].addPoint(finger.positionInRealWorld, newFrameCount);
 			finger.id = nearestPath->getID();
 			//finger.id = paths[nearestIndex].getID();
-			
+	
 			addEvent(FingerMove, finger);
 		}
 	}

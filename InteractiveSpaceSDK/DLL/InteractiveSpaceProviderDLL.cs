@@ -16,7 +16,7 @@ namespace InteractiveSpaceSDK.DLL
         private volatile bool stopRequested = false;
         private Int64 lastFrameCount;
 
-        public override void Connect()
+        public void Connect()
         {
             mainWindow = new ControlPanel.MainWindow();
             mainWindow.Show();
@@ -27,17 +27,17 @@ namespace InteractiveSpaceSDK.DLL
             workingThread.Start();
         }
 
-        public override void Close()
+        public void Close()
         {
             stopRequested = true;
         }
 
-        public override void CreateFingerTracker()
+        public void CreateFingerTracker()
         {
             fingerTracker = new FingerTrackerDLL();
         }
 
-        public override FingerTracker FingerTracker
+        public FingerTracker FingerTracker
         {
             get { return fingerTracker; }
         }

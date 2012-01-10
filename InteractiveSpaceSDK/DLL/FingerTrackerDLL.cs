@@ -10,8 +10,17 @@ namespace InteractiveSpaceSDK.DLL
 {
     public class FingerTrackerDLL : FingerTracker
     {
-        private event EventHandler<FingerEventArgs> fingerDown, fingerUp, fingerMove;
         private object eventLocker = new object();
+        private Dictionary<int, Finger> fingers;
+
+        public event EventHandler<FingerEventArgs> FingerDown;
+        public event EventHandler<FingerEventArgs> FingerUp;
+        public event EventHandler<FingerEventArgs> FingerMove;
+
+        public FingerTrackerDLL()
+        {
+            fingers = new Dictionary<int, Finger>();
+        }
 
         internal void Refresh()
         {
@@ -35,85 +44,59 @@ namespace InteractiveSpaceSDK.DLL
                     switch (e.EventType)
                     {
                         case FingerEventType.FingerMove:
-                            if (fingerMove != null)
+                            Finger movingFinger = fingers[e.ID];    //it should not be null
+                            movingFinger.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
+                            if (FingerMove != null)
                             {
-                                fingerMove(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
+                                FingerMove(this, new FingerEventArgs(movingFinger, this));
                             }
                             break;
 
                         case FingerEventType.FingerUp:
-                            if (fingerUp != null)
+                            Finger removedFinger = fingers[e.ID];   //it should not be null
+                            fingers.Remove(e.ID);
+                            if (FingerUp != null)
                             {
-                                fingerUp(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
+                                FingerUp(this, new FingerEventArgs(removedFinger, this));
                             }
                             break;
 
                         case FingerEventType.FingerDown:
-                            if (fingerDown != null)
+                            Finger newFinger = new Finger(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z));
+                            fingers.Add(newFinger.ID, newFinger);
+                            if (FingerDown != null)
                             {
-                                fingerDown(this, new FingerEventArgs(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z)));
+                                FingerDown(this, new FingerEventArgs(newFinger, this));
                             }
                             break;
 
                         default:
                             //TODO
-                            break;
+                            break; 
                     }
                 }
             }
         }
 
-        public override event EventHandler<FingerEventArgs> FingerDown
+        public Finger FindFingerById(int id)
         {
-            add
+            return fingers[id];
+        }
+
+        public int FingerCount
+        {
+            get 
             {
-                lock (eventLocker)
-                {
-                    fingerDown += value;
-                }
-            }
-            remove
-            {
-                lock (eventLocker)
-                {
-                    fingerDown -= value;
-                }
+                return fingers.Count;
             }
         }
 
-        public override event EventHandler<FingerEventArgs> FingerUp
-        {
-            add
-            {
-                lock (eventLocker)
-                {
-                    fingerUp += value;
-                }
-            }
-            remove
-            {
-                lock (eventLocker)
-                {
-                    fingerUp -= value;
-                }
-            }
-        }
 
-        public override event EventHandler<FingerEventArgs> FingerMove
+        public IEnumerable<Finger> Fingers
         {
-            add
+            get
             {
-                lock (eventLocker)
-                {
-                    fingerMove += value;
-                }
-            }
-            remove
-            {
-                lock (eventLocker)
-                {
-                    fingerMove -= value;
-                }
+                return fingers.Values;
             }
         }
     }

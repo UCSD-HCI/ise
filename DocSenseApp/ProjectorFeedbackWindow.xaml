@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:gui="clr-namespace:InteractiveSpaceSDK.GUI;assembly=InteractiveSpaceSDK"
-        Title="ProjectorFeedbackWindow" Height="421" Width="730">
-    <gui:SpaceCanvas FingerDown="SpaceCanvas_FingerDown" FingerUp="SpaceCanvas_FingerUp" FingerMove="SpaceCanvas_FingerMove" Background="Blue">
-        
+        Title="ProjectorFeedbackWindow" Height="421" Width="730" Loaded="ProjectorFeedbackWindow_Loaded">
+    <gui:SpaceCanvas FingerDown="SpaceCanvas_FingerDown" FingerUp="SpaceCanvas_FingerUp" FingerMove="SpaceCanvas_FingerMove" Background="Black">
+        <Rectangle Name="selectionRect" Fill="#460066CC" Stroke="#3399FF" StrokeThickness="1" Width="100" Height="80" Opacity="0"/>
     </gui:SpaceCanvas>
 </gui:ProjectorFeedbackWindow>

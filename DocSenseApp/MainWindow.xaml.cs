@@ -47,17 +47,17 @@ namespace DocSenseApp
 
         void FingerTracker_FingerMove(object sender, InteractiveSpaceSDK.FingerEventArgs e)
         {
-            Trace.WriteLine("FingerMove: " + e.ID.ToString() + " @ " + e.Position.ToString());
+            //Trace.WriteLine("FingerMove: " + e.ID.ToString() + " @ " + e.Position.ToString());
         }
 
         void FingerTracker_FingerUp(object sender, InteractiveSpaceSDK.FingerEventArgs e)
         {
-            Trace.WriteLine("FingerUp: " + e.ID.ToString() + " @ " + e.Position.ToString());
+            //Trace.WriteLine("FingerUp: " + e.ID.ToString() + " @ " + e.Position.ToString());
         }
 
         void FingerTracker_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
         {
-            Trace.WriteLine("FingerDown: " + e.ID.ToString() + " @ " + e.Position.ToString());
+            //Trace.WriteLine("FingerDown: " + e.ID.ToString() + " @ " + e.Position.ToString());
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

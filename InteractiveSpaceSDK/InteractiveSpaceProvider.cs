@@ -5,13 +5,12 @@ using System.Text;
 
 namespace InteractiveSpaceSDK
 {
-    public abstract class InteractiveSpaceProvider
+    public interface InteractiveSpaceProvider
     {
-        public abstract void Connect();
-        public abstract void Close();
+        void Connect();
+        void Close();
 
-        public abstract void CreateFingerTracker();
-        public abstract FingerTracker FingerTracker { get; }
-        
+        void CreateFingerTracker();
+        FingerTracker FingerTracker { get; }
     }
 }
