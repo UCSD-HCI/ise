@@ -89,7 +89,7 @@ DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordina
 	return result;
 }
 
-DLL_EXPORT void motionCameraCenterAt(FloatPoint3D pointInTalbeSurface)
+DLL_EXPORT void motionCameraCenterAt(FloatPoint3D pointInTalbeSurface, void* callback)
 {
-	InteractiveSpaceEngine::sharedEngine()->getMotionCameraController()->centerAt(pointInTalbeSurface);
+	InteractiveSpaceEngine::sharedEngine()->getMotionCameraController()->centerAt(pointInTalbeSurface, (ViscaCommandCallback)callback);
 }
