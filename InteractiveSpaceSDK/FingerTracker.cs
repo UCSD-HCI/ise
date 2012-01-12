@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows.Media.Media3D;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Controls;
 
 namespace InteractiveSpaceSDK
 {

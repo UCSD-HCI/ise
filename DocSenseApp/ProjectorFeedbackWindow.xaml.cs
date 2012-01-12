@@ -18,7 +18,7 @@ namespace DocSenseApp
     /// <summary>
     /// Interaction logic for ProjectorFeedbackWindow.xaml
     /// </summary>
-    public partial class ProjectorFeedbackWindow : InteractiveSpaceSDK.GUI.ProjectorFeedbackWindow
+    public partial class ProjectorFeedbackWindow : InteractiveSpaceWPFControls.ProjectorFeedbackWindow
     {
         public ProjectorFeedbackWindow()
         {
