@@ -2,7 +2,7 @@
 #include "DebugUtils.h"
 #include <math.h>
 
-MotionCameraController::MotionCameraController() : isPanTiltPending(false), panTiltCallback(NULL)
+MotionCameraController::MotionCameraController() : isPanTiltPending(false)
 {
 	int cameraNum;
 	uint status;
@@ -39,36 +39,8 @@ void MotionCameraController::operator()()
 	{
 		boost::this_thread::interruption_point();
 		
-		//test
-		/*ushort s;
-		uint r = VISCA_get_pantilt_mode(&iface, &camera, &s);
-		DEBUG(s);*/
-
-
 		bool isPanTiltPendingCopy;
 		ViscaPanTiltCommand panTiltCmdCopy;
-
-		//check if last command completed
-		if (panTiltCallback != NULL)
-		{
-			ushort status;
-			uint res = VISCA_get_pantilt_mode(&iface, &camera, &status);
-			if (!checkPanTiltInMoveByStatus(status))
-			{
-				completedSignalCounter++;
-
-				if (completedSignalCounter >= COMPLETED_CODE_REPEAT)
-				{
-					//completed
-					panTiltCallback(true);
-					panTiltCallback = NULL;
-				}
-			}
-			else
-			{
-				completedSignalCounter = 0;
-			}
-		}
 
 		{	//read current value and immediately release the lock
 			WriteLock wLock(panTiltCmdMutex);
@@ -80,14 +52,6 @@ void MotionCameraController::operator()()
 
 		if (isPanTiltPendingCopy)
 		{
-			//cancel previous
-			if (panTiltCallback != NULL)
-			{
-				panTiltCallback(false);
-			}
-
-			panTiltCallback = panTiltCmdCopy.callback;
-			completedSignalCounter = 0;
 			int pan = clampPan(panTiltCmdCopy.panPosition);
 			int tilt = clampTilt(panTiltCmdCopy.tiltPosition);
 			DEBUG("Pan/Tilt to " << pan << ", " << tilt);
@@ -99,7 +63,7 @@ void MotionCameraController::operator()()
 	}
 }
 
-void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCommandCallback callback)
+void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface)
 {
 	WriteLock wlock(panTiltCmdMutex);
 	
@@ -111,6 +75,5 @@ void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCom
 
 	pendingPanTiltCmd.panPosition = (int)(atan(((double)pointInTableSurface.y - MOTION_CAMERA_ORIGIN_Y) / MOTION_CAMERA_ORIGIN_Z) * PAN_PER_RAD + 0.5);
 	pendingPanTiltCmd.tiltPosition = (int)(atan(((double)pointInTableSurface.x - MOTION_CAMERA_ORIGIN_X) / MOTION_CAMERA_ORIGIN_Z) * TILT_PER_RAD + 0.5);
-	pendingPanTiltCmd.callback = callback;
 	isPanTiltPending = true;
 }

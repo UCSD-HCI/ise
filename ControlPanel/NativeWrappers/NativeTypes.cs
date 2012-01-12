@@ -161,6 +161,8 @@ namespace ControlPanel.NativeWrappers
         public double Confidence { get { return confidence; } }
     }
 
+    public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
+
     /// <summary>
     /// <remarks>FingerEventsGenerator.h, FingerEventType</remarks>
     /// </summary>
@@ -191,8 +193,4 @@ namespace ControlPanel.NativeWrappers
         public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
         public FingerEventType EventType { get { return eventType; } }
     };
-
-    public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted);
-    public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
-
 }
