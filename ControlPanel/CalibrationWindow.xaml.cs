@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Diagnostics;
 
 namespace ControlPanel
 {
@@ -32,6 +33,7 @@ namespace ControlPanel
         private WriteableBitmap rgbSource, depthSource;
         private BackgroundWorker refreshWorker;
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
+        private ViscaCommandDelegate onPanTiltFinishedDelegate;
 
         private bool isAllCalibrated = false;
         private ProjectorFeedbackWindow projectorFeedbackWindow;
@@ -82,6 +84,8 @@ namespace ControlPanel
             unsafe
             {
                 onRGBChessboardDetectedDelegate = new RGBCalibrationFinishedDelegate(onRGBChessboardDetected);
+                onPanTiltFinishedDelegate = new ViscaCommandDelegate(panTiltCallback);
+
                 IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(onRGBChessboardDetectedDelegate);
                 fixed (FloatPoint3D* refCornersPtr = refCorners)
                 {
@@ -242,9 +246,14 @@ namespace ControlPanel
             {
                 unsafe
                 {
-                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value);
+                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value, Marshal.GetFunctionPointerForDelegate(onPanTiltFinishedDelegate));
                 }
             }
+        }
+
+        private void panTiltCallback(bool isCommandCompleted)
+        {
+            Trace.WriteLine("Pan-Tilt " + (isCommandCompleted ? "completed. " : "aborted."));
         }
 
         void HitTestLayer_MouseMove(object sender, MouseEventArgs e)
@@ -275,7 +284,7 @@ namespace ControlPanel
             {
                 unsafe
                 {
-                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value);
+                    CommandDllWrapper.motionCameraCenterAt(testPointInTableSurface.Value, Marshal.GetFunctionPointerForDelegate(onPanTiltFinishedDelegate));
                 }
             }
         }
