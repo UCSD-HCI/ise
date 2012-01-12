@@ -172,10 +172,6 @@
       <Project>{35BC03D0-5325-460C-AC49-144D0A6FFEF1}</Project>
       <Name>InteractiveSpaceSDK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InteractiveSpaceWPFControls\InteractiveSpaceWPFControls.csproj">
-      <Project>{D4C909E1-B070-48DA-B31B-23604A7B473D}</Project>
-      <Name>InteractiveSpaceWPFControls</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
