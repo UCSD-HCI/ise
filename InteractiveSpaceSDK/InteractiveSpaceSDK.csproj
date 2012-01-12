@@ -89,6 +89,9 @@
     <Compile Include="GUI\ISpacePanel.cs" />
     <Compile Include="GUI\ProjectorFeedbackWindow.cs" />
     <Compile Include="GUI\SpaceCanvas.cs" />
+    <Compile Include="GUI\SpaceToggleButton.xaml.cs">
+      <DependentUpon>SpaceToggleButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InteractiveSpaceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -97,6 +100,12 @@
       <Project>{4B152F4F-97AB-443B-BF9C-A5B1347B580D}</Project>
       <Name>ControlPanel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="GUI\SpaceToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

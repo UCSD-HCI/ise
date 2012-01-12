@@ -52,61 +52,60 @@ namespace InteractiveSpaceSDK.GUI
 
         void fingerTracker_FingerMove(object sender, FingerEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)delegate()
-            {
-                VisualTreeHelper.HitTest(this, null, (HitTestResultCallback)delegate(HitTestResult result)
-                {
-                    if (result.VisualHit is ISpaceControl)
-                    {
-                        ISpaceControl spaceControl = result.VisualHit as ISpaceControl;
-                        spaceControl.RaiseFingerMove(e);
-                        return HitTestResultBehavior.Stop;
-                    }
-                    else
-                    {
-                        return HitTestResultBehavior.Continue;
-                    }
-                }, new PointHitTestParameters(new Point(e.Position.X, e.Position.Y)));
-            }, null);
+            handleFingerEvent(FingerEventType.FingerMove, e);
         }
 
         void fingerTracker_FingerUp(object sender, FingerEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)delegate()
-            {
-                VisualTreeHelper.HitTest(this, null, (HitTestResultCallback)delegate(HitTestResult result)
-                {
-                    if (result.VisualHit is ISpaceControl)
-                    {
-                        ISpaceControl spaceControl = result.VisualHit as ISpaceControl;
-                        spaceControl.RaiseFingerUp(e);
-                        return HitTestResultBehavior.Stop;
-                    }
-                    else
-                    {
-                        return HitTestResultBehavior.Continue;
-                    }
-                }, new PointHitTestParameters(new Point(e.Position.X, e.Position.Y)));
-            }, null);
+            handleFingerEvent(FingerEventType.FingerUp, e);
         }
 
         void fingerTracker_FingerDown(object sender, FingerEventArgs e)
         {
+            handleFingerEvent(FingerEventType.FingerDown, e);
+        }
+
+        private void handleFingerEvent(FingerEventType type, FingerEventArgs e)
+        {
             Dispatcher.BeginInvoke((Action)delegate()
             {
-                VisualTreeHelper.HitTest(this, null, (HitTestResultCallback)delegate(HitTestResult result)
-                {
-                    if (result.VisualHit is ISpaceControl)
+                VisualTreeHelper.HitTest(this,
+                    null,
+                    (HitTestResultCallback)delegate(HitTestResult result)
                     {
-                        ISpaceControl spaceControl = result.VisualHit as ISpaceControl;
-                        spaceControl.RaiseFingerDown(e);
-                        return HitTestResultBehavior.Stop;
-                    }
-                    else
-                    {
-                        return HitTestResultBehavior.Continue;
-                    }
-                }, new PointHitTestParameters(new Point(e.Position.X, e.Position.Y)));
+                        //find ISpaceControl parent
+                        DependencyObject current = result.VisualHit;
+                        while(current != null && !(current is ISpaceControl))
+                        {
+                            current = VisualTreeHelper.GetParent(current);
+                        }
+
+                        if (current != null)
+                        {
+                            ISpaceControl spaceControl = current as ISpaceControl;
+                            switch(type)
+                            {
+                                case FingerEventType.FingerDown:
+                                    spaceControl.RaiseFingerDown(e);
+                                    break;
+
+                                case FingerEventType.FingerUp:
+                                    spaceControl.RaiseFingerUp(e);
+                                    break;
+
+                                case FingerEventType.FingerMove:
+                                    spaceControl.RaiseFingerMove(e);
+                                    break;
+                            }
+
+                            return HitTestResultBehavior.Stop;
+                        }
+                        else
+                        {
+                            return HitTestResultBehavior.Continue;
+                        }
+                    }, 
+                    new PointHitTestParameters(new Point(e.Position.X, e.Position.Y)));
             }, null);
         }
 
@@ -131,6 +130,13 @@ namespace InteractiveSpaceSDK.GUI
             this.Width = workingArea.Width;
             this.Height = workingArea.Height;
             this.WindowState = System.Windows.WindowState.Maximized;
+        }
+
+        private enum FingerEventType
+        {
+            FingerMove,
+            FingerUp,
+            FingerDown,
         }
     }
 }
