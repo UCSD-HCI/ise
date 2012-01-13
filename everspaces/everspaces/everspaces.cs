@@ -40,9 +40,9 @@ namespace everspaces
 		public event getAllLinksHandler getAllLinksCompleted;
 		public event getLinkHandler getLinkCompleted;
 		
-		public everspaces(string host="localhost", int port=9999)
+		public everspaces(string host="128.54.38.41", int port=9999)
 		{
-			//s = new socket(host, port);   //TODO: local server...
+			s = new socket(host, port);  
 			spaces = new evernote(username, password, consumerKey, consumerSecret);
 			/*
 			s = new socket("www.xkcd.com", 80);

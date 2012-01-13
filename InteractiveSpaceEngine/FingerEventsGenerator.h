@@ -8,6 +8,7 @@
 
 #define TRACK_RADIUS 100
 #define PATH_IDLE_FRAMES 3	//A path will survive for PATH_IDLE_FRAMES since there is no new point assigned to it
+#define MIN_PATH_LENGTH 5 //A finger will raise event only after it survives for at least MIN_PATH_LENGTH frames
 
 typedef enum
 {

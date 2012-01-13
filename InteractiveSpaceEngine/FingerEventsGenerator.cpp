@@ -83,7 +83,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			finger.id = lastId;
 			paths.push_back(newPath);
 
-			addEvent(FingerDown, finger);
+			//addEvent(FingerDown, finger);
 		}
 		else	//add this point to an existing path
 		{
@@ -92,7 +92,14 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			finger.id = nearestPath->getID();
 			//finger.id = paths[nearestIndex].getID();
 	
-			addEvent(FingerMove, finger);
+			if (nearestPath->getLength() == MIN_PATH_LENGTH)
+			{
+				addEvent(FingerDown, finger);
+			}
+			else if (nearestPath->getLength() > MIN_PATH_LENGTH)
+			{
+				addEvent(FingerMove, finger);
+			}
 		}
 	}
 
@@ -101,7 +108,10 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 	{
 		if (newFrameCount - paths[i].getLastUpdateFrame() > PATH_IDLE_FRAMES)
 		{
-			addEvent(FingerUp, paths[i].getID(), paths[i].getEndPoint());
+			if (paths[i].getLength() >= MIN_PATH_LENGTH)
+			{
+				addEvent(FingerUp, paths[i].getID(), paths[i].getEndPoint());
+			}
 
 			std::vector<FingerPath>::iterator itToDel = paths.begin();
 			for (int j = 0; j < i; j++, ++itToDel);

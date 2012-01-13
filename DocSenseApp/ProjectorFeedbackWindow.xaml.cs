@@ -82,7 +82,7 @@ namespace DocSenseApp
                             resources.Add(new Tuple<byte[], string>(data, mime));
                             link.setResources(resources);
 
-                            everSpaces.createLink(link, false);
+                            everSpaces.createLink(link);
                         });
                         grabButton.IsChecked = false;
                     }

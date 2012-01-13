@@ -15,6 +15,9 @@ private:
 	long long lastUpdateFrame;
 	int padding;
 
+	//IIR history
+	FloatPoint3D previousInput;
+
 public:
 	FingerPath(int id);
 	void addPoint(const FloatPoint3D& point, long long frame);
@@ -29,6 +32,11 @@ public:
 	inline long long getLastUpdateFrame() const
 	{
 		return lastUpdateFrame;
+	}
+
+	inline int getLength() const
+	{
+		return points.size();
 	}
 };
 
