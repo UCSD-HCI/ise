@@ -132,6 +132,7 @@
     <ClInclude Include="HandTracker.h" />
     <ClInclude Include="InteractiveSpaceTypes.h" />
     <ClInclude Include="MotionCameraController.h" />
+    <ClInclude Include="MotionCameraGrabber.h" />
     <ClInclude Include="MotionCameraReader.h" />
     <ClInclude Include="MotionCameraTracker.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="InteractiveSpaceEngine.cpp" />
     <ClCompile Include="KinectSensor.cpp" />
     <ClCompile Include="MotionCameraController.cpp" />
+    <ClCompile Include="MotionCameraGrabber.cpp" />
     <ClCompile Include="MotionCameraReader.cpp" />
     <ClCompile Include="MotionCameraTracker.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />

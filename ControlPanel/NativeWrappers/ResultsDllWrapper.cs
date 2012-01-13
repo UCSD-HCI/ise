@@ -36,6 +36,9 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe float getFPS();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe ReadLockedWrapperPtr lockMotionCameraLastGrabbedImage();
     }
 
 }

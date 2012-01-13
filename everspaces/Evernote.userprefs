@@ -1,0 +1,24 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="everspaces/Main.cs">
+    <Files>
+      <File FileName="everspaces/Main.cs" Line="84" Column="18" />
+      <File FileName="everspaces/socket.cs" Line="13" Column="26" />
+      <File FileName="everspaces/slink.cs" Line="178" Column="26" />
+      <File FileName="everspaces/evernote.cs" Line="191" Column="4" />
+      <File FileName="everspaces/everspaces.cs" Line="43" Column="59" />
+      <File FileName="everspaces/constants.cs" Line="5" Column="24" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="everspaces" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

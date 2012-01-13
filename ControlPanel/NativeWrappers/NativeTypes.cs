@@ -109,6 +109,12 @@ namespace ControlPanel.NativeWrappers
     unsafe public struct FloatPoint3D
     {
         public float x, y, z;
+        public FloatPoint3D(double x, double y, double z)
+        {
+            this.x = (float)x;
+            this.y = (float)y;
+            this.z = (float)z;
+        }
         public override string ToString()
         {
             return string.Format("{0:0.00},{1:0.00},{2:0.00}", x, y, z);
@@ -192,7 +198,7 @@ namespace ControlPanel.NativeWrappers
         public FingerEventType EventType { get { return eventType; } }
     };
 
-    public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted);
+    public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 
 }

@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using InteractiveSpaceSDK;
 using System.Diagnostics;
+using System.Windows.Media.Media3D;
+using everspaces;
 
 namespace DocSenseApp
 {
@@ -20,9 +22,14 @@ namespace DocSenseApp
     /// </summary>
     public partial class ProjectorFeedbackWindow : InteractiveSpaceSDK.GUI.ProjectorFeedbackWindow
     {
+        private Point3D? lastFingerUpPosition;
+        private everspaces.everspaces everSpaces;
+
         public ProjectorFeedbackWindow()
         {
             InitializeComponent();
+            everSpaces = new everspaces.everspaces();
+            everSpaces.createLinkCompleted += new createLinkHandler(everSpaces_createLinkCompleted);
         }
 
         private void SpaceCanvas_FingerDown(object sender, FingerEventArgs e)
@@ -41,12 +48,60 @@ namespace DocSenseApp
         {
             if (grabButton.IsChecked)
             {
-                if (e.FingerTracker.FingerCount < 2)
+                if (e.FingerTracker.FingerCount == 0)
                 {
+                    if (lastFingerUpPosition.HasValue)
+                    {
+                        Point3D center = new Point3D((lastFingerUpPosition.Value.X + e.Position.X) / 2, (lastFingerUpPosition.Value.Y + e.Position.Y) / 2, 0);
+
+                        Canvas.SetLeft(highlightRect, Canvas.GetLeft(selectionRect));
+                        Canvas.SetTop(highlightRect, Canvas.GetTop(selectionRect));
+                        highlightRect.Width = selectionRect.Width;
+                        highlightRect.Height = selectionRect.Height;
+                        highlightRect.Opacity = 1.0;
+
+                        SpaceProvider.GrabAt(center, (Action)delegate()
+                        {
+                            Trace.WriteLine("Grabbed image at " + center.ToString());
+                            Dispatcher.BeginInvoke((Action)delegate()  
+                            {
+                                highlightRect.Opacity = 0;
+                            }, null);
+
+                            //move to somewhere else!!!
+                            byte[] data;
+                            string mime;
+                            SpaceProvider.GetLastGrabbedImageData(out data, out mime);
+
+                            slink link = new slink(new metadata());
+                            link.setTitle("Screen Capture");
+                            List<string> tags = new List<string>();
+                            tags.Add("Demo");
+
+                            List<Tuple<byte[], string>> resources = new List<Tuple<byte[], string>>();
+                            resources.Add(new Tuple<byte[], string>(data, mime));
+                            link.setResources(resources);
+
+                            everSpaces.createLink(link, false);
+                        });
+                        grabButton.IsChecked = false;
+                    }
+
+
                     selectionRect.Opacity = 0;
+                    lastFingerUpPosition = null;
+                }
+                else
+                {
+                    lastFingerUpPosition = e.Position;
                 }
             }
             //Trace.WriteLine("FingerUp: " + e.ID.ToString() + " @ " + e.Position.ToString());
+        }
+
+        void everSpaces_createLinkCompleted(string data)
+        {
+            System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + data);
         }
 
         private void SpaceCanvas_FingerMove(object sender, FingerEventArgs e)
@@ -73,6 +128,14 @@ namespace DocSenseApp
                     Canvas.SetTop(selectionRect, Math.Min(fingers[0].Position.Y, fingers[1].Position.Y));
                     selectionRect.Width = Math.Abs(fingers[0].Position.X - fingers[1].Position.X);
                     selectionRect.Height = Math.Abs(fingers[0].Position.Y - fingers[1].Position.Y);
+                }
+                else if (e.FingerTracker.FingerCount == 1 && lastFingerUpPosition.HasValue)
+                {
+                    Finger f = e.FingerTracker.Fingers.First();
+                    Canvas.SetLeft(selectionRect, Math.Min(lastFingerUpPosition.Value.X, f.Position.X));
+                    Canvas.SetTop(selectionRect, Math.Min(lastFingerUpPosition.Value.Y, f.Position.Y));
+                    selectionRect.Width = Math.Abs(lastFingerUpPosition.Value.X - f.Position.X);
+                    selectionRect.Height = Math.Abs(lastFingerUpPosition.Value.Y - f.Position.Y);
                 }
             }
 

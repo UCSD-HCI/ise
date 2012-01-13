@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media.Media3D;
 
 namespace InteractiveSpaceSDK
 {
@@ -12,5 +13,8 @@ namespace InteractiveSpaceSDK
 
         void CreateFingerTracker();
         FingerTracker FingerTracker { get; }
+
+        void GrabAt(Point3D center, Action onFinished);
+        void GetLastGrabbedImageData(out byte[] data, out string mime);
     }
 }

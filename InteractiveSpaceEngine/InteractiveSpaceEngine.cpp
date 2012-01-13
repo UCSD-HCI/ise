@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), 
+	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL),
 	fps(0), engineFrameCount(0)
 {
 }
@@ -84,6 +84,12 @@ void InteractiveSpaceEngine::dispose()
 		delete motionCameraReader;
 		motionCameraReader = NULL;
 	}
+
+	if (motionCameraGrabber != NULL)
+	{
+		delete motionCameraGrabber;
+		motionCameraGrabber = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -115,6 +121,7 @@ void InteractiveSpaceEngine::run()
 	motionCameraController = new MotionCameraController();
 
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
+	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
 
 	engineFrameCount = 0;
 	fpsCounter = 0;

@@ -30,6 +30,11 @@ IplImage* MotionCameraReader::createImage()
 	return cvCreateImage(imageSize, imageDepth, imageChannels);
 }
 
+IplImage* MotionCameraReader::createRotatedImage()
+{
+	return cvCreateImage(cvSize(imageSize.height, imageSize.width), imageDepth, imageChannels);
+}
+
 void MotionCameraReader::operator() ()
 {
 	while(true)

@@ -168,6 +168,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\everspaces\everspaces\everspaces.csproj">
+      <Project>{82FFF17B-640D-48F6-9D29-46DA11EA3CD1}</Project>
+      <Name>everspaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InteractiveSpaceSDK\InteractiveSpaceSDK.csproj">
       <Project>{35BC03D0-5325-460C-AC49-144D0A6FFEF1}</Project>
       <Name>InteractiveSpaceSDK</Name>

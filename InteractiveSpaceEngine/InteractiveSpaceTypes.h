@@ -41,7 +41,7 @@ struct DoublePoint3D
 };
 
 typedef void (*Callback)();
-typedef void (*ViscaCommandCallback)(bool isCommandCompleted);
+typedef void (*ViscaCommandCallback)(bool isCommandCompleted, void* state);
 typedef void (*RGBCalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 
 #endif

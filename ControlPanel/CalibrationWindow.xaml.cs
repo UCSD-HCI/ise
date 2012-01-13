@@ -251,7 +251,7 @@ namespace ControlPanel
             }
         }
 
-        private void panTiltCallback(bool isCommandCompleted)
+        private void panTiltCallback(bool isCommandCompleted, IntPtr callbackState)
         {
             Trace.WriteLine("Pan-Tilt " + (isCommandCompleted ? "completed. " : "aborted."));
         }

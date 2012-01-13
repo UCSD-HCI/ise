@@ -14,6 +14,7 @@
 #include "MotionCameraTracker.h"
 #include "FingerEventsGenerator.h"
 #include "MotionCameraReader.h"
+#include "MotionCameraGrabber.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -32,6 +33,8 @@ private:
 	FingerEventsGenerator* fingerEventsGenerator;
 	HandTracker* handTracker;
 	MotionCameraTracker* motionCameraTracker;
+
+	MotionCameraGrabber* motionCameraGrabber;
 
 	Calibrator* calibrator;
 
@@ -66,6 +69,7 @@ public:
 	inline MotionCameraTracker* getMotionCameraTracker() { return motionCameraTracker; }
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
 	inline MotionCameraReader* getMotionCameraReader() { return motionCameraReader; }
+	inline MotionCameraGrabber* getMotionCameraGrabber() { return motionCameraGrabber; }
 
 	inline long long getFrameCount() 
 	{

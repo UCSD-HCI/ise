@@ -21,7 +21,29 @@ namespace InteractiveSpaceSDK.GUI
     {
         private bool isChecked = false;
 
-        public bool IsChecked { get { return isChecked; } }
+        public bool IsChecked 
+        { 
+            get 
+            { 
+                return isChecked; 
+            }
+            set
+            {
+                isChecked = value;
+
+                if (isChecked)
+                {
+                    ellipse.Fill = Brushes.Blue;
+                    textBlock.Foreground = Brushes.White;
+                }
+                else
+                {
+                    ellipse.Fill = Brushes.LightBlue;
+                    textBlock.Foreground = Brushes.Black;
+                }
+            }
+        }
+
 
         public event EventHandler<FingerEventArgs> FingerMove;
         public event EventHandler<FingerEventArgs> FingerDown;
@@ -48,19 +70,8 @@ namespace InteractiveSpaceSDK.GUI
 
         public void RaiseFingerDown(FingerEventArgs e)
         {
-            isChecked = !isChecked;
-
-            if (isChecked)
-            {
-                ellipse.Fill = Brushes.Blue;
-                textBlock.Foreground = Brushes.White;
-            }
-            else
-            {
-                ellipse.Fill = Brushes.LightBlue;
-                textBlock.Foreground = Brushes.Black;
-            }
-
+            IsChecked = !IsChecked;
+            
             if (FingerDown != null)
             {
                 FingerDown(this, e);

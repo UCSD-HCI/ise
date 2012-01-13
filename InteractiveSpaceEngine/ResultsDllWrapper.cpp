@@ -70,3 +70,12 @@ DLL_EXPORT float getFPS()
 {
 	return InteractiveSpaceEngine::sharedEngine()->getFPS();
 }
+
+DLL_EXPORT ReadLockedWrapperPtr lockMotionCameraLastGrabbedImage()
+{
+	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getMotionCameraGrabber()->lockLastGrabbedImg();
+	ReadLockedWrapperPtr res;
+	res.obj = srcPtr->imageData;
+	res.readLock = srcPtr.getReadLock();
+	return res;
+}

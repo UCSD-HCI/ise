@@ -6,9 +6,10 @@
     <Grid>
         <gui:SpaceCanvas FingerDown="SpaceCanvas_FingerDown" FingerUp="SpaceCanvas_FingerUp" FingerMove="SpaceCanvas_FingerMove" Background="Black">
             <Rectangle Name="selectionRect" Fill="#460066CC" Stroke="#3399FF" StrokeThickness="1" Width="100" Height="80" Opacity="0"/>
+            <Rectangle Name="highlightRect" Fill="White" Width="100" Height="80" Opacity="0"/>
         </gui:SpaceCanvas>
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20, 0, 0, 200">
-            <gui:SpaceToggleButton Name="grabButton" Text="Grab"/>
+            <gui:SpaceToggleButton Name="grabButton" Text="Capture"/>
         </StackPanel>
     </Grid>
 </gui:ProjectorFeedbackWindow>

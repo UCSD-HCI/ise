@@ -60,7 +60,7 @@ void MotionCameraController::operator()()
 				if (completedSignalCounter >= COMPLETED_CODE_REPEAT)
 				{
 					//completed
-					panTiltCallback(true);
+					panTiltCallback(true, panTiltCallbackState);
 					panTiltCallback = NULL;
 				}
 			}
@@ -83,10 +83,11 @@ void MotionCameraController::operator()()
 			//cancel previous
 			if (panTiltCallback != NULL)
 			{
-				panTiltCallback(false);
+				panTiltCallback(false, panTiltCallbackState);
 			}
 
 			panTiltCallback = panTiltCmdCopy.callback;
+			panTiltCallbackState = panTiltCmdCopy.callbackState;
 			completedSignalCounter = 0;
 			int pan = clampPan(panTiltCmdCopy.panPosition);
 			int tilt = clampTilt(panTiltCmdCopy.tiltPosition);
@@ -99,7 +100,7 @@ void MotionCameraController::operator()()
 	}
 }
 
-void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCommandCallback callback)
+void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCommandCallback callback, void* state)
 {
 	WriteLock wlock(panTiltCmdMutex);
 	
@@ -112,5 +113,6 @@ void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCom
 	pendingPanTiltCmd.panPosition = (int)(atan(((double)pointInTableSurface.y - MOTION_CAMERA_ORIGIN_Y) / MOTION_CAMERA_ORIGIN_Z) * PAN_PER_RAD + 0.5);
 	pendingPanTiltCmd.tiltPosition = (int)(atan(((double)pointInTableSurface.x - MOTION_CAMERA_ORIGIN_X) / MOTION_CAMERA_ORIGIN_Z) * TILT_PER_RAD + 0.5);
 	pendingPanTiltCmd.callback = callback;
+	pendingPanTiltCmd.callbackState = state;
 	isPanTiltPending = true;
 }

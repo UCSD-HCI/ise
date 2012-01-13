@@ -32,6 +32,7 @@ public:
 
 	void setImageProcessingFactory(ImageProcessingFactory* ipf);
 	IplImage* createImage();
+	IplImage* createRotatedImage();
 
 	inline long long getFrameCount()
 	{

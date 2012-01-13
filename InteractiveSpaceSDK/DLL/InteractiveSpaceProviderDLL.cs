@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading;
 using ControlPanel;
 using ControlPanel.NativeWrappers;
+using System.Runtime.InteropServices;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows;
+using System.IO;
 
 namespace InteractiveSpaceSDK.DLL
 {
@@ -15,6 +20,8 @@ namespace InteractiveSpaceSDK.DLL
         private Thread workingThread;
         private volatile bool stopRequested = false;
         private Int64 lastFrameCount;
+
+        private Action grabCallback;
 
         public void Connect()
         {
@@ -71,6 +78,38 @@ namespace InteractiveSpaceSDK.DLL
                 }
             }
             
+        }
+
+
+        public void GrabAt(System.Windows.Media.Media3D.Point3D center, Action onFinished)
+        {
+            grabCallback = onFinished;  //save it so that it won't be disposed by GC
+            CommandDllWrapper.motionCameraGrabAndSave(new FloatPoint3D(center.X, center.Y, center.Z), Marshal.GetFunctionPointerForDelegate(grabCallback));
+        }
+
+        public void GetLastGrabbedImageData(out byte[] data, out string mime)
+        {
+            unsafe
+            {
+                ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockMotionCameraLastGrabbedImage();
+                int width = CommandDllWrapper.getMotionCameraWidth();
+                int height = CommandDllWrapper.getMotionCameraHeight();
+                WriteableBitmap wb = new WriteableBitmap(height, width, 96, 96, PixelFormats.Bgr24, null);
+                wb.Lock();
+                wb.WritePixels(new Int32Rect(0, 0, height, width), ptr.IntPtr, width * height * 3, height * 3);
+                wb.Unlock();
+                ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+
+                MemoryStream ms = new MemoryStream();
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(wb));
+                encoder.Save(ms);
+
+                ms.Flush();
+                ms.Seek(0, SeekOrigin.Begin);
+                data = ms.ToArray();
+                mime = "image/jpeg";
+            }
         }
     }
 }
