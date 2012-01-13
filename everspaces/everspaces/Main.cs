@@ -28,6 +28,7 @@ namespace everspaces
 		
 		public static void Main (string[] args)
 		{
+			//test
 			everspaces e = new everspaces();
 			
 			e.createLinkCompleted += new createLinkHandler(getCreateLinkResult);
