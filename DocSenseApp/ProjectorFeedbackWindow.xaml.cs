@@ -101,7 +101,8 @@ namespace DocSenseApp
 
         void everSpaces_createLinkCompleted(string data)
         {
-            System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + data);
+            //System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + data);
+            everSpaces.openLink(data);
         }
 
         private void SpaceCanvas_FingerMove(object sender, FingerEventArgs e)

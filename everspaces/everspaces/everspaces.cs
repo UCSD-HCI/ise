@@ -117,12 +117,19 @@ namespace everspaces
 				link.setUri(uri);
 			}
 			
-			if(appType == constants.APP_APPLE_FINDER && uri != constants.UNKNOWN)
+            //modified by Wander
+            if (appType == constants.APP_APPLE_SAFARI && uri != constants.UNKNOWN)
+            {
+                Trace.WriteLine("Linked to " + uri);
+            }
+
+
+			/*if(appType == constants.APP_APPLE_FINDER && uri != constants.UNKNOWN)
 			{
 				string path = uri;
 				path = path.Replace("file://localhost", "");
 				link.addResource(path);
-			}
+			}*/
 			
 			return spaces.createNote(link);
 		}
