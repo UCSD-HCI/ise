@@ -89,6 +89,9 @@
     <Compile Include="GUI\ISpacePanel.cs" />
     <Compile Include="GUI\ProjectorFeedbackWindow.cs" />
     <Compile Include="GUI\SpaceCanvas.cs" />
+    <Compile Include="GUI\SpaceImageButton.xaml.cs">
+      <DependentUpon>SpaceImageButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\SpaceToggleButton.xaml.cs">
       <DependentUpon>SpaceToggleButton.xaml</DependentUpon>
     </Compile>
@@ -102,6 +105,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="GUI\SpaceImageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\SpaceToggleButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

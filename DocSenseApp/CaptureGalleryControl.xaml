@@ -1,11 +1,20 @@
 ﻿<UserControl x:Class="DocSenseApp.CaptureGalleryControl"
+             xmlns:gui="clr-namespace:InteractiveSpaceSDK.GUI;assembly=InteractiveSpaceSDK"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="500" d:DesignWidth="300">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>        
+        <WrapPanel Orientation="Vertical" Name="galleryStack" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></WrapPanel>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Left" Orientation="Horizontal">
+            <gui:SpaceImageButton x:Name="evernoteButton" ImageSource="Images/evernote.png" Width="100" Height="100" FingerDown="SpaceImageButton_FingerDown" Visibility="Hidden"/>
+            <gui:SpaceImageButton x:Name="linkButton" ImageSource="Images/plink.png" Width="100" Height="100" Visibility="Hidden" Margin="20, 0, 0, 0" FingerDown="linkButton_FingerDown"/>
+        </StackPanel>
     </Grid>
 </UserControl>

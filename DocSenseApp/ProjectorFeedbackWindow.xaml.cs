@@ -23,13 +23,10 @@ namespace DocSenseApp
     public partial class ProjectorFeedbackWindow : InteractiveSpaceSDK.GUI.ProjectorFeedbackWindow
     {
         private Point3D? lastFingerUpPosition;
-        private everspaces.everspaces everSpaces;
 
         public ProjectorFeedbackWindow()
         {
             InitializeComponent();
-            everSpaces = new everspaces.everspaces();
-            everSpaces.createLinkCompleted += new createLinkHandler(everSpaces_createLinkCompleted);
         }
 
         private void SpaceCanvas_FingerDown(object sender, FingerEventArgs e)
@@ -63,28 +60,18 @@ namespace DocSenseApp
                         SpaceProvider.GrabAt(center, (Action)delegate()
                         {
                             Trace.WriteLine("Grabbed image at " + center.ToString());
-                            Dispatcher.BeginInvoke((Action)delegate()  
-                            {
-                                highlightRect.Opacity = 0;
-                            }, null);
-
                             //move to somewhere else!!!
                             byte[] data;
                             string mime;
                             SpaceProvider.GetLastGrabbedImageData(out data, out mime);
 
-                            slink link = new slink(new metadata());
-                            link.setTitle("Screen Capture");
-                            List<string> tags = new List<string>();
-                            tags.Add("Demo");
-
-                            List<Tuple<byte[], string>> resources = new List<Tuple<byte[], string>>();
-                            resources.Add(new Tuple<byte[], string>(data, mime));
-                            link.setResources(resources);
-
-                            everSpaces.createLink(link);
+                            Dispatcher.BeginInvoke((Action)delegate()
+                            {
+                                highlightRect.Opacity = 0;
+                                gallery.AddImage(data, mime);
+                            }, null);
                         });
-                        grabButton.IsChecked = false;
+                        //grabButton.IsChecked = false;
                     }
 
 
@@ -97,12 +84,6 @@ namespace DocSenseApp
                 }
             }
             //Trace.WriteLine("FingerUp: " + e.ID.ToString() + " @ " + e.Position.ToString());
-        }
-
-        void everSpaces_createLinkCompleted(string data)
-        {
-            //System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + data);
-            everSpaces.openLink(data);
         }
 
         private void SpaceCanvas_FingerMove(object sender, FingerEventArgs e)
@@ -145,6 +126,16 @@ namespace DocSenseApp
 
         private void ProjectorFeedbackWindow_Loaded(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void grabButton_FingerDown(object sender, FingerEventArgs e)
+        {
+            gallery.ClearAllImages();
+        }
+
+        private void gallery_UploadingBegin(object sender, EventArgs e)
+        {
+            grabButton.IsChecked = false;
         }
     }
 }

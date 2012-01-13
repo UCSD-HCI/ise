@@ -109,6 +109,7 @@ namespace InteractiveSpaceSDK.DLL
                 ms.Seek(0, SeekOrigin.Begin);
                 data = ms.ToArray();
                 mime = "image/jpeg";
+                ms.Close();
             }
         }
     }
