@@ -14,6 +14,7 @@ namespace everspaces
 {	
 	public delegate void createLinkHandler(string data);
 	public delegate void getAllLinksHandler(List<slink> links);
+	public delegate void searchLinksHandler(List<slink> links);
 	public delegate void getLinkHandler(slink link);
 	
 	public class everspaces
@@ -29,6 +30,8 @@ namespace everspaces
 		private bool _createLinkBusy = false;
 		private object _getAllLinksSync = new object();
 		private bool _getAllLinksBusy = false;
+		private object _searchLinksSync = new object();
+		private bool _searchLinksBusy = false;
 		private object _deleteLinkSync = new object();
 		private bool _deleteLinkBusy = false;
 		private object _getLinkSync = new object();
@@ -41,6 +44,7 @@ namespace everspaces
 		public event createLinkHandler createLinkCompleted;
 		public event getAllLinksHandler getAllLinksCompleted;
 		public event getLinkHandler getLinkCompleted;
+		public event searchLinksHandler searchLinksCompleted;
 		
 		public everspaces(string host="localhost", int port=9999)
 		{
@@ -66,6 +70,12 @@ namespace everspaces
 		{
 			if(getAllLinksCompleted != null)
     			getAllLinksCompleted(data);
+		}
+
+		protected virtual void OnSearchLinksCompleted(List<slink> data) 
+		{
+			if(searchLinksCompleted != null)
+    			searchLinksCompleted(data);
 		}
 		
 		protected virtual void OnGetLinkCompleted(slink data) 
@@ -177,6 +187,46 @@ namespace everspaces
 		private List<slink> getAllLinksWorker()
 		{
 			return spaces.getAllNotes();
+		}
+		
+		public IAsyncResult searchLinks(string searchStr)
+		{
+			IAsyncResult result;
+	  		searchLinksDelegate worker = new searchLinksDelegate(searchLinksWorker);
+  			AsyncCallback completedCallback = new AsyncCallback(searchLinksCallback);
+			
+			lock(_searchLinksSync)
+			{		
+				if(_searchLinksBusy)
+					throw new Exception("Get All Link is busy");
+				
+				AsyncOperation async = AsyncOperationManager.CreateOperation(null);
+	    		result = worker.BeginInvoke(searchStr, completedCallback, async);
+				_searchLinksBusy = true;
+			}
+			
+			return result;
+		}
+		
+		private void searchLinksCallback(IAsyncResult ar)
+		{
+			searchLinksDelegate worker = (searchLinksDelegate)((AsyncResult)ar).AsyncDelegate;
+			
+			List<slink> links = worker.EndInvoke(ar);
+			
+			lock(_searchLinksSync)
+			{
+				_searchLinksBusy = false;
+			}
+			
+			OnSearchLinksCompleted(links);
+		}
+		
+		private delegate List<slink> searchLinksDelegate(string searchStr);
+		
+		private List<slink> searchLinksWorker(string searchStr)
+		{
+			return spaces.searchNotes(searchStr);
 		}
 		
 		public IAsyncResult deleteLink(string id)
@@ -292,6 +342,12 @@ namespace everspaces
 		
 		private void openLinkWorker(string id)
 		{
+			if(!_connected)
+			{
+				Console.WriteLine("Cannot open application: not connected to Plink");
+				return;
+			}
+			
 			slink link = getLinkWorker(id);
 			string appType = link.getAppType();
 			string uri = link.getUri();
