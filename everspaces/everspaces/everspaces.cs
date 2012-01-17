@@ -36,20 +36,24 @@ namespace everspaces
 		private object _openLinkSync = new object();
 		private bool _openLinkBusy = false;
 		
+		private bool _connected = true;
+		
 		public event createLinkHandler createLinkCompleted;
 		public event getAllLinksHandler getAllLinksCompleted;
 		public event getLinkHandler getLinkCompleted;
 		
-		public everspaces(string host="128.54.38.41", int port=9999)
+		public everspaces(string host="localhost", int port=9999)
 		{
-			s = new socket(host, port);  
+			try
+			{
+				s = new socket(host, port);  
+			}
+			catch
+			{
+				_connected = false;
+			}
+			
 			spaces = new evernote(username, password, consumerKey, consumerSecret);
-			/*
-			s = new socket("www.xkcd.com", 80);
-			string msg = "GET / HTTP/1.1\r\nHost: www.xkcd.com\r\n\r\n";
-			s.write(msg);
-			Console.WriteLine(s.read());
-			*/
 		}
 		
 		protected virtual void OnCreateLinkCompleted(string data) 
@@ -107,15 +111,16 @@ namespace everspaces
 		
 		private string createLinkWorker(slink link, bool appRequest=true)
 		{
-			string appType = "";
-			string uri = "";
-			if(appRequest)
+			string appType = constants.UNKNOWN;
+			string uri = constants.UNKNOWN;
+			if(appRequest && _connected)
 			{
 				appType = appFocusRequest();
 				uri = appUriRequest(appType);
-				link.setAppType(appType);
-				link.setUri(uri);
 			}
+			
+			link.setAppType(appType);
+			link.setUri(uri);
 			
             //modified by Wander
             if (appType == constants.APP_APPLE_SAFARI && uri != constants.UNKNOWN)

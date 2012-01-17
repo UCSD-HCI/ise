@@ -111,10 +111,16 @@ namespace everspaces
 			
 			foreach (String file in files)
 			{
-				string extension = Path.GetExtension(file);
-				string mime = getMimeType(extension);
-				byte[] data = ReadFully(File.OpenRead(file));
-				resources.Add(new Tuple<byte[], string>(data, mime));
+				try
+				{
+					string extension = Path.GetExtension(file);
+					string mime = getMimeType(extension);
+					byte[] data = ReadFully(File.OpenRead(file));
+					resources.Add(new Tuple<byte[], string>(data, mime));
+				}
+				catch
+				{
+				}
 			}
 		}
 		
@@ -123,10 +129,16 @@ namespace everspaces
 			if(resources == null)
 				resources = new List<Tuple<byte[], string>>();
 			
-			string extension = Path.GetExtension(file);
-			string mime = getMimeType(extension);
-			byte[] data = ReadFully(File.OpenRead(file));
-			resources.Add(new Tuple<byte[], string>(data, mime));
+			try
+			{
+				string extension = Path.GetExtension(file);
+				string mime = getMimeType(extension);
+				byte[] data = ReadFully(File.OpenRead(file));
+				resources.Add(new Tuple<byte[], string>(data, mime));
+			}
+			catch
+			{
+			}
 		}
 		
 		public void setResources(List<Tuple<byte[], string>> resources)
