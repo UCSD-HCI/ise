@@ -84,7 +84,7 @@ namespace everspaces
     			getLinkCompleted(data);
 		}
 		
-		public IAsyncResult createLink(slink link, bool appRequest=true)
+		public IAsyncResult createLink(slink link)
 		{
 			IAsyncResult result;
 	  		createLinkDelegate worker = new createLinkDelegate(createLinkWorker);
@@ -96,7 +96,7 @@ namespace everspaces
 					throw new Exception("Create Link is busy");
 				
 				AsyncOperation async = AsyncOperationManager.CreateOperation(null);
-	    		result = worker.BeginInvoke(link, appRequest, completedCallback, async);
+	    		result = worker.BeginInvoke(link, completedCallback, async);
 				_createLinkBusy = true;
 			}
 			
@@ -117,13 +117,13 @@ namespace everspaces
 			OnCreateLinkCompleted(id);
 		}
 		
-		private delegate string createLinkDelegate(slink link, bool appRequest=true);
+		private delegate string createLinkDelegate(slink link);
 		
-		private string createLinkWorker(slink link, bool appRequest=true)
+		private string createLinkWorker(slink link)
 		{
 			string appType = constants.UNKNOWN;
 			string uri = constants.UNKNOWN;
-			if(appRequest && _connected)
+			if(_connected)
 			{
 				appType = appFocusRequest();
 				uri = appUriRequest(appType);
