@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'RMD(mac)' target in the 'RMD(mac)' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
