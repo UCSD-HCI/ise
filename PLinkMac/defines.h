@@ -24,8 +24,11 @@
 #define FINDERFILEIDENTIFIER @"FinderFileIdentifier"
 
 #define FINDEROPENFILEREQUEST    @"FinderOpenFileRequest"
-#define FINDEROPENFILERESPONSE   @"FinderOpenFileResponse"
 #define FINDEROPENFILEIDENTIFIER @"FinderOpenFileIdentifier"
+
+#define FINDERUPLOADREQUEST		@"FinderUploadRequest"
+#define FINDERUPLOADRESPONSE	@"FinderUploadResponse"
+#define FINDERUPLOADIDENTIFIER	@"FinderUploadIdentifier"
 
 #define SAFARIURLREQUEST    @"SafariURLRequest"
 #define SAFARIURLRESPONSE   @"SafariURLResponse"

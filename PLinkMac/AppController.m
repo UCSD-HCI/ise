@@ -495,6 +495,14 @@ NSString * const kNotificationMessage = @"kNotificationMessage";
   }
 }
 
+- (void)sendData:(NSData *)data
+{
+	for(AsyncSocket *sock in connectedSockets)
+	{
+		[sock writeData:data withTimeout:-1 tag:1];
+	}
+}
+
 //---------------------------------------------------------------------------------
 #pragma mark Socket Methods >> Delegate Methods
 //---------------------------------------------------------------------------------
@@ -712,6 +720,17 @@ NSString * const kNotificationMessage = @"kNotificationMessage";
  
     [self finderOpenFile:fileString];
   }
+	
+  else if([typeString isEqualToString:FINDERUPLOADREQUEST])
+  {
+	  NSLog(@"SOCKET: <FinderUploadREQUEST> received.");
+	  
+	  NSString *fileString = [[jsonDict objectForKey:@"DATA"] objectForKey:FINDERUPLOADIDENTIFIER];
+	  
+	  [self handleFinderUploadRequest:fileString];
+	  
+	  NSLog(@"SOCKET: <FinderUploadRESPONSE> sent.");
+  }
   
   else if([typeString isEqualToString:MAILOPENEMAILREQUEST])
   {
@@ -926,6 +945,16 @@ NSString * const kNotificationMessage = @"kNotificationMessage";
   NSString* jsonString = [jsonObject JSONRepresentation];
   //transmit JSON package via socket
   [self sendMessage:jsonString];
+}
+
+/**
+ * respond to a 'FinderUploadRequest' with JSON
+ */
+- (void)handleFinderUploadRequest:(NSString*)filePath
+{
+	NSData *data = [NSData dataWithContentsOfFile:filePath];
+
+	[self sendData:data];
 }
 
 /**

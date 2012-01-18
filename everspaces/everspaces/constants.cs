@@ -28,6 +28,8 @@ namespace everspaces
 		public static string IDENTIFIER_FINDERFILE = "FinderFileIdentifier";
 		public static string REQUEST_FINDEROPENFILE = "FinderOpenFileRequest";
 		public static string IDENTIFIER_FINDEROPENFILE = "FinderOpenFileIdentifier";
+		public static string REQUEST_FINDERUPLOAD = "FinderUploadRequest";
+		public static string IDENTIFIER_FINDERUPLOAD = "FinderUploadIdentifier";
 		public static string REQUEST_MAILEMAIL = "MailEMailRequest";
 		public static string RESPONSE_MAILEMAIL = "MailEMailResponse";
 		public static string IDENTIFIER_MAILEMAIL = "MailEMailIdentifier";

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
 using System.Runtime.Remoting.Messaging;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -84,7 +85,7 @@ namespace everspaces
     			getLinkCompleted(data);
 		}
 		
-		public IAsyncResult createLink(slink link)
+		public IAsyncResult createLink(slink link, bool upload=false)
 		{
 			IAsyncResult result;
 	  		createLinkDelegate worker = new createLinkDelegate(createLinkWorker);
@@ -96,7 +97,7 @@ namespace everspaces
 					throw new Exception("Create Link is busy");
 				
 				AsyncOperation async = AsyncOperationManager.CreateOperation(null);
-	    		result = worker.BeginInvoke(link, completedCallback, async);
+	    		result = worker.BeginInvoke(link, upload, completedCallback, async);
 				_createLinkBusy = true;
 			}
 			
@@ -117,9 +118,9 @@ namespace everspaces
 			OnCreateLinkCompleted(id);
 		}
 		
-		private delegate string createLinkDelegate(slink link);
+		private delegate string createLinkDelegate(slink link, bool upload=false);
 		
-		private string createLinkWorker(slink link)
+		private string createLinkWorker(slink link, bool upload=false)
 		{
 			string appType = constants.UNKNOWN;
 			string uri = constants.UNKNOWN;
@@ -139,12 +140,28 @@ namespace everspaces
             }
 
 
-			/*if(appType == constants.APP_APPLE_FINDER && uri != constants.UNKNOWN)
+			if(appType == constants.APP_APPLE_FINDER && uri != constants.UNKNOWN && upload)
 			{
-				string path = uri;
-				path = path.Replace("file://localhost", "");
-				link.addResource(path);
-			}*/
+				string path = Regex.Replace(uri, "file://.*?/", "/");
+				
+				Dictionary<string, object> dataMap = new Dictionary<string, object>();
+				Dictionary<string, object> map = new Dictionary<string, object>();
+				string jsonObject;
+				
+				dataMap.Add(constants.IDENTIFIER_FINDERUPLOAD, path);
+				map.Add("TYPE", constants.REQUEST_FINDERUPLOAD);
+				map.Add("DATA", dataMap);
+			
+				Console.WriteLine ("Requesting: {0}", constants.REQUEST_FINDERUPLOAD);
+				jsonObject = JsonConvert.SerializeObject(map);
+				s.write(jsonObject + "\r");
+				
+				string textData = s.readData();
+				byte[] data = System.Text.Encoding.Unicode.GetBytes(textData);
+				string extension = Path.GetExtension(path);
+				string mime = slink.getMimeType(extension);
+				link.addResource(data, mime);
+			}
 			
 			return spaces.createNote(link);
 		}

@@ -141,6 +141,14 @@ namespace everspaces
 			}
 		}
 		
+		public void addResource(byte[] data, string mime)
+		{
+			if(resources == null)
+				resources = new List<Tuple<byte[], string>>();
+			
+			resources.Add(new Tuple<byte[], string>(data, mime));
+		}
+		
 		public void setResources(List<Tuple<byte[], string>> resources)
 		{
 			this.resources = resources;
@@ -191,7 +199,7 @@ namespace everspaces
 			{".mp4", "video/mp4"}
     	};
 		
-		private static string getMimeType(string extension)
+		public static string getMimeType(string extension)
 		{
 			string mimeType = "application/octet-stream";
 

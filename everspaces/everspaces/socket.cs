@@ -18,6 +18,7 @@ namespace everspaces
 			IPEndPoint ipEnd = new IPEndPoint(ipAddress[0], port);
 			s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			s.Connect(ipEnd);
+			s.ReceiveTimeout = 1000;
 			
 			NetworkStream ns = new NetworkStream(s);
 			r = new StreamReader(ns);
@@ -26,29 +27,35 @@ namespace everspaces
 		
 		public void write(string msg)
 		{
-			
-			//byte[] send = Encoding.ASCII.GetBytes(msg);
-			//s.Send(send, send.Length, 0);
-			
 			w.WriteLine(msg);
 			w.Flush();
 		}
 		
 		public string read()
 		{	
-			/*
+			return r.ReadLine();
+		}
+		
+		public string readData()
+		{
 			int bytes = 0;
 			string msg = "";
 			byte[] receive = new byte[256];
 			do
 			{	
-				bytes = s.Receive(receive, receive.Length, 0);
-				msg += Encoding.ASCII.GetString(receive, 0, bytes);
-			} while(bytes > 0);
-			
+				try
+				{
+					bytes = s.Receive(receive, receive.Length, 0);
+				}
+				catch
+				{
+					Console.WriteLine ("Timed out");
+					break;
+				}
+				msg += Encoding.Unicode.GetString(receive, 0, bytes);
+			} while(bytes == 256);
+
 			return msg;
-			*/
-			return r.ReadLine();
 		}
 		
 	}

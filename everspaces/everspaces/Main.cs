@@ -55,7 +55,7 @@ namespace everspaces
 			
 			IAsyncResult result;
 			
-			e.createLink(link);
+			e.createLink(link, true);
 			
 			while(ids.Count == 0){}
 			
