@@ -203,4 +203,25 @@ namespace ControlPanel.NativeWrappers
     public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 
+
+    public enum HandEventType
+    {
+	HandCaptured,
+	HandLost,
+	HandMove
+    };
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    unsafe public struct HandEvent
+    {
+	    private int id;
+	    private FloatPoint3D position;	//in 3-D kinect space
+	    private FloatPoint3D positionTable2D;
+	    private HandEventType eventType;
+
+        public int ID { get { return id; } }
+        public FloatPoint3D Position { get { return position; } }
+        public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
+        public HandEventType EventType { get { return eventType; } }
+    };
 }

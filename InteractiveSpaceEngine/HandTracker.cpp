@@ -1,6 +1,7 @@
 #include "HandTracker.h"
 #include <stdio.h>
 #include "DebugUtils.h"
+#include "InteractiveSpaceEngine.h"
 using namespace std;
 
 HandTracker::HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor) 
@@ -258,4 +259,17 @@ void HandTracker::refresh()
 				handsGen->StartTracking(p);
 		}
 	}
+}
+
+//for events
+void HandTracker::addEvent(HandEventType type, const Hand* hand)
+{
+	events[eventNum].eventType = type;
+	events[eventNum].id = hand->id;
+	events[eventNum].position = hand->positionInKinectProj;
+
+	FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(events[eventNum].position);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&pointProj, &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
+	
+	eventNum++;
 }
