@@ -159,12 +159,14 @@ namespace ControlPanel.NativeWrappers
 	    private FloatPoint3D positionInRealWorld;
 	    private IntPoint3D positionInKinectProj;
 	    private double confidence;
+        private bool captured;
 
         public HandType HandType { get { return handType; } }
         public UInt32 ID { get { return id; } }
         public FloatPoint3D PositionInRealWorld { get { return positionInRealWorld; } }
         public IntPoint3D PositionInKinectProj { get { return positionInKinectProj; } }
         public double Confidence { get { return confidence; } }
+        public bool Captured { get { return captured; } }
     }
 
     /// <summary>

@@ -29,8 +29,15 @@ namespace DocSenseApp
         public CaptureGalleryControl()
         {
             InitializeComponent();
-            everSpaces = new everspaces.everspaces();
-            everSpaces.createLinkCompleted += new everspaces.createLinkHandler(everSpaces_createLinkCompleted);
+            try
+            {
+                everSpaces = new everspaces.everspaces();
+                everSpaces.createLinkCompleted += new everspaces.createLinkHandler(everSpaces_createLinkCompleted);
+            }
+            catch (Exception)
+            {
+                everSpaces = null;
+            }
         }
 
         public IEnumerable<ISpaceControl> SpaceChildren
@@ -156,7 +163,11 @@ namespace DocSenseApp
             }
 
             link.setResources(resources);
-            everSpaces.createLink(link);
+
+            if (everSpaces != null)
+            {
+                everSpaces.createLink(link);
+            }
 
             Trace.WriteLine("Uploading to evernote...");
         }
@@ -172,7 +183,7 @@ namespace DocSenseApp
 
         private void linkButton_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
         {
-            if (currentEvernoteId != null)
+            if (currentEvernoteId != null && everSpaces != null)
             {
                 everSpaces.openLink(currentEvernoteId);
                 System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + currentEvernoteId);
