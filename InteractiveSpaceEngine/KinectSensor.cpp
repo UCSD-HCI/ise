@@ -36,7 +36,6 @@ void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
 	this->ipf = ipf;
 	//threadStart();
 }
-
 void KinectSensor::operator() ()
 {
 	while(true)
