@@ -29,7 +29,8 @@ namespace everspaces
 		public static void Main (string[] args)
 		{
 			//test
-			everspaces e = new everspaces();
+			everspaces e = new everspaces("192.168.1.110", 9999);
+			//everspaces e = new everspaces();
 			
 			e.createLinkCompleted += new createLinkHandler(getCreateLinkResult);
 			e.getLinkCompleted += new getLinkHandler(getLinkResult);
@@ -41,8 +42,8 @@ namespace everspaces
 			coord.y2 = 5;
 			
 			slink link = new slink(coord);
-			link.setTitle("My first link!");
-			link.setComment("This is the coolest!");
+			link.setTitle("PLinkWin");
+			link.setComment("Testing PLinkWin");
 			List<String> tags = new List<String>();
 			tags.Add("ryan");
 			link.setTags(tags);
@@ -50,10 +51,10 @@ namespace everspaces
 			//files.Add("qrcode.jpg");
 			//link.setResources(files);
 			
-			Console.WriteLine("Waiting for link...");
-			Thread.Sleep(5000);
-			
 			IAsyncResult result;
+			
+			//Console.WriteLine("Waiting to create...");
+			//Thread.Sleep(5000);
 			
 			e.createLink(link, true);
 			

@@ -18,7 +18,7 @@ namespace everspaces
 			IPEndPoint ipEnd = new IPEndPoint(ipAddress[0], port);
 			s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			s.Connect(ipEnd);
-			s.ReceiveTimeout = 1000;
+			s.ReceiveTimeout = 5000;
 			
 			NetworkStream ns = new NetworkStream(s);
 			r = new StreamReader(ns);
@@ -49,11 +49,10 @@ namespace everspaces
 				}
 				catch
 				{
-					Console.WriteLine ("Timed out");
 					break;
 				}
 				msg += Encoding.Unicode.GetString(receive, 0, bytes);
-			} while(bytes == 256);
+			} while(bytes > 0);
 
 			return msg;
 		}
