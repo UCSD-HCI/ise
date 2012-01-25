@@ -21,7 +21,7 @@ typedef enum
 	FingerLost
 } FingerEventType;
 
-typedef struct FingerEvent
+struct FingerEvent
 {
 	int id;
 	/**
@@ -33,7 +33,7 @@ typedef struct FingerEvent
 	 */
 	FloatPoint3D positionTable2D;
 	FingerEventType eventType;
-} FingerEvent;
+};
 
 /**
  * Track individual finger points. Find the temporal correlation and generate paths.
@@ -59,7 +59,6 @@ public:
 	/**
 	 * @remark The caller should check if events of this frame has already consumed
 	 */
-	//FIXME: if the caller missed some frames, down/up events may be missed.
 	inline ReadLockedPtr<FingerEvent*> lockEvents(int* eventNumPtr, long long* frame)
 	{
 		*eventNumPtr = eventNum;
