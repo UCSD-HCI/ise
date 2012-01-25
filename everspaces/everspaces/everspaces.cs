@@ -140,19 +140,35 @@ namespace everspaces
             }
 
 
-			if(appType == constants.APP_APPLE_FINDER && uri != constants.UNKNOWN && upload)
+			if((appType == constants.APP_APPLE_FINDER || appType == constants.APP_WIN_EXPLORER) 
+			   	&& uri != constants.UNKNOWN && upload)
 			{
-				string path = Regex.Replace(uri, "file://.*?/", "/");
+				string path;
+				string request;
+				string identifier;
+				
+				if(appType == constants.APP_APPLE_FINDER)
+				{
+					path = Regex.Replace(uri, "file://.*?/", "/");
+					request = constants.REQUEST_FINDERUPLOAD;
+					identifier = constants.IDENTIFIER_FINDERUPLOAD;
+				}
+				else
+				{
+					path = uri;
+					request = constants.REQUEST_EXPLORERUPLOAD;
+					identifier = constants.IDENTIFIER_EXPLORERUPLOAD;
+				}
 				
 				Dictionary<string, object> dataMap = new Dictionary<string, object>();
 				Dictionary<string, object> map = new Dictionary<string, object>();
 				string jsonObject;
 				
-				dataMap.Add(constants.IDENTIFIER_FINDERUPLOAD, path);
-				map.Add("TYPE", constants.REQUEST_FINDERUPLOAD);
+				dataMap.Add(identifier, path);
+				map.Add("TYPE", request);
 				map.Add("DATA", dataMap);
 			
-				Console.WriteLine ("Requesting: {0}", constants.REQUEST_FINDERUPLOAD);
+				Console.WriteLine ("Requesting: {0}", request);
 				jsonObject = JsonConvert.SerializeObject(map);
 				s.write(jsonObject + "\r");
 				
@@ -394,6 +410,26 @@ namespace everspaces
 				openRequest = constants.REQUEST_SKIMOPENPDF;
 				openIdentifier = constants.IDENTIFIER_SKIMOPENPDF;
 			}
+			else if(appType == constants.APP_WIN_FIREFOX)
+			{
+				openRequest = constants.REQUEST_FIREFOXOPENURL;
+				openIdentifier = constants.IDENTIFIER_FIREFOXOPENURL;
+			}
+			else if(appType == constants.APP_WIN_IEXPLORE)
+			{
+				openRequest = constants.REQUEST_IEXPLOREOPENURL;
+				openIdentifier = constants.IDENTIFIER_IEXPLOREOPENURL;
+			}
+			else if(appType == constants.APP_WIN_CHROME)
+			{
+				openRequest = constants.REQUEST_CHROMEOPENURL;
+				openIdentifier = constants.IDENTIFIER_CHROMEOPENURL;
+			}
+			else if(appType == constants.APP_WIN_EXPLORER)
+			{
+				openRequest = constants.REQUEST_EXPLOREROPENFILE;
+				openIdentifier = constants.IDENTIFIER_EXPLOREROPENFILE;
+			}
 			else
 			{
 				Console.WriteLine("Cannot open application: {0}", appType);
@@ -443,6 +479,30 @@ namespace everspaces
 				response = constants.RESPONSE_SKIMPDF;
 				identifier = constants.IDENTIFIER_SKIMPDF;
 			}
+			else if(appType == constants.APP_WIN_FIREFOX)
+			{
+				request = constants.REQUEST_FIREFOXURL;
+				response = constants.RESPONSE_FIREFOXURL;
+				identifier = constants.IDENTIFIER_FIREFOXURL;
+			}
+			else if(appType == constants.APP_WIN_IEXPLORE)
+			{
+				request = constants.REQUEST_IEXPLOREURL;
+				response = constants.RESPONSE_IEXPLOREURL;
+				identifier = constants.IDENTIFIER_IEXPLOREURL;
+			}
+			else if(appType == constants.APP_WIN_CHROME)
+			{
+				request = constants.REQUEST_CHROMEURL;
+				response = constants.RESPONSE_CHROMEURL;
+				identifier = constants.IDENTIFIER_CHROMEURL;
+			}
+			else if(appType == constants.APP_WIN_EXPLORER)
+			{
+				request = constants.REQUEST_EXPLORERFILE;
+				response = constants.RESPONSE_EXPLORERFILE;
+				identifier = constants.IDENTIFIER_EXPLORERFILE;
+			}
 			else
 			{
 				Console.WriteLine("Unknown application type");
@@ -481,7 +541,7 @@ namespace everspaces
 			string jsonTxt;
 			JObject reply;
 			
-			Console.WriteLine("Application focus request");
+			Console.WriteLine("Requesting: {0}", constants.REQUEST_APPFOCUS);
 			map.Add("TYPE", constants.REQUEST_APPFOCUS);
 			jsonObject = JsonConvert.SerializeObject(map);
 			s.write(jsonObject + "\r");
