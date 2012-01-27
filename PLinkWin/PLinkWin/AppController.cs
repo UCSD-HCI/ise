@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Automation;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace PLinkWin
 {
@@ -48,6 +49,10 @@ namespace PLinkWin
             else if (process.ProcessName == "chrome")
             {
                 appType = constants.APP_WIN_CHROME;
+            }
+            else if (process.ProcessName == "AcroRd32")
+            {
+                appType = constants.APP_WIN_ADOBE;
             }
             else
             {
@@ -95,6 +100,12 @@ namespace PLinkWin
                 if (uri == null)
                     uri = constants.UNKNOWN;
             }
+            else if (appType == constants.APP_WIN_ADOBE)
+            {
+                uri = GetAdobeInfo(process);
+                if (uri == null)
+                    uri = constants.UNKNOWN;
+            }
             else
             {
                 uri = constants.UNKNOWN;
@@ -124,6 +135,59 @@ namespace PLinkWin
                 return null;
 
             return path;
+        }
+
+        private static string GetAdobeInfo(Process process)
+        {
+            if (process == null)
+                throw new ArgumentNullException("process");
+
+            if (process.MainWindowHandle == IntPtr.Zero)
+                return null;
+
+            Process p = new Process();
+
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "PLinkWin.getAdobePageNumber.exe";
+            p.Start();
+            StreamReader reader = p.StandardOutput;
+            string pageNumberInfo = reader.ReadToEnd();
+
+            string[] split = pageNumberInfo.Split('\n');
+            string pageNum = split[1];
+            pageNum = pageNum.TrimEnd('\r');
+
+            p = new Process();
+
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "PLinkWin.getPathAdobeLocation.exe";
+            p.Start();
+            reader = p.StandardOutput;
+            string adobeInfo = reader.ReadToEnd();
+
+            split = adobeInfo.Split('\n');
+            string file = "";
+            string location = "";
+            for(int i = 0; i < split.Length; i++)
+            {
+                Match mFile = Regex.Match(split[i], "^File:");
+                if (mFile.Success)
+                    file = split[i + 1];
+
+                Match mLocation = Regex.Match(split[i], "^Location:");
+                if (mLocation.Success)
+                    location = split[i + 1];
+
+            }
+
+            file = file.TrimEnd('\r');
+            location = location.TrimEnd('\r');
+
+            string info = "page=" + pageNum + " " + location + file + ".pdf";
+
+            return info;
         }
 
         private static string GetInternetExplorerUrl(Process process)
@@ -190,6 +254,11 @@ namespace PLinkWin
         public static void openFile(string path)
         {
             Process.Start(path);
+        }
+
+        public static void openFile(string exec, string args)
+        {
+            Process.Start(exec, args);
         }
     }
 }

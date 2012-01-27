@@ -153,6 +153,23 @@ namespace PLinkWin
 
                     Console.WriteLine("SOCKET: data sent.");
                 }
+                else if (type == constants.REQUEST_ADOBEINFO)
+                {
+                    Console.WriteLine("SOCKET: {0} received.", constants.REQUEST_ADOBEINFO);
+
+                    handleAdobeInfoRequest(w);
+
+                    Console.WriteLine("SOCKET: {0} sent.", constants.RESPONSE_ADOBEINFO);
+                }
+                else if (type == constants.REQUEST_ADOBEOPENINFO)
+                {
+                    Console.WriteLine("SOCKET: {0} received.", constants.REQUEST_ADOBEOPENINFO);
+
+                    JObject id = (JObject)request["DATA"];
+                    string info = (string)id[constants.IDENTIFIER_ADOBEOPENINFO];
+
+                    handleAdobeOpenRequest(info);
+                }
                 else
                 {
                     Console.WriteLine("SOCKET: received unknown operation.");
@@ -239,6 +256,21 @@ namespace PLinkWin
             w.Flush();
         }
 
+        private void handleAdobeInfoRequest(StreamWriter w)
+        {
+            string info = AppController.getURI(constants.APP_WIN_ADOBE);
+            Dictionary<string, object> map = new Dictionary<string, object>();
+            Dictionary<string, string> dataMap = new Dictionary<string, string>();
+
+            dataMap.Add(constants.IDENTIFIER_ADOBEINFO, info);
+            map.Add("TYPE", constants.RESPONSE_ADOBEINFO);
+            map.Add("DATA", dataMap);
+
+            string jsonObject = JsonConvert.SerializeObject(map);
+            w.WriteLine(jsonObject);
+            w.Flush();
+        }
+
         private void handleFirefoxOpenRequest(string url)
         {
             AppController.openURL("firefox", url);
@@ -257,6 +289,11 @@ namespace PLinkWin
         private void handleExplorerOpenRequest(string path)
         {
             AppController.openFile(path);
+        }
+
+        private void handleAdobeOpenRequest(string info)
+        {
+            AppController.openFile("AcroRd32", "/A " + info);
         }
 
         private void handleExplorerUploadRequest(NetworkStream ns, string path)

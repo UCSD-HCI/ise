@@ -13,6 +13,7 @@ namespace PLinkWin
         public static string APP_WIN_IEXPLORE = "app.win.iexplore";
         public static string APP_WIN_EXPLORER = "app.win.explorer";
         public static string APP_WIN_CHROME = "app.win.chrome";
+        public static string APP_WIN_ADOBE = "app.win.adobe";
 
         public static string REQUEST_APPFOCUS = "AppFocusRequest";
         public static string RESPONSE_APPFOCUS = "AppFocusResponse";
@@ -39,5 +40,10 @@ namespace PLinkWin
         public static string IDENTIFIER_EXPLOREROPENFILE = "ExplorerOpenFileIdentifier";
         public static string REQUEST_EXPLORERUPLOAD = "ExplorerUploadRequest";
         public static string IDENTIFIER_EXPLORERUPLOAD = "ExplorerUploadIdentifier";
+        public static string REQUEST_ADOBEINFO = "AdobeInfoRequest";
+        public static string RESPONSE_ADOBEINFO = "AdobeInfoResponse";
+        public static string IDENTIFIER_ADOBEINFO = "AdobeInfoIdentifier";
+        public static string REQUEST_ADOBEOPENINFO = "AdobeOpenInfoRequest";
+        public static string IDENTIFIER_ADOBEOPENINFO = "AdobeOpenInfoIdentifier";
     }
 }
