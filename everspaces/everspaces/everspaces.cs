@@ -430,6 +430,11 @@ namespace everspaces
 				openRequest = constants.REQUEST_EXPLOREROPENFILE;
 				openIdentifier = constants.IDENTIFIER_EXPLOREROPENFILE;
 			}
+			else if(appType == constants.APP_WIN_ADOBE)
+			{
+				openRequest = constants.REQUEST_ADOBEOPENINFO;
+				openIdentifier = constants.IDENTIFIER_ADOBEOPENINFO;
+			}
 			else
 			{
 				Console.WriteLine("Cannot open application: {0}", appType);
@@ -502,6 +507,12 @@ namespace everspaces
 				request = constants.REQUEST_EXPLORERFILE;
 				response = constants.RESPONSE_EXPLORERFILE;
 				identifier = constants.IDENTIFIER_EXPLORERFILE;
+			}
+			else if(appType == constants.APP_WIN_ADOBE)
+			{
+				request = constants.REQUEST_ADOBEINFO;
+				response = constants.RESPONSE_ADOBEINFO;
+				identifier = constants.IDENTIFIER_ADOBEINFO;
 			}
 			else
 			{

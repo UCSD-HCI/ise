@@ -15,6 +15,7 @@ namespace everspaces
 		public static string APP_WIN_IEXPLORE = "app.win.iexplore";
 		public static string APP_WIN_EXPLORER = "app.win.explorer";
 		public static string APP_WIN_CHROME = "app.win.chrome";
+		public static string APP_WIN_ADOBE = "app.win.adobe";
 		
 		//Protocol Strings
 		public static string NOTIFICATION_DIDFINISHLAUNCHING = "RMDJavaDidFinishLaunchingNotification";
@@ -66,6 +67,11 @@ namespace everspaces
 		public static string IDENTIFIER_EXPLOREROPENFILE = "ExplorerOpenFileIdentifier";
 		public static string REQUEST_EXPLORERUPLOAD = "ExplorerUploadRequest";
 		public static string IDENTIFIER_EXPLORERUPLOAD = "ExplorerUploadIdentifier";
+		public static string REQUEST_ADOBEINFO = "AdobeInfoRequest";
+		public static string RESPONSE_ADOBEINFO = "AdobeInfoResponse";
+		public static string IDENTIFIER_ADOBEINFO = "AdobeInfoIdentifier";
+		public static string REQUEST_ADOBEOPENINFO = "AdobeOpenInfoRequest";
+		public static string IDENTIFIER_ADOBEOPENINFO = "AdobeOpenInfoIdentifier";
 	}
 }
 
