@@ -26,7 +26,7 @@ typedef struct Hand
 	FloatPoint3D positionInRealWorld;
 	IntPoint3D positionInKinectProj;
 	double confidence;
-	bool captured;
+	int captured;
 
 	bool operator< (const Hand& ref) const {return confidence > ref.confidence; }	//sort more to less
 };

@@ -177,7 +177,7 @@ namespace ControlPanel
                             Canvas.SetLeft(handPoints[i], hands[i].PositionInKinectProj.x - HAND_RADIUS);
                             Canvas.SetTop(handPoints[i], hands[i].PositionInKinectProj.y - HAND_RADIUS);
                             //handPoints[i].Opacity = hands[i].HandType == HandType.TrackingHand ? 1.0 : 0.5;
-                            handPoints[i].Opacity = hands[i].Captured ? 1.0 : 0.0;
+                            handPoints[i].Opacity = hands[i].Captured > 0 ? 1.0 : 0.0;
                             handPoints[i].Fill = hands[i].HandType == HandType.NewHandHint ? Brushes.Black : new SolidColorBrush(IntColorConverter.ToColor((int)hands[i].ID));
                         }
 

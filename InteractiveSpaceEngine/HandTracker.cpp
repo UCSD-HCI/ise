@@ -30,7 +30,7 @@ void HandTracker::addHandHint(FloatPoint3D& positionInRealWorld, double confiden
 
 	hands[handNum].confidence = confidence;
 
-	hands[handNum].captured = false;
+	hands[handNum].captured = 0;
 	
 	handNum++;
 
@@ -126,7 +126,7 @@ void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, X
 	Hand* hand = handTracker->findHand(TrackingHand, user);
 	if (hand != NULL)
 	{
-		hand->captured = true;
+		hand->captured = 1;
 		hand->positionInRealWorld.x = pPosition->X;
 		hand->positionInRealWorld.y = pPosition->Y;
 		hand->positionInRealWorld.z = pPosition->Z;
