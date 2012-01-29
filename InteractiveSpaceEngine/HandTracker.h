@@ -31,6 +31,25 @@ typedef struct Hand
 	bool operator< (const Hand& ref) const {return confidence > ref.confidence; }	//sort more to less
 };
 
+//events
+typedef enum
+{
+	HandMove,
+	HandCaptured,
+	HandLost
+} HandEventType;
+
+typedef struct HandEvent
+{
+	int id;
+	FloatPoint3D position;
+	FloatPoint3D positionTable2D;
+
+	HandEventType eventType;
+};
+
+typedef void (*HandEventCallback)(HandEvent e);
+
 class HandTracker
 {
 private:
@@ -43,6 +62,9 @@ private:
 	int nextHintId;
 	Mutex handsMutex;
 
+	//event listener
+	HandEventCallback handMoveCallback, handCapturedCallback, handLostCallback;
+
 	XnCallbackHandle hCallback;
 	static void XN_CALLBACK_TYPE handCreateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie);
 	static void XN_CALLBACK_TYPE handUpdateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie);
@@ -53,10 +75,14 @@ private:
 	void removeHand(HandType handType, unsigned int id);
 	Hand* findHand(HandType handType, unsigned int id);
 
+	void raiseEvent(const Hand& hand, HandEventType eventType);
+
 public:
 	HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor);
 	virtual ~HandTracker();
 	void refresh();
+
+	void registerCallbacks(HandEventCallback handMoveCallback, HandEventCallback handCapturedCallback, HandEventCallback handLostCallback);
 
 	inline ReadLockedPtr<Hand*> lockHands(int* handNum) 
 	{

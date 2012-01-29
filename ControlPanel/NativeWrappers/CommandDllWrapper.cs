@@ -66,5 +66,8 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void motionCameraGrabAndSave(FloatPoint3D pointInTableSurface, IntPtr callback);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void registerHandEventCallbacks(IntPtr handMoveCallback, IntPtr handCapturedCallback, IntPtr handLostCallback);
     }
 }

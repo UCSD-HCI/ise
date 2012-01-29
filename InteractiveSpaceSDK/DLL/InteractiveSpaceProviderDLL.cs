@@ -16,6 +16,7 @@ namespace InteractiveSpaceSDK.DLL
     public class InteractiveSpaceProviderDLL : InteractiveSpaceProvider
     {
         private FingerTrackerDLL fingerTracker;
+        private HandTrackerDLL handTracker;
         private MainWindow mainWindow;
         private Thread workingThread;
         private volatile bool stopRequested = false;
@@ -111,6 +112,17 @@ namespace InteractiveSpaceSDK.DLL
                 mime = "image/jpeg";
                 ms.Close();
             }
+        }
+
+
+        public void CreateHandTracker()
+        {
+            handTracker = new HandTrackerDLL();
+        }
+
+        public HandTracker HandTracker
+        {
+            get { return handTracker; }
         }
     }
 }

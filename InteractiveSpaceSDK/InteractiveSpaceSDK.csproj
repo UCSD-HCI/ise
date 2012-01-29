@@ -83,18 +83,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DLL\FingerTrackerDLL.cs" />
+    <Compile Include="DLL\HandTrackerDLL.cs" />
     <Compile Include="DLL\InteractiveSpaceProviderDLL.cs" />
     <Compile Include="FingerTracker.cs" />
     <Compile Include="GUI\ISpaceControl.cs" />
     <Compile Include="GUI\ISpacePanel.cs" />
     <Compile Include="GUI\ProjectorFeedbackWindow.cs" />
     <Compile Include="GUI\SpaceCanvas.cs" />
+    <Compile Include="GUI\SpaceHandWheel.xaml.cs">
+      <DependentUpon>SpaceHandWheel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\SpaceImageButton.xaml.cs">
       <DependentUpon>SpaceImageButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\SpaceToggleButton.xaml.cs">
       <DependentUpon>SpaceToggleButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HandTracker.cs" />
     <Compile Include="InteractiveSpaceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -105,6 +110,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="GUI\SpaceHandWheel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\SpaceImageButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

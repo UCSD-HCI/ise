@@ -1,6 +1,7 @@
 #include "DllWrapper.h"
 #include "InteractiveSpaceEngine.h"
 #include "InteractiveSpaceTypes.h"
+#include "HandTracker.h"
 
 DLL_EXPORT void engineRun()
 {
@@ -97,4 +98,9 @@ DLL_EXPORT void motionCameraCenterAt(FloatPoint3D pointInTableSurface, void* cal
 DLL_EXPORT void motionCameraGrabAndSave(FloatPoint3D pointInTableSurface, void* callback)
 {
 	InteractiveSpaceEngine::sharedEngine()->getMotionCameraGrabber()->grabAndSave(pointInTableSurface, "test.jpg", (Callback)callback);
+}
+
+DLL_EXPORT void registerHandEventCallbacks(void* handMoveCallback, void* handCapturedCallback, void* handLostCallback)
+{
+	InteractiveSpaceEngine::sharedEngine()->getHandTracker()->registerCallbacks((HandEventCallback)handMoveCallback, (HandEventCallback)handCapturedCallback, (HandEventCallback)handLostCallback);
 }

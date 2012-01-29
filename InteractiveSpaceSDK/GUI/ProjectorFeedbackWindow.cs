@@ -13,6 +13,8 @@ namespace InteractiveSpaceSDK.GUI
     {
         private InteractiveSpaceProvider provider;
 
+        public event EventHandler SpaceProviderReady;
+
         public ProjectorFeedbackWindow()
         {
             WindowStyle = WindowStyle.None;
@@ -46,6 +48,11 @@ namespace InteractiveSpaceSDK.GUI
                     newFingerTracker.FingerMove += new EventHandler<FingerEventArgs>(fingerTracker_FingerMove);
                     newFingerTracker.FingerDown += new EventHandler<FingerEventArgs>(fingerTracker_FingerDown);
                     newFingerTracker.FingerUp += new EventHandler<FingerEventArgs>(fingerTracker_FingerUp);
+                }
+
+                if (SpaceProviderReady != null)
+                {
+                    SpaceProviderReady(this, EventArgs.Empty);
                 }
             }
         }

@@ -13,5 +13,6 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20, 0, 0, 200">
             <gui:SpaceToggleButton Name="grabButton" Text="Capture" FingerDown="grabButton_FingerDown"/>
         </StackPanel>
+        <gui:SpaceHandWheel Name="handWheel" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </gui:ProjectorFeedbackWindow>

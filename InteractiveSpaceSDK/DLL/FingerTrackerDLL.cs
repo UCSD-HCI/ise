@@ -45,6 +45,13 @@ namespace InteractiveSpaceSDK.DLL
                     {
                         case FingerEventType.FingerMove:
                             Finger movingFinger = fingers[e.ID];    //it should not be null
+
+                            //but because of sync bug, it can...
+                            if (movingFinger == null)
+                            {
+                                break;
+                            }
+
                             movingFinger.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
                             if (FingerMove != null)
                             {
@@ -54,6 +61,13 @@ namespace InteractiveSpaceSDK.DLL
 
                         case FingerEventType.FingerUp:
                             Finger removedFinger = fingers[e.ID];   //it should not be null
+                            
+                        //but because of sync bug, it can...
+                            if (removedFinger == null)
+                            {
+                                break;
+                            }
+
                             fingers.Remove(e.ID);
                             if (FingerUp != null)
                             {

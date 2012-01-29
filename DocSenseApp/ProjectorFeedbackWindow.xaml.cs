@@ -27,6 +27,7 @@ namespace DocSenseApp
         public ProjectorFeedbackWindow()
         {
             InitializeComponent();
+            SpaceProviderReady += new EventHandler(ProjectorFeedbackWindow_SpaceProviderReady);
         }
 
         private void SpaceCanvas_FingerDown(object sender, FingerEventArgs e)
@@ -126,6 +127,17 @@ namespace DocSenseApp
 
         private void ProjectorFeedbackWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            handWheel.BeginInit();
+            handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/plink.png", UriKind.RelativeOrAbsolute)));
+            handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/evernote.png", UriKind.RelativeOrAbsolute)));
+            handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/undo.png", UriKind.RelativeOrAbsolute)));
+            handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/grab.png", UriKind.RelativeOrAbsolute)));
+            handWheel.EndInit();
+        }
+
+        void ProjectorFeedbackWindow_SpaceProviderReady(object sender, EventArgs e)
+        {
+            handWheel.HandTracker = SpaceProvider.HandTracker;
         }
 
         private void grabButton_FingerDown(object sender, FingerEventArgs e)

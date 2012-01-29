@@ -200,7 +200,40 @@ namespace ControlPanel.NativeWrappers
         public FingerEventType EventType { get { return eventType; } }
     };
 
+    /// <summary>
+    /// <remarks>HandTracker.h, HandEventType</remarks>
+    /// </summary>
+    public enum HandEventType
+    {
+	    HandMove,
+	    HandCaptured,
+	    HandLost
+    };
+
+
+    /// <summary>
+    /// <remarks>HandTracker.h, HandEvent</remarks>
+    /// </summary> 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct HandEvent
+    {
+	    private int id;
+	    private FloatPoint3D position;
+	    private FloatPoint3D positionTable2D;
+	    private HandEventType eventType;
+
+        public int ID { get { return id; } }
+        public FloatPoint3D Position { get { return position; } }
+        public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
+        public HandEventType EventType { get { return eventType; } }
+    };
+
     public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 
+    /// <summary>
+    /// <remarks>HandTracker.h, HandEventCallback</remarks>
+    /// </summary>
+    /// <param name="e"></param>
+    public unsafe delegate void HandEventCallback(HandEvent e);
 }

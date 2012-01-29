@@ -1,10 +1,12 @@
 #include "HandTracker.h"
 #include <stdio.h>
 #include "DebugUtils.h"
+#include "InteractiveSpaceEngine.h"
 using namespace std;
 
 HandTracker::HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor) 
-	: fingerSelector(fingerSelector), handsGen(handsGen), kinectSensor(kinectSensor), handNum(0), nextHintId(1)
+	: fingerSelector(fingerSelector), handsGen(handsGen), kinectSensor(kinectSensor), handNum(0), nextHintId(1),
+	handCapturedCallback(NULL), handLostCallback(NULL), handMoveCallback(NULL)
 {
 	handsGen->RegisterHandCallbacks(handCreateCB, handUpdateCB, handDestroyCB, this, hCallback);
 }
@@ -12,6 +14,13 @@ HandTracker::HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* han
 HandTracker::~HandTracker()
 {
 	handsGen->UnregisterHandCallbacks(hCallback);
+}
+
+void HandTracker::registerCallbacks(HandEventCallback handMoveCallback, HandEventCallback handCapturedCallback, HandEventCallback handLostCallback)
+{
+	this->handMoveCallback = handMoveCallback;
+	this->handCapturedCallback = handCapturedCallback;
+	this->handLostCallback = handLostCallback;
 }
 
 //caller should lock hands
@@ -72,6 +81,41 @@ Hand* HandTracker::findHand(HandType handType, unsigned int id)
 	return (i == handNum) ? NULL : &(hands[i]);
 }
 
+void HandTracker::raiseEvent(const Hand& hand, HandEventType eventType)
+{
+	HandEvent e;
+	e.eventType = eventType;
+	e.id = hand.id;
+	e.position = hand.positionInKinectProj;
+
+	FloatPoint3D pointProj = hand.positionInKinectProj;
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(e.positionTable2D), 1, Depth2D, Table2D);
+
+	switch(eventType)
+	{
+	case HandMove:
+		if (handMoveCallback != NULL)
+		{
+			handMoveCallback(e);
+		}
+		break;
+
+	case HandCaptured:
+		if (handCapturedCallback != NULL)
+		{
+			handCapturedCallback(e);
+		}
+		break;
+
+	case HandLost:
+		if (handLostCallback != NULL)
+		{
+			handLostCallback(e);
+		}
+		break;
+	}
+}
+
 void XN_CALLBACK_TYPE HandTracker::handCreateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie)
 {
 	HandTracker* handTracker = (HandTracker*)pCookie;
@@ -126,11 +170,17 @@ void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, X
 	Hand* hand = handTracker->findHand(TrackingHand, user);
 	if (hand != NULL)
 	{
-		hand->captured = 1;
+		hand->captured++;
 		hand->positionInRealWorld.x = pPosition->X;
 		hand->positionInRealWorld.y = pPosition->Y;
 		hand->positionInRealWorld.z = pPosition->Z;
 		hand->positionInKinectProj = handTracker->kinectSensor->convertRealWorldToProjective(hand->positionInRealWorld);
+
+		if (hand->captured == 1)
+		{
+			handTracker->raiseEvent(*hand, HandCaptured);
+		}
+		handTracker->raiseEvent(*hand, HandMove);
 	}
 	else
 	{
@@ -146,6 +196,10 @@ void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, 
 	Hand* hand = handTracker->findHand(TrackingHand, user);
 	if (hand != NULL)
 	{
+		if (hand->captured > 0)
+		{
+			handTracker->raiseEvent(*hand, HandLost);
+		}
 		handTracker->removeHand(TrackingHand, user);
 	}
 	//DEBUG("Hand destroy: " << user);
