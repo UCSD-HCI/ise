@@ -132,12 +132,37 @@ namespace DocSenseApp
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/evernote.png", UriKind.RelativeOrAbsolute)));
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/undo.png", UriKind.RelativeOrAbsolute)));
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/grab.png", UriKind.RelativeOrAbsolute)));
+            handWheel.ButtonSelected += new EventHandler<InteractiveSpaceSDK.GUI.HandWheelButtonEventArgs>(handWheel_ButtonSelected);
             handWheel.EndInit();
+        }
+
+        void handWheel_ButtonSelected(object sender, InteractiveSpaceSDK.GUI.HandWheelButtonEventArgs e)
+        {
+            switch (e.ID)
+            {
+                case 0:
+                    gallery.OpenLink();
+                    break;
+
+                case 1:
+                    gallery.UploadToEvernote();
+                    break;
+
+                case 2:
+                    gallery.UndoCapture();
+                    break;
+
+                case 3:
+                    grabButton.IsChecked = !grabButton.IsChecked;
+                    gallery.ClearAllImages();
+                    break;
+
+            }
         }
 
         void ProjectorFeedbackWindow_SpaceProviderReady(object sender, EventArgs e)
         {
-            handWheel.HandTracker = SpaceProvider.HandTracker;
+            handWheel.SpaceProvider = SpaceProvider;
         }
 
         private void grabButton_FingerDown(object sender, FingerEventArgs e)

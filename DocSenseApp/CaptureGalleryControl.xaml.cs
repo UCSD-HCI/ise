@@ -113,24 +113,13 @@ namespace DocSenseApp
             linkButton.Visibility = Visibility.Hidden;
         }
 
-        void newImg_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
+        public void UploadToEvernote()
         {
-            if (!(sender is SpaceImageButton))
+            if (galleryStack.Children.Count == 0)
             {
                 return;
             }
 
-            SpaceImageButton img = sender as SpaceImageButton;
-            galleryStack.Children.Remove(img);
-
-            if (galleryStack.Children.Count == 0)
-            {
-                evernoteButton.Visibility = Visibility.Hidden;
-            }
-        }
-
-        private void SpaceImageButton_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
-        {
             if (UploadingBegin != null)
             {
                 UploadingBegin(this, EventArgs.Empty);
@@ -140,7 +129,7 @@ namespace DocSenseApp
             link.setTitle("Screen Capture");
             List<string> tags = new List<string>();
             tags.Add("Demo");
-           
+
             evernoteButton.Visibility = Visibility.Hidden;
 
             List<Tuple<byte[], string>> resources = new List<Tuple<byte[], string>>();
@@ -172,6 +161,48 @@ namespace DocSenseApp
             Trace.WriteLine("Uploading to evernote...");
         }
 
+        public void OpenLink()
+        {
+            if (currentEvernoteId != null && everSpaces != null)
+            {
+                everSpaces.openLink(currentEvernoteId);
+                System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + currentEvernoteId);
+                Trace.WriteLine("Opening link...");
+            }
+        }
+
+        public void UndoCapture()
+        {
+            removeImage(galleryStack.Children[galleryStack.Children.Count - 1] as SpaceImageButton);
+        }
+
+        private void removeImage(SpaceImageButton img)
+        {
+            galleryStack.Children.Remove(img);
+
+            if (galleryStack.Children.Count == 0)
+            {
+                evernoteButton.Visibility = Visibility.Hidden;
+            }
+        }
+
+
+        void newImg_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
+        {
+            if (!(sender is SpaceImageButton))
+            {
+                return;
+            }
+
+            SpaceImageButton img = sender as SpaceImageButton;
+            removeImage(img);
+        }
+
+        private void SpaceImageButton_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
+        {
+            UploadToEvernote();
+        }
+
         void everSpaces_createLinkCompleted(string data)
         {
             Dispatcher.BeginInvoke((Action)delegate()
@@ -183,12 +214,7 @@ namespace DocSenseApp
 
         private void linkButton_FingerDown(object sender, InteractiveSpaceSDK.FingerEventArgs e)
         {
-            if (currentEvernoteId != null && everSpaces != null)
-            {
-                everSpaces.openLink(currentEvernoteId);
-                System.Diagnostics.Process.Start("https://sandbox.evernote.com/view/" + currentEvernoteId);
-                Trace.WriteLine("Opening link...");
-            }
+            OpenLink();
         }
 
     }
