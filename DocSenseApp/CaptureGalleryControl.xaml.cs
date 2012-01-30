@@ -173,6 +173,10 @@ namespace DocSenseApp
 
         public void UndoCapture()
         {
+            if (galleryStack.Children.Count == 0)
+            {
+                return;
+            }
             removeImage(galleryStack.Children[galleryStack.Children.Count - 1] as SpaceImageButton);
         }
 
