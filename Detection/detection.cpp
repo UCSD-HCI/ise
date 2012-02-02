@@ -5,15 +5,68 @@ SpaceDetection::SpaceDetection()
 	kf = "keypoints.yml";
 	df = "descriptors.yml";
 	cf = "corners.yml";
-}
-
-SpaceDetection::SpaceDetection(string keypoints_file, 
-							   string descriptors_file,
-							   string corners_file)
-{
-	kf = keypoints_file;
-	df = descriptors_file;
-	cf = corners_file;
+	
+	FileStorage keypoints_storage(kf, FileStorage::READ);
+	FileNode keypoints;
+	
+	int idx = 0;
+	do
+	{
+		keypoints = keypoints_storage.root(idx);
+		FileNodeIterator it = keypoints.begin(), it_end = keypoints.end();
+		
+		for( ; it != it_end; ++it )
+		{
+			std::vector<KeyPoint> tmpKey;
+			read((*it), tmpKey);
+			dbKeypoints.push_back(tmpKey);
+		}
+		idx++;
+	}while ((int)keypoints != 0);
+	keypoints_storage.release();
+	
+	FileStorage desc_storage(df, FileStorage::READ);
+	FileNode descriptors;
+	
+	idx = 0;
+	do
+	{
+		descriptors = desc_storage.root(idx);
+		FileNodeIterator it = descriptors.begin(), it_end = descriptors.end();
+		
+		for( ; it != it_end; ++it )
+		{
+			Mat tmpDesc;
+			(*it) >> tmpDesc;
+			dbDescriptors.push_back(tmpDesc);
+		}
+		idx++;
+	}while ((int)descriptors != 0);
+	desc_storage.release();
+	
+	FileStorage corners_storage(cf, FileStorage::READ);
+	FileNode corners;
+	
+	idx = 0;
+	do
+	{
+		corners = corners_storage.root(idx);
+		FileNodeIterator it = corners.begin(), it_end = corners.end();
+		
+		for( ; it != it_end; ++it )
+		{
+			std:vector<Point2f> obj_corners(4);
+			obj_corners[0] = cvPoint((float)(*it)["corner0x"], (float)(*it)["corner0y"]);
+			obj_corners[1] = cvPoint((float)(*it)["corner1x"], (float)(*it)["corner1y"]);
+			obj_corners[2] = cvPoint((float)(*it)["corner2x"], (float)(*it)["corner2y"]);
+			obj_corners[3] = cvPoint((float)(*it)["corner3x"], (float)(*it)["corner3y"]);
+			dbCorners.push_back(obj_corners);
+			string id_tag = cvGetFileNodeName((*it).node);
+			tagMap[id_tag] = idx;
+		}
+		idx++;
+	}while ((int)corners != 0);
+	desc_storage.release();
 }
 
 SpaceDetection::~SpaceDetection()
@@ -26,69 +79,63 @@ void SpaceDetection::saveObject(Mat img_object, string id_tag)
 	FileStorage desc_storage;
 	FileStorage corner_storage;
 	
-	bool flag = false;
-	
-	//FIXME: Need to check if id_tag exists or not
-	if ( !boost::filesystem::exists(kf) )
+	if(!boost::filesystem::exists(kf) &&
+	   !boost::filesystem::exists(df) &&
+	   !boost::filesystem::exists(cf) )
 	{
 		key_storage.open(kf, FileStorage::WRITE);
-	}
-	else
-	{
-		key_storage.open(kf, FileStorage::APPEND);
-		if (!key_storage[id_tag].size())
-		{
-			key_storage.release();
-			std::cout << "keypoints: " << id_tag << " already exists." << std::endl;
-			flag = true;
-		}
-	}
-	
-	if ( !boost::filesystem::exists(df) )
-	{
 		desc_storage.open(df, FileStorage::WRITE);
-	}
-	else
-	{
-		desc_storage.open(df, FileStorage::APPEND);
-		if (!desc_storage[id_tag].size())
-		{
-			desc_storage.release();
-			std::cout << "descriptors: " << id_tag << " already exists." << std::endl;
-			flag = true;
-		}
-	}
-	
-	if ( !boost::filesystem::exists(cf) )
-	{
 		corner_storage.open(cf, FileStorage::WRITE);
 	}
+	else if(boost::filesystem::exists(kf) &&
+	   boost::filesystem::exists(df) &&
+	   boost::filesystem::exists(cf) )
+	{
+		key_storage.open(kf, FileStorage::READ);
+		desc_storage.open(df, FileStorage::READ);
+		corner_storage.open(cf, FileStorage::READ);
+		
+		if(key_storage[id_tag].isNone() &&
+		   desc_storage[id_tag].isNone() &&
+		   corner_storage[id_tag].isNone())
+		{
+			key_storage.release();
+			desc_storage.release();
+			corner_storage.release();
+		}
+		else
+		{
+			key_storage.release();
+			desc_storage.release();
+			corner_storage.release();
+			char msg[50];
+			sprintf(msg, "Id tag %s already exists exist.", id_tag.c_str());
+			throw string(msg);
+		}
+		
+		key_storage.open(kf, FileStorage::APPEND);
+		desc_storage.open(df, FileStorage::APPEND);
+		corner_storage.open(cf, FileStorage::APPEND);
+	}
 	else
 	{
-		corner_storage.open(cf, FileStorage::APPEND);
-		if (!corner_storage[id_tag].size())
-		{
-			corner_storage.release();
-			std::cout << "corners: " << id_tag << " already exists." << std::endl;
-			flag = true;
-		}
+		throw string("Something is wrong with a YML file.  Please delete all and recreate.");
 	}
-
-	if(flag)
-		return;
-	
+		
 	//-- Detect the keypoints using SURF Detector
 	int minHessian = 400;
 	SurfFeatureDetector detector(minHessian);
 	std::vector<KeyPoint> keypoints_object;
 	detector.detect(img_object, keypoints_object);
 	write(key_storage, id_tag, keypoints_object);
+	dbKeypoints.push_back(keypoints_object);
 	
 	//-- Calculate descriptors (feature vectors)
 	SurfDescriptorExtractor extractor;
 	Mat descriptors_object;
 	extractor.compute(img_object, keypoints_object, descriptors_object);
 	desc_storage << id_tag << descriptors_object;
+	dbDescriptors.push_back(descriptors_object);
 	
 	std::vector<Point2f> obj_corners(4);
 	obj_corners[0] = cvPoint(0,0); obj_corners[1] = cvPoint( img_object.cols, 0 );
@@ -106,34 +153,51 @@ void SpaceDetection::saveObject(Mat img_object, string id_tag)
 }
 
 std::vector<Point2f> SpaceDetection::detectObject(Mat img_scene, string id_tag)
-{
-	FileStorage key_storage(kf, FileStorage::READ);
-	FileStorage desc_storage(df, FileStorage::READ);
-	FileStorage corner_storage(cf, FileStorage::READ);
+{	
+	if(dbDescriptors.size() == 0)
+	{
+		throw new string("DB is empty.");
+	}
+	
+	int id;
+	if (tagMap.find(id_tag) == tagMap.end())
+	{
+		char msg[50];
+		sprintf(msg, "Id tag %s does not exist.", id_tag.c_str());
+		throw string(msg);
+	}
+	else
+	{
+		id = tagMap[id_tag];
+	}
 	
 	//-- Detect the keypoints using SURF Detector
 	int minHessian = 400;
 	SurfFeatureDetector detector(minHessian);
 	std::vector<KeyPoint> keypoints_scene, keypoints_object;
 	detector.detect(img_scene, keypoints_scene);
-	read(key_storage[id_tag], keypoints_object);
+	//read(key_storage[id_tag], keypoints_object);
+	keypoints_object = dbKeypoints[id];
 	
 	//-- Calculate descriptors (feature vectors)
 	SurfDescriptorExtractor extractor;
 	Mat descriptors_scene, descriptors_object;
 	extractor.compute(img_scene, keypoints_scene, descriptors_scene);
-	desc_storage[id_tag] >> descriptors_object;
+	//desc_storage[id_tag] >> descriptors_object;
+	descriptors_object = dbDescriptors[id];
 	
+	
+	std::vector<Point2f> obj_corners(4);
+	obj_corners = dbCorners[id];
+	
+	/*
 	FileNode cn = corner_storage[id_tag];
 	std:vector<Point2f> obj_corners(4);
 	obj_corners[0] = cvPoint((float)cn["corner0x"], (float)cn["corner0y"]);
 	obj_corners[1] = cvPoint((float)cn["corner1x"], (float)cn["corner1y"]);
 	obj_corners[2] = cvPoint((float)cn["corner2x"], (float)cn["corner2y"]);
 	obj_corners[3] = cvPoint((float)cn["corner3x"], (float)cn["corner3y"]);
-	
-	key_storage.release();
-	desc_storage.release();
-	corner_storage.release();
+	*/
 	
 	//-- Matching descriptor vectors using FLANN matcher
 	FlannBasedMatcher matcher;
@@ -175,4 +239,60 @@ std::vector<Point2f> SpaceDetection::detectObject(Mat img_scene, string id_tag)
 	perspectiveTransform( obj_corners, scene_corners, H);
 	
 	return scene_corners;
+}
+
+string SpaceDetection::bestMatch(Mat img_scene)
+{
+	if(dbDescriptors.size() == 0)
+	{
+		throw new string("DB is empty.");
+	}
+	
+	int minHessian = 400;
+	SurfFeatureDetector detector(minHessian);
+	std::vector<KeyPoint> keypoints_scene;
+	detector.detect(img_scene, keypoints_scene);
+	
+	SurfDescriptorExtractor extractor;
+	Mat descriptors_scene;
+	extractor.compute(img_scene, keypoints_scene, descriptors_scene);
+	
+	FlannBasedMatcher matcher;
+	std::vector< DMatch > matches;
+	
+	matcher.add(dbDescriptors);
+	matcher.train();
+	
+	matcher.match(descriptors_scene, matches);
+	
+	int score[dbDescriptors.size()];
+	memset(score, 0, sizeof(score));
+	
+	for(int i = 0; i < matches.size(); i++)
+	{
+		score[matches[i].imgIdx]++;
+	}
+	
+	int max = 0;
+	int x;
+	string id_tag;
+	
+	FileStorage cs(cf, FileStorage::READ);
+	for(int i = 0; i < (sizeof(score)/sizeof(int)); i++)
+	{
+		FileNode node = cs.root(i);
+		FileNodeIterator it = node.begin();
+		std::cout << cvGetFileNodeName((*it).node) << " " << score[i] << std::endl;
+		if(score[i] > max)
+		{
+			max = score[i];
+			x = i;
+			id_tag = cvGetFileNodeName((*it).node);
+		}
+	}
+	cs.release();
+	
+	std::cout << "Best match: " << id_tag << std::endl;
+	
+	return id_tag;
 }

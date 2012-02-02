@@ -10,19 +10,66 @@ using namespace cv;
 void readme();
 
 int main (int argc, char * const argv[]) {
-	Mat img_object = imread( argv[1], CV_LOAD_IMAGE_GRAYSCALE );
-	Mat img_scene = imread( argv[2], CV_LOAD_IMAGE_GRAYSCALE );
-	Mat img_out = imread( argv[2], CV_LOAD_IMAGE_UNCHANGED );
+	Mat img_scene = imread( argv[1], CV_LOAD_IMAGE_GRAYSCALE );
+	Mat img_out = imread( argv[1], CV_LOAD_IMAGE_UNCHANGED );
 	
-	if( !img_object.data || !img_scene.data )
-	{ std::cout<< " --(!) Error reading images " << std::endl; return -1; }
+	if( !img_scene.data )
+	{ std::cout<< " --(!) Error reading image " << std::endl; return -1; }
 	
 	SpaceDetection sd;
 	
-	sd.saveObject(img_object, "Scholarship Form");
+	
+	Mat img1 = imread("/Users/rkanoknu/Downloads/sift/003.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	//Mat img2 = imread("/Users/rkanoknu/Downloads/cocoapuffs1.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	//Mat img3 = imread("/Users/rkanoknu/Downloads/trix1.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat img2 = imread("/Users/rkanoknu/Downloads/sift/007.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat img3 = imread("/Users/rkanoknu/Downloads/sift/008.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	
+	try
+	{
+		sd.saveObject(img1, "Application");
+	}
+	catch(string s)
+	{
+		std::cout << "Error: " << s << std::endl;
+	}
+	try
+	{
+		sd.saveObject(img2, "Doodle1");
+	}
+	catch(string s)
+	{
+		std::cout << "Error: " << s << std::endl;
+	}
+	try
+	{
+		sd.saveObject(img3, "Doodle2");
+	}
+	catch(string s)
+	{
+		std::cout << "Error: " << s << std::endl;
+	}
+	
 	
 	std::vector<Point2f> scene_corners(4);
-	scene_corners = sd.detectObject(img_scene, "Scholarship Form");
+	try
+	{
+		scene_corners = sd.detectObject(img_scene, "FalseEntry");
+	}
+	catch(string s)
+	{
+		std::cout << "Error: " << s << std::endl;
+	}
+	
+	string match_tag;
+	match_tag = sd.bestMatch(img_scene);
+	
+	scene_corners = sd.detectObject(img_scene, match_tag);
+	
+	std::cout << scene_corners[0] <<
+	std::endl << scene_corners[1] << 
+	std::endl << scene_corners[2] <<
+	std::endl << scene_corners[3] << std::endl;
 	
 	line( img_out, scene_corners[0], scene_corners[1], Scalar( 0, 255, 0), 2 );
 	line( img_out, scene_corners[1], scene_corners[2], Scalar( 0, 255, 0), 2 );
@@ -37,4 +84,4 @@ int main (int argc, char * const argv[]) {
 }
 
 void readme()
-{ std::cout << "Usage: ./a.out <object> <scene>" << std::endl; }
+{ std::cout << "Usage: ./a.out <scene>" << std::endl; }
