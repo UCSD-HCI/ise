@@ -260,10 +260,21 @@ string SpaceDetection::bestMatch(Mat img_scene)
 	FlannBasedMatcher matcher;
 	std::vector< DMatch > matches;
 	
+	TickMeter tm;
+	
+	tm.start();
 	matcher.add(dbDescriptors);
 	matcher.train();
+	tm.stop();
+	double buildTime = tm.getTimeMilli();
 	
+	tm.start();
 	matcher.match(descriptors_scene, matches);
+	tm.stop();
+	double matchTime = tm.getTimeMilli();
+	
+	std::cout << "Number of matches: " << matches.size() << std::endl;
+	std::cout << "Build time: " << buildTime << " ms; Match time: " << matchTime << " ms" << std::endl;
 	
 	int score[dbDescriptors.size()];
 	memset(score, 0, sizeof(score));

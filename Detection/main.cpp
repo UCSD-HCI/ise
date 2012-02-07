@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/format.hpp>
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -17,8 +18,18 @@ int main (int argc, char * const argv[]) {
 	{ std::cout<< " --(!) Error reading image " << std::endl; return -1; }
 	
 	SpaceDetection sd;
-	
-	
+	/*
+	for(int i = 1; i <= 43; i++)
+	{
+		char path[100];
+		sprintf(path, "/Users/rkanoknu/Downloads/database2/%d.jpg", i);
+		Mat img = imread(path, CV_LOAD_IMAGE_GRAYSCALE);
+		string str = boost::str(boost::format("JPG%d") % i);
+		std::cout << str << std::endl;
+		sd.saveObject(img, str);
+	}
+	*/
+	/*
 	Mat img1 = imread("/Users/rkanoknu/Downloads/sift/003.jpg", CV_LOAD_IMAGE_GRAYSCALE);
 	//Mat img2 = imread("/Users/rkanoknu/Downloads/cocoapuffs1.jpg", CV_LOAD_IMAGE_GRAYSCALE);
 	//Mat img3 = imread("/Users/rkanoknu/Downloads/trix1.jpg", CV_LOAD_IMAGE_GRAYSCALE);
@@ -60,7 +71,10 @@ int main (int argc, char * const argv[]) {
 	{
 		std::cout << "Error: " << s << std::endl;
 	}
+	*/
 	
+	std::cout << "Initialized" << std::endl;
+	std::vector<Point2f> scene_corners(4);
 	string match_tag;
 	match_tag = sd.bestMatch(img_scene);
 	
