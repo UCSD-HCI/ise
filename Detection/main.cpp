@@ -4,20 +4,21 @@
 #include "opencv2/features2d/features2d.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
+#include "opencv/cv.h"
 #include "detection.h"
 
 using namespace cv;
 
-void readme();
-
 int main (int argc, char * const argv[]) {
+	/*
 	Mat img_scene = imread( argv[1], CV_LOAD_IMAGE_GRAYSCALE );
 	Mat img_out = imread( argv[1], CV_LOAD_IMAGE_UNCHANGED );
 	
 	if( !img_scene.data )
 	{ std::cout<< " --(!) Error reading image " << std::endl; return -1; }
-	
+	*/
 	SpaceDetection sd;
+	
 	/*
 	for(int i = 1; i <= 43; i++)
 	{
@@ -73,6 +74,7 @@ int main (int argc, char * const argv[]) {
 	}
 	*/
 	
+	/*
 	std::cout << "Initialized" << std::endl;
 	std::vector<Point2f> scene_corners(4);
 	string match_tag;
@@ -93,9 +95,43 @@ int main (int argc, char * const argv[]) {
 	imshow( "Object detection", img_out );
 	
 	waitKey(0);
+	*/
+	
+	std::cout << "Initialized" << std::endl;
+	
+	std::vector<Point2f> scene_corners(4);
+	string match_tag = "";
+	
+	VideoCapture cap(0);
+	if(!cap.isOpened())
+		return -1;
+	
+	Mat scene;
+	for(;;)
+	{
+		Mat frame;
+		cap >> frame;
+		cvtColor(frame, scene, CV_BGR2GRAY);
+		
+		if(waitKey(30) == 32)
+		{
+			putText(frame, "Finding best match", cvPoint(30,30), FONT_HERSHEY_SIMPLEX, 1, cvScalar(0,255,0));
+			imshow( "Object detection", frame);
+			match_tag = sd.bestMatch(scene);
+			continue;
+		}
+		
+		if(match_tag != "")
+		{
+			scene_corners = sd.detectObject(scene, match_tag);
+		}
+		line( frame, scene_corners[0], scene_corners[1], Scalar( 0, 255, 0), 2 );
+		line( frame, scene_corners[1], scene_corners[2], Scalar( 0, 255, 0), 2 );
+		line( frame, scene_corners[2], scene_corners[3], Scalar( 0, 255, 0), 2 );
+		line( frame, scene_corners[3], scene_corners[0], Scalar( 0, 255, 0), 2 );
+		imshow( "Object detection", frame );
+		if(waitKey(30) == 27) break;
+	}
 	
     return 0;
 }
-
-void readme()
-{ std::cout << "Usage: ./a.out <scene>" << std::endl; }
