@@ -6,7 +6,7 @@ InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
 	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL),
-	fps(0), engineFrameCount(0)
+	fps(0), engineFrameCount(0), engineUpdateCallback(NULL)
 {
 }
 
@@ -127,8 +127,8 @@ void InteractiveSpaceEngine::run()
 	fpsCounter = 0;
 	fpsTimer.restart();
 
-	kinectSensor->start();
-	motionCameraReader->start();
+	//kinectSensor->start();
+	//motionCameraReader->start();
 	threadStart();
 }
 
@@ -142,6 +142,10 @@ void InteractiveSpaceEngine::operator() ()
 	while(true)
 	{
 		boost::this_thread::interruption_point();
+
+		kinectSensor->refresh();
+		motionCameraController->refresh();
+		motionCameraReader->refresh();
 
 		if (calibrator->isCalibrating())
 		{
@@ -186,6 +190,11 @@ void InteractiveSpaceEngine::operator() ()
 			{
 				boost::this_thread::yield();
 			}
+		}
+
+		if (engineUpdateCallback != NULL)
+		{
+			engineUpdateCallback();
 		}
 	}
 }

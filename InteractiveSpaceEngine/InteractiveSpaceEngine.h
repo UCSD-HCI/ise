@@ -47,6 +47,8 @@ private:
 
 	void dispose();
 
+	Callback engineUpdateCallback;
+
 public:
 	InteractiveSpaceEngine();
 	virtual ~InteractiveSpaceEngine();
@@ -78,6 +80,11 @@ public:
 	inline float getFPS()
 	{
 		return fps; 
+	}
+
+	inline void setEngineUpdateCallback(Callback callback)
+	{
+		engineUpdateCallback = callback;
 	}
 };
 

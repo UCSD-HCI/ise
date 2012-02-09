@@ -23,7 +23,7 @@ KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1)
 
 KinectSensor::~KinectSensor()
 {
-	threadStop();
+	//threadStop();
 	context.StopGeneratingAll();
 	context.Release();
 
@@ -36,7 +36,8 @@ void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
 	this->ipf = ipf;
 	//threadStart();
 }
-void KinectSensor::operator() ()
+
+/*void KinectSensor::operator() ()
 {
 	while(true)
 	{
@@ -56,6 +57,24 @@ void KinectSensor::operator() ()
 		depthPtr.release();
 		rgbPtr.release();
 	}
+}*/
+
+void KinectSensor::refresh()
+{
+	context.WaitAndUpdateAll();
+		
+	WriteLockedIplImagePtr rgbPtr = ipf->lockWritableImageProduct(RGBSourceProduct);
+	WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
+	WriteLock frameLock(frameCountMutex);
+	//lock 3 resources at the same time to keep synchronization
+		
+	memcpy(rgbPtr->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
+	memcpy(depthPtr->imageData, depthGen.GetData(), depthGen.GetDataSize());
+
+	frameCount++;
+
+	depthPtr.release();
+	rgbPtr.release();
 }
 
 IplImage* KinectSensor::createBlankRGBImage()

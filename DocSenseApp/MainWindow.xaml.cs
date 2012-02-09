@@ -34,6 +34,7 @@ namespace DocSenseApp
             sdk = new InteractiveSpaceProviderDLL();
             sdk.Connect();
 
+            
             sdk.CreateFingerTracker();
             sdk.FingerTracker.FingerDown += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerDown);
             sdk.FingerTracker.FingerUp += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerUp);

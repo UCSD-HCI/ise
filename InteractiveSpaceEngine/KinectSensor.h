@@ -8,7 +8,7 @@
 
 class ImageProcessingFactory;
 
-class KinectSensor : public ThreadWorker
+class KinectSensor //: public ThreadWorker
 {
 private:
 	xn::Context context;
@@ -34,9 +34,9 @@ public:
 		return frameCount; 
 	}
 
-	inline void start() { threadStart(); }
+	//inline void start() { threadStart(); }
 
-	virtual void operator() ();	//thread worker
+	//virtual void operator() ();	//thread worker
 
 	IplImage* createBlankRGBImage();		//create a blank image to store rgb data
 	IplImage* createBlankDepthImage();	//create a blank image to store depth data
@@ -49,6 +49,8 @@ public:
 	float distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const;
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	FloatPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
+
+	void refresh();
 };
 
 #endif

@@ -31,7 +31,7 @@ namespace ControlPanel
         private const double TEST_POINT_RADIUS = 5;
 
         private WriteableBitmap rgbSource, depthSource;
-        private BackgroundWorker refreshWorker;
+        //private BackgroundWorker refreshWorker;
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
         private ViscaCommandDelegate onPanTiltFinishedDelegate;
 
@@ -51,9 +51,21 @@ namespace ControlPanel
 
         private Ellipse testPointRGB = null, testPointDepth = null, testPointTable = null;
 
+        private MainWindow mainWindow;
+
         public CalibrationWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow MainWindow
+        {
+            get { return mainWindow; }
+            set
+            {
+                mainWindow = value;
+                mainWindow.EngineUpdate += new EventHandler(mainWindow_EngineUpdate);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -69,9 +81,9 @@ namespace ControlPanel
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
 
-            refreshWorker = new BackgroundWorker();
+            /*refreshWorker = new BackgroundWorker();
             refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);*/
 
             projectorFeedbackWindow = new ProjectorFeedbackWindow();
             projectorFeedbackWindow.Show();
@@ -96,7 +108,7 @@ namespace ControlPanel
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            //CompositionTarget.Rendering -= CompositionTarget_Rendering;
             projectorFeedbackWindow.HitTestLayer.MouseMove -= HitTestLayer_MouseMove;
             projectorFeedbackWindow.HitTestLayer.MouseLeave -= HitTestLayer_MouseLeave;
             projectorFeedbackWindow.HitTestLayer.MouseDown -= HitTestLayer_MouseDown;
@@ -112,15 +124,41 @@ namespace ControlPanel
             CommandDllWrapper.systemCalibrationStop();
         }
 
-        void CompositionTarget_Rendering(object sender, EventArgs e)
+        /*void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             if (!refreshWorker.IsBusy)
             {
                 refreshWorker.RunWorkerAsync();
             }
+        }*/
+
+        void mainWindow_EngineUpdate(object sender, EventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action)delegate
+            {
+                if (rgbSource != null)
+                {
+                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationRGBImage();
+                    rgbSource.Lock();
+                    rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                    rgbSource.Unlock();
+                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    rgbVideo.ImageSource = rgbSource;
+                }
+
+                if (depthSource != null)
+                {
+                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationDepthImage();
+                    depthSource.Lock();
+                    depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
+                    depthSource.Unlock();
+                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    depthVideo.ImageSource = depthSource;
+                }
+            }, null);
         }
 
-        void refreshWorker_DoWork(object sender, DoWorkEventArgs e)
+        /*void refreshWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.BeginInvoke((Action)delegate
             {
@@ -145,7 +183,7 @@ namespace ControlPanel
                 }
 
             }, null);
-        }
+        }*/
 
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {

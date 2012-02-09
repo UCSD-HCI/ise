@@ -11,7 +11,7 @@
 
 class ImageProcessingFactory;
 
-class MotionCameraReader : public ThreadWorker
+class MotionCameraReader //: public ThreadWorker
 {
 private: 
 	ImageProcessingFactory* ipf;
@@ -40,10 +40,10 @@ public:
 		return frameCount;
 	}
 
-	inline void start() { threadStart(); }
-	virtual void operator() (); //thread worker
+	//inline void start() { threadStart(); }
+	//virtual void operator() (); //thread worker
 
-
+	void refresh();
 };
 
 #endif

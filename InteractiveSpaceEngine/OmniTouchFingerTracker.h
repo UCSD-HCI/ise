@@ -16,7 +16,7 @@
 //just for DEMO
 #define OMNI_CROP_TOP 85
 #define OMNI_CROP_BOTTOM 400
-#define OMNI_CROP_LEFT 0
+#define OMNI_CROP_LEFT 20
 #define OMNI_CROP_RIGHT 640
 
 typedef enum

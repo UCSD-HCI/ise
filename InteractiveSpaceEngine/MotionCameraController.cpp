@@ -23,28 +23,22 @@ MotionCameraController::MotionCameraController() : isPanTiltPending(false), panT
 	status = VISCA_set_pantilt_home(&iface, &camera);
 	assert(status == VISCA_SUCCESS);
 
-	threadStart();
+	//threadStart();
 }
 
 MotionCameraController::~MotionCameraController()
 {
-	threadStop();
+	//threadStop();
 
 	VISCA_close_serial(&iface);
 }
 
-void MotionCameraController::operator()()
+/*void MotionCameraController::operator()()
 {
 	while (true)
 	{
 		boost::this_thread::interruption_point();
 		
-		//test
-		/*ushort s;
-		uint r = VISCA_get_pantilt_mode(&iface, &camera, &s);
-		DEBUG(s);*/
-
-
 		bool isPanTiltPendingCopy;
 		ViscaPanTiltCommand panTiltCmdCopy;
 
@@ -98,6 +92,60 @@ void MotionCameraController::operator()()
 
 		boost::this_thread::yield();
 	}
+}*/
+
+void MotionCameraController::refresh()
+{
+		bool isPanTiltPendingCopy;
+		ViscaPanTiltCommand panTiltCmdCopy;
+
+		//check if last command completed
+		if (panTiltCallback != NULL)
+		{
+			ushort status;
+			uint res = VISCA_get_pantilt_mode(&iface, &camera, &status);
+			if (!checkPanTiltInMoveByStatus(status))
+			{
+				completedSignalCounter++;
+
+				if (completedSignalCounter >= COMPLETED_CODE_REPEAT)
+				{
+					//completed
+					panTiltCallback(true, panTiltCallbackState);
+					panTiltCallback = NULL;
+				}
+			}
+			else
+			{
+				completedSignalCounter = 0;
+			}
+		}
+
+		{	//read current value and immediately release the lock
+			WriteLock wLock(panTiltCmdMutex);
+			isPanTiltPendingCopy = isPanTiltPending;
+			panTiltCmdCopy = pendingPanTiltCmd;
+
+			isPanTiltPending = false;
+		}
+
+		if (isPanTiltPendingCopy)
+		{
+			//cancel previous
+			if (panTiltCallback != NULL)
+			{
+				panTiltCallback(false, panTiltCallbackState);
+			}
+
+			panTiltCallback = panTiltCmdCopy.callback;
+			panTiltCallbackState = panTiltCmdCopy.callbackState;
+			completedSignalCounter = 0;
+			int pan = clampPan(panTiltCmdCopy.panPosition);
+			int tilt = clampTilt(panTiltCmdCopy.tiltPosition);
+			DEBUG("Pan/Tilt to " << pan << ", " << tilt);
+			uint status = VISCA_set_pantilt_absolute_position(&iface, &camera, PAN_MAX_SPEED, TILT_MAX_SPEED, pan, tilt);
+			assert(status == VISCA_SUCCESS);
+		}
 }
 
 void MotionCameraController::centerAt(FloatPoint3D pointInTableSurface, ViscaCommandCallback callback, void* state)

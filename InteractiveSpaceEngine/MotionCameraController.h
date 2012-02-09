@@ -14,7 +14,7 @@ typedef unsigned int uint;
 #define PAN_MIN -879
 #define TILT_MAX 300
 #define TILT_MIN -299
-#define COMPLETED_CODE_REPEAT 50	//it seems that VISCA will send a "completed" immediately after PanTilt command is issued, and then switch to "moving". So we wait for at least FINISHED_CODE_REPEAT continuous signals for completion.
+#define COMPLETED_CODE_REPEAT 10	//it seems that VISCA will send a "completed" immediately after PanTilt command is issued, and then switch to "moving". So we wait for at least FINISHED_CODE_REPEAT continuous signals for completion.
 
 #define VISCA_SERIAL_PORT "COM1"
 #define VISCA_PAN_TILT_IN_MOVE_MASK 0x8C80
@@ -47,7 +47,7 @@ struct ViscaZoomCommand
 {
 };
 
-class MotionCameraController : ThreadWorker
+class MotionCameraController //: ThreadWorker
 {
 private:
 	VISCAInterface_t iface;
@@ -70,8 +70,9 @@ public:
 	MotionCameraController();
 	virtual ~MotionCameraController();
 
-	virtual void operator() ();
+	//virtual void operator() ();
 
+	void refresh();
 	void centerAt(FloatPoint3D pointInTableSurface, ViscaCommandCallback callback = NULL, void* callbackState = NULL);
 };
 

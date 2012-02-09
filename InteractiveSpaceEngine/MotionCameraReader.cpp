@@ -35,7 +35,7 @@ IplImage* MotionCameraReader::createRotatedImage()
 	return cvCreateImage(cvSize(imageSize.height, imageSize.width), imageDepth, imageChannels);
 }
 
-void MotionCameraReader::operator() ()
+/*void MotionCameraReader::operator() ()
 {
 	while(true)
 	{
@@ -62,6 +62,34 @@ void MotionCameraReader::operator() ()
 
 				timer.restart();
 			}
+		}
+	}
+}*/
+
+void MotionCameraReader::refresh()
+{
+	if (timer.elapsed() < 1.0 / MAX_FPS)
+	{
+		return;
+	}
+	else
+	{
+		IplImage* frame = cvQueryFrame(capture);
+		if (frame == NULL)
+		{
+			return;
+		}
+		else
+		{
+			WriteLockedIplImagePtr imgPtr = ipf->lockWritableImageProduct(MotionCameraSourceProduct);
+			WriteLock frameLock(frameCountMutex);
+
+			cvCopyImage(frame, imgPtr);
+			frameCount++;
+
+			imgPtr.release();
+
+			timer.restart();
 		}
 	}
 }

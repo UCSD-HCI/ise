@@ -31,8 +31,9 @@ namespace InteractiveSpaceSDK.DLL
             mainWindow.Top = 0;
             mainWindow.Left = 0;
 
-            workingThread = new Thread(threadWorker);
-            workingThread.Start();
+            //workingThread = new Thread(threadWorker);
+            //workingThread.Start();
+            mainWindow.EngineUpdate += new EventHandler(mainWindow_EngineUpdate);
         }
 
         public void Close()
@@ -50,7 +51,7 @@ namespace InteractiveSpaceSDK.DLL
             get { return fingerTracker; }
         }
 
-        private void threadWorker()
+        /*private void threadWorker()
         {
             while (true)
             {
@@ -79,6 +80,27 @@ namespace InteractiveSpaceSDK.DLL
                 }
             }
             
+        }*/
+
+
+        void mainWindow_EngineUpdate(object sender, EventArgs e)
+        {
+            if (stopRequested)
+            {
+                mainWindow.Dispatcher.BeginInvoke((Action)delegate()
+                {
+                    mainWindow.Close();
+                }, null);
+            }
+
+            long newFrameCount = ResultsDllWrapper.getEngineFrameCount();
+
+            if (fingerTracker != null)
+            {
+                fingerTracker.Refresh();
+            }
+
+            lastFrameCount = newFrameCount;
         }
 
 

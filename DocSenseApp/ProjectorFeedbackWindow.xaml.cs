@@ -133,6 +133,7 @@ namespace DocSenseApp
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/undo.png", UriKind.RelativeOrAbsolute)));
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/grab.png", UriKind.RelativeOrAbsolute)));
             handWheel.ButtonSelected += new EventHandler<InteractiveSpaceSDK.GUI.HandWheelButtonEventArgs>(handWheel_ButtonSelected);
+            //handWheel.IsEnabled = false;
             handWheel.EndInit();
         }
 

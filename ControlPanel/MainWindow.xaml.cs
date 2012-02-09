@@ -27,6 +27,9 @@ namespace ControlPanel
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
         private System.Threading.Timer fpsTimer;
+        private Action engineUpdateDelegate;
+
+        public event EventHandler EngineUpdate;
 
         public MainWindow()
         {
@@ -51,6 +54,9 @@ namespace ControlPanel
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
             NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
+
+            engineUpdateDelegate = new Action(engineUpdateCallback);
+            NativeWrappers.CommandDllWrapper.registerEngineUpdateCallback(Marshal.GetFunctionPointerForDelegate(engineUpdateDelegate));
 
             //projectorFeedbackWindow.Show();
 
@@ -123,6 +129,7 @@ namespace ControlPanel
 
                 window = new VideoWindow();
                 window.SetVideo(videoType);
+                window.MainWindow = this;
                 window.Closed += delegate(object cSender, EventArgs cArgs)
                 {
                     button.IsChecked = false;
@@ -279,6 +286,7 @@ namespace ControlPanel
         private void systemCalibrateButton_Click(object sender, RoutedEventArgs e)
         {
             CalibrationWindow caliWin = new CalibrationWindow();
+            caliWin.MainWindow = this;
             //caliWin.ProjectorFeedbackWindow = projectorFeedbackWindow;
             caliWin.Show();
         }
@@ -289,6 +297,14 @@ namespace ControlPanel
             {
                 fpsLabel.Content = NativeWrappers.ResultsDllWrapper.getFPS().ToString("0.00");
             }, null);
+        }
+
+        private void engineUpdateCallback()
+        {
+            if (EngineUpdate != null)
+            {
+                EngineUpdate(this, EventArgs.Empty);
+            }
         }
     }
 }

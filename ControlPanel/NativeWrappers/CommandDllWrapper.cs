@@ -69,5 +69,8 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void registerHandEventCallbacks(IntPtr handMoveCallback, IntPtr handCapturedCallback, IntPtr handLostCallback);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void registerEngineUpdateCallback(IntPtr engineUpdateCallback);
     }
 }

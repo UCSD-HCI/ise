@@ -104,3 +104,8 @@ DLL_EXPORT void registerHandEventCallbacks(void* handMoveCallback, void* handCap
 {
 	InteractiveSpaceEngine::sharedEngine()->getHandTracker()->registerCallbacks((HandEventCallback)handMoveCallback, (HandEventCallback)handCapturedCallback, (HandEventCallback)handLostCallback);
 }
+
+DLL_EXPORT void registerEngineUpdateCallback(void* engineUpdateCallback)
+{
+	InteractiveSpaceEngine::sharedEngine()->setEngineUpdateCallback((Callback)engineUpdateCallback);
+}

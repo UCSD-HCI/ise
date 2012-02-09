@@ -5,8 +5,17 @@
 #include <cv.h>
 
 typedef boost::shared_mutex Mutex;
-typedef boost::unique_lock<boost::shared_mutex> WriteLock;
-typedef boost::shared_lock<boost::shared_mutex> ReadLock;
+//typedef boost::unique_lock<boost::shared_mutex> WriteLock;
+//typedef boost::shared_lock<boost::shared_mutex> ReadLock;
+typedef struct DummyLock WriteLock;
+typedef struct DummyLock ReadLock;
+
+struct DummyLock
+{
+public:
+	DummyLock(Mutex& mutex) { }
+};
+
 
 //A pointer with a lock, used in wrappers
 typedef struct 
