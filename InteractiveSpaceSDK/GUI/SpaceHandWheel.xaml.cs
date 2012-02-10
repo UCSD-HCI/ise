@@ -25,9 +25,12 @@ namespace InteractiveSpaceSDK.GUI
         private const double BUTTON_SIZE = 100;
         private const double BUTTON_RADIUS = 300;
         private const double CIRCLE_RADIUS = 350;
-        private const int HAND_UPDATE_COUNT = 20;
-        private const double MOVING_THRESHOLD = 10;
+        private const int HAND_UPDATE_COUNT = 3;
+        private const double MOVING_THRESHOLD = 50;
         private const double BOTTOM_CROP = 1200;    //FIXME: 
+        private const double HAND_FINGER_DISTANCE = 500;
+        private const double GRAB_FINGER_COUNT = 1;
+        private const double STRETCH_FINGER_COUNT = 4;
 
         private InteractiveSpaceProvider spaceProvider;
         private List<Image> buttons;
@@ -37,7 +40,7 @@ namespace InteractiveSpaceSDK.GUI
         private int currentIndex;
         private Point3D wheelCenter;
 
-        private Dictionary<int, Tuple<int, Point3D>> handUpdateRecord;
+        private Dictionary<int, HandUpdateRecord> handUpdateRecords;
 
         //animation
         private ScaleTransform scaleTransform;
@@ -60,7 +63,7 @@ namespace InteractiveSpaceSDK.GUI
         public SpaceHandWheel()
         {
             buttons = new List<Image>();
-            handUpdateRecord = new Dictionary<int, Tuple<int, Point3D>>();
+            handUpdateRecords = new Dictionary<int, HandUpdateRecord>();
 
             InitializeComponent();
 
@@ -99,7 +102,7 @@ namespace InteractiveSpaceSDK.GUI
         {
             Dispatcher.BeginInvoke((Action)delegate()
             {
-                if (!IsEnabled || isActive || spaceProvider.FingerTracker.FingerCount > 0)
+                if (!IsEnabled || isActive || spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0)
                 {
                     return;
                 }
@@ -109,7 +112,7 @@ namespace InteractiveSpaceSDK.GUI
                     return;
                 }
 
-                handUpdateRecord.Add(e.ID, new Tuple<int, Point3D>(0, e.Position));
+                handUpdateRecords.Add(e.ID, new HandUpdateRecord(0, e.Position, 0, HandStage.Free));
                 //Trace.WriteLine("Hand " + e.ID.ToString() + " captured");
             }, null);
         }
@@ -125,60 +128,111 @@ namespace InteractiveSpaceSDK.GUI
 
                 if (!isActive)
                 {
-                    if (!handUpdateRecord.ContainsKey(e.ID))
+                    if (!handUpdateRecords.ContainsKey(e.ID))
                     {
                         return;
                     }
-                    var rec = handUpdateRecord[e.ID];
-                    if ((e.Position - rec.Item2).LengthSquared <= MOVING_THRESHOLD * MOVING_THRESHOLD)
+
+                    var rec = handUpdateRecords[e.ID];
+
+                    switch (rec.Stage)
                     {
-                        //Trace.WriteLine("Hand " + e.ID + ": " + rec.Item1.ToString());
-                        handUpdateRecord[e.ID] = new Tuple<int, Point3D>(rec.Item1 + 1, e.Position);
-                        if (handUpdateRecord[e.ID].Item1 >= HAND_UPDATE_COUNT)
-                        {
-                            activate(e.ID, e.Position);
-                        }
-                    }
-                    else
-                    {
-                        handUpdateRecord[e.ID] = new Tuple<int, Point3D>(0, e.Position);
-                        //Trace.WriteLine("Hand " + e.ID + " reset. ");
+                        case HandStage.Free:
+                            if ((e.Position - rec.Position).LengthSquared <= MOVING_THRESHOLD * MOVING_THRESHOLD)
+                            {
+                                //Trace.WriteLine("Hand " + e.ID + ": " + rec.Item1.ToString());
+                                rec.Position = e.Position;
+                                rec.FingerCount = getHoveringFingerCount(e.Position);
+                                Trace.WriteLine("Free: " + rec.FingerCount.ToString() + " fingers. ");
+
+                                if (rec.FingerCount > GRAB_FINGER_COUNT)
+                                {
+                                    rec.FrameCount++;
+                                }
+
+                                if (rec.FrameCount >= HAND_UPDATE_COUNT)
+                                {
+                                    rec.Stage = HandStage.Stopping;
+                                }
+                            }
+                            else
+                            {
+                                rec.FrameCount = 0;
+                                rec.Position = e.Position;
+                                //Trace.WriteLine("Hand " + e.ID + " reset. ");
+                            }
+                            break;
+
+                        case HandStage.Stopping:
+                            rec.FrameCount++;
+                            rec.Position = e.Position;
+                            rec.FingerCount = getHoveringFingerCount(rec.Position);
+
+                            Trace.WriteLine("Stopping: " + rec.FingerCount.ToString() + " fingers.");
+
+                            if (rec.FingerCount <= GRAB_FINGER_COUNT)
+                            {
+                                rec.Stage = HandStage.Grabbing;
+                            }
+                            break;
+
+                        case HandStage.Grabbing:
+                            rec.FrameCount++;
+                            rec.Position = e.Position;
+                            rec.FingerCount = getHoveringFingerCount(rec.Position);
+                            Trace.WriteLine("Grabbing: " + rec.FingerCount.ToString() + " fingers.");
+
+                            if (rec.FingerCount >= STRETCH_FINGER_COUNT)
+                            {
+                                rec.Stage = HandStage.Stretch;
+                                activate(e.ID, e.Position);
+                            }
+                            break;
                     }
                 }
-                else if (spaceProvider.FingerTracker.FingerCount > 0)
+                else if (spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0)
                 {
-                    deactivate();
+                    deactivate(e);
                 }
                 else if (e.ID == capturedHandId)
                 {
-                    double halfSec = 180.0 / buttons.Count;
-                    double angle = Math.Atan2(wheelCenter.Y - e.Position.Y, e.Position.X - wheelCenter.X) * 180.0 / Math.PI;
-                    if (angle < 0)
+                    int fingerCount = getHoveringFingerCount(e.Position);
+                    Trace.WriteLine("Working: " + fingerCount.ToString() + " fingers.");
+                    if (fingerCount < STRETCH_FINGER_COUNT)
                     {
-                        angle += 360;
-                    }
-                    //Trace.WriteLine("Angle = " + angle);
-
-                    int index = (int)((angle + halfSec) / (2 * halfSec)) % buttons.Count;
-
-                    if (index != currentIndex)
-                    {
-                        double selectedAngle = -index * 2 * halfSec - halfSec;
-                        selectionSector.RenderTransform = new RotateTransform(selectedAngle);
-                        currentIndex = index;
-                        //Trace.WriteLine("Index = " + index);
-                    }
-
-                    double ratio = (e.Position - wheelCenter).Length / CIRCLE_RADIUS;
-                    selectionSector.Opacity = ratio;
-
-                    if (ratio > 1.0)
-                    {
-                        //Trace.WriteLine("Index " + index + " activated!");
                         deactivate(e);
-                        if (ButtonSelected != null)
+                    }
+                    else
+                    {
+                        double halfSec = 180.0 / buttons.Count;
+                        double angle = Math.Atan2(wheelCenter.Y - e.Position.Y, e.Position.X - wheelCenter.X) * 180.0 / Math.PI;
+                        if (angle < 0)
                         {
-                            ButtonSelected(this, new HandWheelButtonEventArgs(index));
+                            angle += 360;
+                        }
+                        //Trace.WriteLine("Angle = " + angle);
+
+                        int index = (int)((angle + halfSec) / (2 * halfSec)) % buttons.Count;
+
+                        if (index != currentIndex)
+                        {
+                            double selectedAngle = -index * 2 * halfSec - halfSec;
+                            selectionSector.RenderTransform = new RotateTransform(selectedAngle);
+                            currentIndex = index;
+                            //Trace.WriteLine("Index = " + index);
+                        }
+
+                        double ratio = (e.Position - wheelCenter).Length / CIRCLE_RADIUS;
+                        selectionSector.Opacity = ratio;
+
+                        if (ratio > 1.0)
+                        {
+                            //Trace.WriteLine("Index " + index + " activated!");
+                            deactivate(e);
+                            if (ButtonSelected != null)
+                            {
+                                ButtonSelected(this, new HandWheelButtonEventArgs(index));
+                            }
                         }
                     }
                 }
@@ -200,9 +254,22 @@ namespace InteractiveSpaceSDK.GUI
                 }
                 else
                 {
-                    handUpdateRecord.Remove(e.ID);
+                    handUpdateRecords.Remove(e.ID);
                 }
             }, null);
+        }
+
+        private int getHoveringFingerCount(Point3D position)
+        {
+            int r = 0;
+            foreach (var f in spaceProvider.FingerTracker.HoveringFingers)
+            {
+                if ((f.Position - position).LengthSquared <= HAND_FINGER_DISTANCE * HAND_FINGER_DISTANCE)
+                {
+                    r++;
+                }
+            }
+            return r;
         }
 
         private void refreshButtons()
@@ -251,7 +318,7 @@ namespace InteractiveSpaceSDK.GUI
 
         private void activate(int id, Point3D initPos)
         {   
-            handUpdateRecord.Clear();
+            handUpdateRecords.Clear();
             isActive = true;
             capturedHandId = id;
             Visibility = Visibility.Visible;
@@ -275,7 +342,7 @@ namespace InteractiveSpaceSDK.GUI
         private void deactivate(HandEventArgs e)
         {
             deactivate();
-            handUpdateRecord.Add(e.ID, new Tuple<int, Point3D>(0, e.Position));
+            handUpdateRecords.Add(e.ID, new HandUpdateRecord(0, e.Position, 0, HandStage.Free));
         }
     }
 
@@ -289,5 +356,29 @@ namespace InteractiveSpaceSDK.GUI
         }
 
         public int ID { get { return id; } }
+    }
+
+    class HandUpdateRecord
+    {
+        public int FrameCount { get; set; }
+        public Point3D Position { get; set; }
+        public int FingerCount { get; set; }
+        public HandStage Stage { get; set; }
+
+        public HandUpdateRecord(int frameCount, Point3D position, int fingerCount, HandStage stage)
+        {
+            this.FrameCount = frameCount;
+            this.Position = position;
+            this.FingerCount = fingerCount;
+            this.Stage = stage;
+        }
+    }
+
+    enum HandStage
+    {
+        Free = 0,   //checking stopping
+        Stopping,   //checking finger
+        Grabbing,   //checking multiple finger
+        Stretch
     }
 }

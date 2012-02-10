@@ -5,11 +5,12 @@ FingerEventsGenerator::FingerEventsGenerator(FingerSelector* fingerSelector) : f
 {
 }
 
-void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPoint3D& position)
+void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPoint3D& position, FingerState fingerState)
 {
 	events[eventNum].eventType = type;
 	events[eventNum].id = id;
 	events[eventNum].position = position;
+	events[eventNum].fingerState = fingerState;
 
 	FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(position);
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&pointProj, &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
@@ -22,6 +23,7 @@ void FingerEventsGenerator::addEvent(FingerEventType type, const Finger& finger)
 	events[eventNum].eventType = type;
 	events[eventNum].id = finger.id;
 	events[eventNum].position = finger.positionInRealWorld;
+	events[eventNum].fingerState = finger.fingerState;
 
 	FloatPoint3D pointProj = finger.positionInKinectProj;
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
@@ -45,10 +47,10 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		{
 			continue;
 		}*/
-		if (finger.fingerState != FingerOnSurface)
+		/*if (finger.fingerState != FingerOnSurface)
 		{
 			continue;
-		}
+		}*/
 
 		//search nearest path
 		double minSquDist = TRACK_RADIUS * TRACK_RADIUS;
@@ -79,7 +81,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		{
 			lastId++;
 			FingerPath newPath(lastId);
-			newPath.addPoint(finger.positionInRealWorld, newFrameCount);
+			newPath.addPoint(finger.positionInRealWorld, newFrameCount, finger.fingerState);
 			finger.id = lastId;
 			paths.push_back(newPath);
 
@@ -87,17 +89,30 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		}
 		else	//add this point to an existing path
 		{
-			nearestPath->addPoint(finger.positionInRealWorld, newFrameCount);
+			FingerState prevState = nearestPath->getLastFingerState();
+			nearestPath->addPoint(finger.positionInRealWorld, newFrameCount, finger.fingerState);
 			//paths[nearestIndex].addPoint(finger.positionInRealWorld, newFrameCount);
 			finger.id = nearestPath->getID();
 			//finger.id = paths[nearestIndex].getID();
 	
 			if (nearestPath->getLength() == MIN_PATH_LENGTH)
 			{
-				addEvent(FingerDown, finger);
+				addEvent(FingerCaptured, finger);
+				if (finger.fingerState == FingerOnSurface)
+				{
+					addEvent(FingerDown, finger);
+				}
 			}
 			else if (nearestPath->getLength() > MIN_PATH_LENGTH)
 			{
+				if (prevState == FingerHovering && finger.fingerState == FingerOnSurface)
+				{
+					addEvent(FingerDown, finger);
+				}
+				else if (prevState == FingerOnSurface && finger.fingerState == FingerHovering)
+				{
+					addEvent(FingerUp, finger);
+				}
 				addEvent(FingerMove, finger);
 			}
 		}
@@ -110,7 +125,11 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		{
 			if (paths[i].getLength() >= MIN_PATH_LENGTH)
 			{
-				addEvent(FingerUp, paths[i].getID(), paths[i].getEndPoint());
+				if (paths[i].getLastFingerState() == FingerOnSurface)
+				{
+					addEvent(FingerUp, paths[i].getID(), paths[i].getEndPoint(), FingerHovering);
+				}
+				addEvent(FingerLost, paths[i].getID(), paths[i].getEndPoint(), FingerHovering);
 			}
 
 			std::vector<FingerPath>::iterator itToDel = paths.begin();

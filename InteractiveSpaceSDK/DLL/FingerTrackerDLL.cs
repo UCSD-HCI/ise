@@ -16,6 +16,8 @@ namespace InteractiveSpaceSDK.DLL
         public event EventHandler<FingerEventArgs> FingerDown;
         public event EventHandler<FingerEventArgs> FingerUp;
         public event EventHandler<FingerEventArgs> FingerMove;
+        public event EventHandler<FingerEventArgs> FingerCaptured;
+        public event EventHandler<FingerEventArgs> FingerLost;
 
         public FingerTrackerDLL()
         {
@@ -44,6 +46,7 @@ namespace InteractiveSpaceSDK.DLL
                     switch (e.EventType)
                     {
                         case FingerEventType.FingerMove:
+
                             Finger movingFinger = fingers[e.ID];    //it should not be null
 
                             //but because of sync bug, it can...
@@ -60,33 +63,47 @@ namespace InteractiveSpaceSDK.DLL
                             break;
 
                         case FingerEventType.FingerUp:
+                            Finger upFinger = fingers[e.ID];
+                            upFinger.FingerState = FingerState.Hovering;
+                            if (FingerUp != null)
+                            {
+                                FingerUp(this, new FingerEventArgs(upFinger, this));
+                            }
+                            break;
+
+                        case FingerEventType.FingerDown:
+                            Finger downFinger = fingers[e.ID];
+                            downFinger.FingerState = FingerState.OnSurface;
+                            if (FingerDown != null)
+                            {
+                                FingerDown(this, new FingerEventArgs(downFinger, this));
+                            }
+                            break;
+
+                        case FingerEventType.FingerCaptured:
+                            Finger newFinger = new Finger(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z), FingerState.Hovering);
+                            fingers.Add(newFinger.ID, newFinger);
+                            if (FingerCaptured != null)
+                            {
+                                FingerCaptured(this, new FingerEventArgs(newFinger, this));
+                            }
+                            break;
+
+                        case FingerEventType.FingerLost:
                             Finger removedFinger = fingers[e.ID];   //it should not be null
                             
-                        //but because of sync bug, it can...
+                            //but because of sync bug, it can...
                             if (removedFinger == null)
                             {
                                 break;
                             }
 
                             fingers.Remove(e.ID);
-                            if (FingerUp != null)
+                            if (FingerLost != null)
                             {
-                                FingerUp(this, new FingerEventArgs(removedFinger, this));
+                                FingerLost(this, new FingerEventArgs(removedFinger, this));
                             }
                             break;
-
-                        case FingerEventType.FingerDown:
-                            Finger newFinger = new Finger(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z));
-                            fingers.Add(newFinger.ID, newFinger);
-                            if (FingerDown != null)
-                            {
-                                FingerDown(this, new FingerEventArgs(newFinger, this));
-                            }
-                            break;
-
-                        default:
-                            //TODO
-                            break; 
                     }
                 }
             }
@@ -97,20 +114,21 @@ namespace InteractiveSpaceSDK.DLL
             return fingers[id];
         }
 
-        public int FingerCount
+        public IEnumerable<Finger> HoveringFingers
         {
-            get 
+            //TODO: optimize
+            get
             {
-                return fingers.Count;
+                return (from g in fingers.Values where g.FingerState == FingerState.Hovering select g);
             }
         }
 
-
-        public IEnumerable<Finger> Fingers
+        public IEnumerable<Finger> OnSurfaceFingers
         {
+            //TODO: optimize
             get
             {
-                return fingers.Values;
+                return (from g in fingers.Values where g.FingerState == FingerState.OnSurface select g);
             }
         }
     }

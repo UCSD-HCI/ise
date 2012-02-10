@@ -146,6 +146,7 @@ namespace ControlPanel.NativeWrappers
         public FloatPoint3D PositionInRealWorld { get { return positionInRealWorld; } }
         public IntPoint3D PositionInKinectPersp { get { return positionInKinectProj; } }
         public FingerType FingerType { get { return fingerType; } }
+        public FingerState FingerState { get { return fingerState; } }
     }
     
     /// <summary>
@@ -178,7 +179,6 @@ namespace ControlPanel.NativeWrappers
 	    FingerDown,
 	    FingerUp,
 
-	    //These two are ignored currently because we only process on-surface fingers.
 	    FingerCaptured,
 	    FingerLost
     };
@@ -193,11 +193,13 @@ namespace ControlPanel.NativeWrappers
 	    private FloatPoint3D position;
         private FloatPoint3D positionTable2D;
 	    private FingerEventType eventType;
+        private FingerState fingerState;
 
         public int ID { get { return id; } }
         public FloatPoint3D Position { get { return position; } }
         public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
         public FingerEventType EventType { get { return eventType; } }
+        public FingerState FingerState { get { return fingerState; } }
     };
 
     /// <summary>

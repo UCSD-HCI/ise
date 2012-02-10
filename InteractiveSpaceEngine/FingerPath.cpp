@@ -1,10 +1,11 @@
 #include "FingerPath.h"
+#include "FingerSelector.h"
 
 FingerPath::FingerPath(int id) : id(id)
 {
 }
 
-void FingerPath::addPoint(const FloatPoint3D& point, long long frame)
+void FingerPath::addPoint(const FloatPoint3D& point, long long frame, FingerState fingerState)
 {
 	if (false && points.size() > 0)
 	{
@@ -27,6 +28,7 @@ void FingerPath::addPoint(const FloatPoint3D& point, long long frame)
 		points.pop_front();
 	}
 
+	lastFingerState = fingerState;
 	lastUpdateFrame = frame;
 }
 

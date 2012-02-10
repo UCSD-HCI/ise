@@ -16,7 +16,6 @@ typedef enum
 	FingerDown,
 	FingerUp,
 
-	//These two are ignored currently because we only process on-surface fingers.
 	FingerCaptured,
 	FingerLost
 } FingerEventType;
@@ -33,6 +32,7 @@ struct FingerEvent
 	 */
 	FloatPoint3D positionTable2D;
 	FingerEventType eventType;
+	FingerState fingerState;
 };
 
 /**
@@ -50,7 +50,7 @@ private:
 	std::vector<FingerPath> paths;   
 	FingerSelector* fingerSelector;
 
-	void addEvent(FingerEventType type, int id, const FloatPoint3D& position);
+	void addEvent(FingerEventType type, int id, const FloatPoint3D& position, FingerState fingerState);
 	void addEvent(FingerEventType type, const Finger& finger);
 public:
 	FingerEventsGenerator(FingerSelector* fingerSelector);

@@ -14,6 +14,8 @@ namespace InteractiveSpaceSDK
         event EventHandler<FingerEventArgs> FingerDown;
         event EventHandler<FingerEventArgs> FingerUp;
         event EventHandler<FingerEventArgs> FingerMove;
+        event EventHandler<FingerEventArgs> FingerCaptured;
+        event EventHandler<FingerEventArgs> FingerLost;
 
         //TODO: click, double click
         
@@ -24,11 +26,14 @@ namespace InteractiveSpaceSDK
         /// <returns></returns>
         Finger FindFingerById(int id);
 
-        /// <summary>
-        /// Get all tracking fingers.
-        /// </summary>
-        IEnumerable<Finger> Fingers { get; }
-        int FingerCount { get; }
+        IEnumerable<Finger> OnSurfaceFingers { get; }
+        IEnumerable<Finger> HoveringFingers { get; }
+    }
+
+    public enum FingerState
+    {
+        Hovering,
+        OnSurface
     }
 
     public class Finger
@@ -36,17 +41,19 @@ namespace InteractiveSpaceSDK
         private int id;
 
         public Point3D Position { get; set; }
-        public int ID { get { return id; } }
+        public FingerState FingerState { get; set; }
+        public int ID { get { return id; } } 
 
         public Finger(int id)
         {
             this.id = id;
         }
 
-        public Finger(int id, Point3D position)
+        public Finger(int id, Point3D position, FingerState fingerState)
         {
             this.id = id;
             this.Position = position;
+            this.FingerState = FingerState;
         }
     }
 
@@ -54,12 +61,11 @@ namespace InteractiveSpaceSDK
     {
         private Finger finger;
         private FingerTracker fingerTracker;
-        //TODO: state: hovering/surface
 
-        public FingerEventArgs(int id, Point3D position, FingerTracker fingerTracker)
+        public FingerEventArgs(int id, Point3D position, FingerState fingerState, FingerTracker fingerTracker)
         {
             this.fingerTracker = fingerTracker;
-            finger = new Finger(id, position);
+            finger = new Finger(id, position, fingerState);
         }
 
         public FingerEventArgs(Finger finger, FingerTracker fingerTracker)
@@ -71,5 +77,6 @@ namespace InteractiveSpaceSDK
         public int ID { get { return finger.ID; } }
         public Point3D Position { get { return finger.Position; } }
         public FingerTracker FingerTracker { get { return fingerTracker; } }
+        public FingerState FingerState { get { return finger.FingerState; } }
     }
 }

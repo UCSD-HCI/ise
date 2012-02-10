@@ -157,6 +157,15 @@ namespace ControlPanel
                             {
                                 fingerPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor(fingers[i].ID));
                             }
+
+                            if (fingers[i].FingerState == FingerState.FingerOnSurface)
+                            {
+                                fingerPoints[i].Stroke = Brushes.White;
+                            }
+                            else
+                            {
+                                fingerPoints[i].Stroke = Brushes.Transparent;
+                            }
                         }
 
                         for (int i = fingerNum; i < fingerPoints.Count; i++)

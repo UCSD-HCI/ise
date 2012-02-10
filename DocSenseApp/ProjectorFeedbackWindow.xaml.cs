@@ -34,7 +34,7 @@ namespace DocSenseApp
         {
             if (grabButton.IsChecked)
             {
-                if (e.FingerTracker.FingerCount >= 2)
+                if (e.FingerTracker.OnSurfaceFingers.Count() >= 2)
                 {
                     selectionRect.Opacity = 1.0;
                 }
@@ -46,7 +46,7 @@ namespace DocSenseApp
         {
             if (grabButton.IsChecked)
             {
-                if (e.FingerTracker.FingerCount == 0)
+                if (e.FingerTracker.OnSurfaceFingers.Count() == 0)
                 {
                     if (lastFingerUpPosition.HasValue)
                     {
@@ -92,12 +92,12 @@ namespace DocSenseApp
             if (grabButton.IsChecked)
             {
                 //TODO FIXME: This thread is not the same as FingerTracker's thread. How to synchronize? 
-                if (e.FingerTracker.FingerCount >= 2)
+                if (e.FingerTracker.OnSurfaceFingers.Count() >= 2)
                 {
                     Finger[] fingers = new Finger[2];
 
                     int count = 0;
-                    foreach (Finger f in e.FingerTracker.Fingers)
+                    foreach (Finger f in e.FingerTracker.OnSurfaceFingers)
                     {
                         fingers[count] = f;
                         count++;
@@ -112,9 +112,9 @@ namespace DocSenseApp
                     selectionRect.Width = Math.Abs(fingers[0].Position.X - fingers[1].Position.X);
                     selectionRect.Height = Math.Abs(fingers[0].Position.Y - fingers[1].Position.Y);
                 }
-                else if (e.FingerTracker.FingerCount == 1 && lastFingerUpPosition.HasValue)
+                else if (e.FingerTracker.OnSurfaceFingers.Count() == 1 && lastFingerUpPosition.HasValue)
                 {
-                    Finger f = e.FingerTracker.Fingers.First();
+                    Finger f = e.FingerTracker.OnSurfaceFingers.First();
                     Canvas.SetLeft(selectionRect, Math.Min(lastFingerUpPosition.Value.X, f.Position.X));
                     Canvas.SetTop(selectionRect, Math.Min(lastFingerUpPosition.Value.Y, f.Position.Y));
                     selectionRect.Width = Math.Abs(lastFingerUpPosition.Value.X - f.Position.X);
