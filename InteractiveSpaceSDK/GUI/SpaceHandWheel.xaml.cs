@@ -102,7 +102,7 @@ namespace InteractiveSpaceSDK.GUI
         {
             Dispatcher.BeginInvoke((Action)delegate()
             {
-                if (!IsEnabled || isActive || spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0)
+                if (!IsEnabled || isActive /*|| spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0*/)
                 {
                     return;
                 }
@@ -190,10 +190,10 @@ namespace InteractiveSpaceSDK.GUI
                             break;
                     }
                 }
-                else if (spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0)
+                /*else if (spaceProvider.FingerTracker.OnSurfaceFingers.Count() > 0)
                 {
                     deactivate(e);
-                }
+                }*/
                 else if (e.ID == capturedHandId)
                 {
                     int fingerCount = getHoveringFingerCount(e.Position);
