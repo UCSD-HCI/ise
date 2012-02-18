@@ -8,9 +8,9 @@ DLL_EXPORT void engineRun()
 	InteractiveSpaceEngine::sharedEngine()->run();
 }
 
-DLL_EXPORT void engineStop()
+DLL_EXPORT void engineStop(void* stoppedCallback)
 {
-	InteractiveSpaceEngine::sharedEngine()->stop();
+	InteractiveSpaceEngine::sharedEngine()->stop((Callback)stoppedCallback);
 }
 
 DLL_EXPORT int getRGBWidth()

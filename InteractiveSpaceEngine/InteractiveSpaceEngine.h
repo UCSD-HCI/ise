@@ -15,6 +15,7 @@
 #include "FingerEventsGenerator.h"
 #include "MotionCameraReader.h"
 #include "MotionCameraGrabber.h"
+#include "VideoRecorder.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -38,6 +39,8 @@ private:
 
 	Calibrator* calibrator;
 
+	VideoRecorder* videoRecorder;
+
 	long long kinectSensorFrameCount;
 	volatile long long engineFrameCount;
 	
@@ -45,16 +48,19 @@ private:
 	boost::timer fpsTimer;
 	volatile float fps;
 
-	void dispose();
+	volatile bool isStopRequested;
 
 	Callback engineUpdateCallback;
 
+	Callback stoppedCallback;
+
+	void dispose();
 public:
 	InteractiveSpaceEngine();
 	virtual ~InteractiveSpaceEngine();
 	static InteractiveSpaceEngine* sharedEngine();
 	void run();
-	void stop();
+	void stop(Callback stoppedCallback);
 
 	inline void join() { threadJoin(); } //for console debug
 

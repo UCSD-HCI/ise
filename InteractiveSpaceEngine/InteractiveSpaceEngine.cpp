@@ -6,7 +6,7 @@ InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
 	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL),
-	fps(0), engineFrameCount(0), engineUpdateCallback(NULL)
+	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
 {
 }
 
@@ -17,18 +17,23 @@ InteractiveSpaceEngine::~InteractiveSpaceEngine()
 
 void InteractiveSpaceEngine::dispose()
 {
-	threadStop();
-
-	if (kinectSensor != NULL)
+	//threadStop();
+	if (handTracker != NULL)
 	{
-		delete kinectSensor;
-		kinectSensor = NULL;
+		delete handTracker;
+		handTracker = NULL;
 	}
 
-	if (ipf != NULL)
+	if (fingerEventsGenerator != NULL)
 	{
-		delete ipf;
-		ipf = NULL;
+		delete fingerEventsGenerator;
+		fingerEventsGenerator = NULL;
+	}
+
+	if (fingerSelector != NULL)
+	{
+		delete fingerSelector;
+		fingerSelector = NULL;
 	}
 
 	if (omniTracker != NULL)
@@ -43,28 +48,10 @@ void InteractiveSpaceEngine::dispose()
 		thresholdFingerTracker = NULL;
 	}
 
-	if (fingerSelector != NULL)
+	if (motionCameraGrabber != NULL)
 	{
-		delete fingerSelector;
-		fingerSelector = NULL;
-	}
-
-	if (handTracker != NULL)
-	{
-		delete handTracker;
-		handTracker = NULL;
-	}
-
-	if (calibrator != NULL)
-	{
-		delete calibrator;
-		calibrator = NULL;
-	}
-
-	if (motionCameraController != NULL)
-	{
-		delete motionCameraController;
-		motionCameraController = NULL;
+		delete motionCameraGrabber;
+		motionCameraGrabber = NULL;
 	}
 
 	if (motionCameraTracker != NULL)
@@ -73,10 +60,10 @@ void InteractiveSpaceEngine::dispose()
 		motionCameraTracker = NULL;
 	}
 
-	if (fingerEventsGenerator != NULL)
+	if (motionCameraController != NULL)
 	{
-		delete fingerEventsGenerator;
-		fingerEventsGenerator = NULL;
+		delete motionCameraController;
+		motionCameraController = NULL;
 	}
 
 	if (motionCameraReader != NULL)
@@ -85,10 +72,28 @@ void InteractiveSpaceEngine::dispose()
 		motionCameraReader = NULL;
 	}
 
-	if (motionCameraGrabber != NULL)
+	if (videoRecorder != NULL)
 	{
-		delete motionCameraGrabber;
-		motionCameraGrabber = NULL;
+		delete videoRecorder;
+		videoRecorder = NULL;
+	}
+
+	if (calibrator != NULL)
+	{
+		delete calibrator;
+		calibrator = NULL;
+	}
+
+	if (ipf != NULL)
+	{
+		delete ipf;
+		ipf = NULL;
+	}
+
+	if (kinectSensor != NULL)
+	{
+		delete kinectSensor;
+		kinectSensor = NULL;
 	}
 }
 
@@ -123,6 +128,8 @@ void InteractiveSpaceEngine::run()
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
 
+	videoRecorder = new VideoRecorder(ipf);
+
 	engineFrameCount = 0;
 	fpsCounter = 0;
 	fpsTimer.restart();
@@ -132,14 +139,15 @@ void InteractiveSpaceEngine::run()
 	threadStart();
 }
 
-void InteractiveSpaceEngine::stop()
+void InteractiveSpaceEngine::stop(Callback stoppedCallback)
 {
-	dispose();
+	this->stoppedCallback = stoppedCallback;
+	isStopRequested = true;
 }
 
 void InteractiveSpaceEngine::operator() ()
 {
-	while(true)
+	while(!isStopRequested)
 	{
 		boost::this_thread::interruption_point();
 
@@ -173,6 +181,11 @@ void InteractiveSpaceEngine::operator() ()
 				handTracker->refresh();
 				//motionCameraTracker->refresh();				
 
+				if (videoRecorder != NULL)
+				{
+					videoRecorder->refresh();
+				}
+
 				kinectSensorFrameCount = newFrameCount;
 				engineFrameCount++;
 
@@ -192,10 +205,17 @@ void InteractiveSpaceEngine::operator() ()
 			}
 		}
 
-		if (engineUpdateCallback != NULL)
+		if (engineUpdateCallback != NULL && !isStopRequested)
 		{
 			engineUpdateCallback();
 		}
+	}
+
+	dispose();
+
+	if (stoppedCallback != NULL)
+	{
+		stoppedCallback();
 	}
 }
 

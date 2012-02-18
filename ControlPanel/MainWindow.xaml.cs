@@ -28,12 +28,21 @@ namespace ControlPanel
         private Action thresholdCalibrationFinishedCallback;
         private System.Threading.Timer fpsTimer;
         private Action engineUpdateDelegate;
+        private Action engineStoppedDelegate;
+        public bool IsStopRequested { get; private set; }
 
         public event EventHandler EngineUpdate;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public void EngineStop()
+        {
+            IsStopRequested = true;
+            engineStoppedDelegate = new Action(onEngineStopped);
+            CommandDllWrapper.engineStop(Marshal.GetFunctionPointerForDelegate(engineStoppedDelegate));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -90,7 +99,18 @@ namespace ControlPanel
                 projectorFeedbackWindow.Close();
             }*/
 
-            CommandDllWrapper.engineStop();
+            if (motionCameraVideoWindow != null)
+            {
+                motionCameraVideoWindow.Close();
+            }
+        }
+
+        private void onEngineStopped()
+        {
+            Dispatcher.BeginInvoke((Action)delegate()
+            {
+                this.Close();
+            }, null);
         }
 
         private void rawVideoToggleButton_Click(object sender, RoutedEventArgs e)
@@ -301,7 +321,7 @@ namespace ControlPanel
 
         private void engineUpdateCallback()
         {
-            if (EngineUpdate != null)
+            if (EngineUpdate != null && !IsStopRequested)
             {
                 EngineUpdate(this, EventArgs.Empty);
             }

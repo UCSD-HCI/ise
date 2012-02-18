@@ -87,10 +87,8 @@ namespace InteractiveSpaceSDK.DLL
         {
             if (stopRequested)
             {
-                mainWindow.Dispatcher.BeginInvoke((Action)delegate()
-                {
-                    mainWindow.Close();
-                }, null);
+                mainWindow.EngineStop();
+                return;
             }
 
             long newFrameCount = ResultsDllWrapper.getEngineFrameCount();

@@ -14,7 +14,7 @@ namespace ControlPanel.NativeWrappers
         public static extern unsafe void engineRun();
 
         [DllImport(DLL_NAME)]
-        public static extern unsafe void engineStop();
+        public static extern unsafe void engineStop(IntPtr stoppedCallback);
 
         [DllImport(DLL_NAME)]
         public static extern unsafe int getRGBWidth();

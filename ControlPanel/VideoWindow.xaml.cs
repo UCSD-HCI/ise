@@ -100,6 +100,11 @@ namespace ControlPanel
         {
             Dispatcher.BeginInvoke((Action)delegate
             {
+                if (mainWindow.IsStopRequested)
+                {
+                    return;
+                }
+
                 videoImage.Source = VideoSources.SharedVideoSources.GetSource(videoSourceType);
 
                 if (videoSourceType != VideoSourceType.MotionCamera)

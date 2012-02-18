@@ -142,6 +142,7 @@
     <ClInclude Include="KinectSensor.h" />
     <ClInclude Include="ThreadUtils.h" />
     <ClInclude Include="ThresholdTouchFingerTracker.h" />
+    <ClInclude Include="VideoRecorder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calibrator.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
     <ClCompile Include="ResultsDllWrapper.cpp" />
     <ClCompile Include="ThresholdTouchFingerTracker.cpp" />
+    <ClCompile Include="VideoRecorder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenNIConfig.xml" />
