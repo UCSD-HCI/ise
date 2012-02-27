@@ -72,5 +72,12 @@ namespace ControlPanel.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void registerEngineUpdateCallback(IntPtr engineUpdateCallback);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void startRecording(byte* filepath);
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void stopRecording();
+
     }
 }

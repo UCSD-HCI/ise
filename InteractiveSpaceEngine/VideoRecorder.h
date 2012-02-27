@@ -3,16 +3,24 @@
 
 #include <cv.h>
 #include "ImageProcessingFactory.h"
+#include <string>
+#include <stdio.h>
 
 class VideoRecorder
 {
 private:
-	CvVideoWriter* writer;
+	CvVideoWriter* rgbWriter;
+	CvVideoWriter* depthHistWriter;
+	FILE* depthDataFp;
 	ImageProcessingFactory* ipf;
+	bool isRecording;
 
 public:
 	VideoRecorder(ImageProcessingFactory* ipf);
 	virtual ~VideoRecorder();
+
+	void start(std::string filepath);
+	void stop();
 
 	void refresh();
 };

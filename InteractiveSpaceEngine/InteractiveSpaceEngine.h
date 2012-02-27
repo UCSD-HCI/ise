@@ -78,6 +78,7 @@ public:
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
 	inline MotionCameraReader* getMotionCameraReader() { return motionCameraReader; }
 	inline MotionCameraGrabber* getMotionCameraGrabber() { return motionCameraGrabber; }
+	inline VideoRecorder* getVideoRecorder() { return videoRecorder; }
 
 	inline long long getFrameCount() 
 	{

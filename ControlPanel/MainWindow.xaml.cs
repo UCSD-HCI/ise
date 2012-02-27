@@ -30,6 +30,7 @@ namespace ControlPanel
         private Action engineUpdateDelegate;
         private Action engineStoppedDelegate;
         public bool IsStopRequested { get; private set; }
+        private bool isRecording;
 
         public event EventHandler EngineUpdate;
 
@@ -324,6 +325,49 @@ namespace ControlPanel
             if (EngineUpdate != null && !IsStopRequested)
             {
                 EngineUpdate(this, EventArgs.Empty);
+            }
+        }
+
+        private void recordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!isRecording)
+            {
+                Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+                dialog.FileName = "rec" + String.Format("{0:yyMMdd-HHmm}", DateTime.Now);
+                dialog.DefaultExt = ".avi";
+                dialog.Filter = "Video (.avi)|*.avi";
+
+                bool? result = dialog.ShowDialog();
+
+                if (result == true)
+                {
+                    string path = dialog.FileName;
+                    string pathNoExt = System.IO.Path.GetDirectoryName(path) + "\\" + System.IO.Path.GetFileNameWithoutExtension(path);
+                    byte[] pathBytes = Encoding.UTF8.GetBytes(pathNoExt);
+                    byte[] cstr = new byte[pathBytes.Length + 1];
+                    for (int i = 0; i < pathBytes.Length; i++)
+                    {
+                        cstr[i] = pathBytes[i];
+                    }
+                    cstr[cstr.Length - 1] = (byte)0;
+
+                    unsafe
+                    {
+                        fixed (byte* cstrPtr = cstr)
+                        {
+                            CommandDllWrapper.startRecording(cstrPtr);
+                        }
+                    }
+
+                    isRecording = true;
+                    recordButton.Content = "Stop";
+                }
+            }
+            else
+            {
+                CommandDllWrapper.stopRecording();
+                isRecording = false;
+                recordButton.Content = "Record";
             }
         }
     }

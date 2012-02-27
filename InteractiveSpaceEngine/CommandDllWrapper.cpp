@@ -109,3 +109,13 @@ DLL_EXPORT void registerEngineUpdateCallback(void* engineUpdateCallback)
 {
 	InteractiveSpaceEngine::sharedEngine()->setEngineUpdateCallback((Callback)engineUpdateCallback);
 }
+
+DLL_EXPORT void startRecording(char* filepath)
+{
+	InteractiveSpaceEngine::sharedEngine()->getVideoRecorder()->start(filepath);
+}
+
+DLL_EXPORT void stopRecording()
+{
+	InteractiveSpaceEngine::sharedEngine()->getVideoRecorder()->stop();
+}

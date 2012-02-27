@@ -21,10 +21,15 @@
             </Grid>
         </GroupBox>
         -->
+        <GroupBox Header="Video Recorder">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="recordButton" Margin="5" Click="recordButton_Click">Record</Button>
+            </StackPanel>
+        </GroupBox>
         <GroupBox Header="System Calibration">
-            <Grid>
+            <StackPanel>
                 <Button Name="systemCalibrateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="systemCalibrateButton_Click">Calibrate</Button>
-            </Grid>
+            </StackPanel>
         </GroupBox>
         <GroupBox Header="OmniTouch Parameters">
             <Grid>
