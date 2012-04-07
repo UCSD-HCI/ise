@@ -70,7 +70,9 @@ int main(int argc, char * argv[]){
 	Mat image;
 
 	bool paused = false;
-	bool tl = true;
+	bool tl = false;
+	bool hasClass = true;
+	string objectName = "rayban";
 	///Run-time
 	Mat current_gray;
 	BoundingBox pbox;
@@ -79,51 +81,60 @@ int main(int argc, char * argv[]){
 	bool status=true;
 	Scalar color(0,255,0);
 	
-    for(;;)
-    {
-        if( !paused )
-        {
-            capture >> frame;
-            if( frame.empty() )
-                break;
-        }
-		
-		frame.copyTo(image);
-        frame.copyTo(last_gray);
-		cvtColor(last_gray, last_gray, CV_RGB2GRAY);
-		
-		if( !gotBB && box.width > 0 && box.height > 0 )
-			drawBox(image,box);
-		
-		if(gotBB)
+	if(!hasClass)
+	{
+		for(;;)
 		{
-			if (min(box.width,box.height) < 15)
+			if( !paused )
 			{
-				cout << "Bounding box too small, try again." << endl;
-				gotBB = false;
-				continue;
+				capture >> frame;
+				if( frame.empty() )
+					break;
 			}
 			
-			//TLD initialization
-			tld.init(last_gray,box,NULL);
-			printf("Initial Bounding Box = x:%d y:%d h:%d w:%d\n",box.x,box.y,box.width,box.height);
-			break;
-		}
-		
-		imshow( "TLD", image );
-		
-        char c = (char)waitKey(10);
-        if( c == 27 )
-            break;
-        switch(c)
-        {
-			case 'p':
-				paused = !paused;
+			frame.copyTo(image);
+			frame.copyTo(last_gray);
+			cvtColor(last_gray, last_gray, CV_RGB2GRAY);
+			
+			if( !gotBB && box.width > 0 && box.height > 0 )
+				drawBox(image,box);
+			
+			if(gotBB)
+			{
+				if (min(box.width,box.height) < 15)
+				{
+					cout << "Bounding box too small, try again." << endl;
+					gotBB = false;
+					continue;
+				}
+				
+				//TLD initialization
+				tld.init(last_gray,box,NULL,objectName);
+				printf("Initial Bounding Box = x:%d y:%d h:%d w:%d\n",box.x,box.y,box.width,box.height);
 				break;
-			default:
-				;
-        }
-    }
+			}
+			
+			imshow( "TLD", image );
+			
+			char c = (char)waitKey(10);
+			if( c == 27 )
+				break;
+			switch(c)
+			{
+				case 'p':
+					paused = !paused;
+					break;
+				default:
+					;
+			}
+		}
+	}
+	else {
+		tld.initWithClassifier(objectName);
+	}
+
+
+
 	
     for(;;)
     {
@@ -162,6 +173,5 @@ int main(int argc, char * argv[]){
 				;
         }
 	}
-	
 	return 0;
 }

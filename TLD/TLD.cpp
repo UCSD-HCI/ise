@@ -34,6 +34,91 @@ TLD::TLD()
 	bad_overlap = 0.2;
 	bad_patches = 100;
 	classifier.init();
+	objectName = "";
+}
+
+TLD::~TLD()
+{
+	if(objectName != "")
+	{
+		FileStorage train;
+		//store training data
+		train.open(objectName + ".yml", FileStorage::APPEND);
+		train << "pEx" << "[";
+		train << classifier.pEx;
+		train << "]";
+		
+		train << "nEx" << "[";
+		train << classifier.nEx;
+		train << "]";
+		
+		train << "posteriors" << "[";
+		for(int i = 0; i < classifier.posteriors.size(); i++)
+		{
+			train << "{:" << "vector" << "[:";
+			for(int j = 0; j < classifier.posteriors[i].size(); j++)
+			{
+				train << classifier.posteriors[i][j];
+			}
+			train << "]" << "}";
+		}
+		train << "]";
+		
+		train << "nCounter" << "[";
+		for(int i = 0; i < classifier.nCounter.size(); i++)
+		{
+			train << "{:" << "vector" << "[:";
+			for(int j = 0; j < classifier.nCounter[i].size(); j++)
+			{
+				train << classifier.nCounter[i][j];
+			}
+			train << "]" << "}";
+		}
+		train << "]";
+		
+		train << "pCounter" << "[";
+		for(int i = 0; i < classifier.pCounter.size(); i++)
+		{
+			train << "{:" << "vector" << "[:";
+			for(int j = 0; j < classifier.pCounter[i].size(); j++)
+			{
+				train << classifier.pCounter[i][j];
+			}
+			train << "]" << "}";
+		}
+		train << "]";
+		
+		train << "features" << "[";
+		for(int i = 0; i < classifier.features.size(); i++)
+		{
+			train << "{:" << "vector" << "[:";
+			for(int j = 0; j < classifier.features[i].size(); j++)
+			{
+				train << "{:";
+				train << "x1" << classifier.features[i][j].x1;
+				train << "y1" << classifier.features[i][j].y1;
+				train << "x2" << classifier.features[i][j].x2;
+				train << "y2" << classifier.features[i][j].y2;
+				train << "}";
+			}
+			train << "]" << "}";
+		}
+		train << "]";
+		
+		train << "thrN" << classifier.thrN;
+		train << "thrP" << classifier.thrP;
+		
+		train << "thr_fern" << classifier.thr_fern;
+		train << "structSize" << classifier.structSize;
+		train << "nstructs" << classifier.nstructs;
+		train << "valid" << classifier.valid;
+		train << "ncc_thesame" << classifier.ncc_thesame;
+		train << "thr_nn" << classifier.thr_nn;
+		train << "acum" << classifier.acum;
+		train << "thr_nn_valid" << classifier.thr_nn_valid;
+		
+		train.release();
+	}
 }
 TLD::TLD(const FileNode& file){
   read(file);
@@ -64,7 +149,118 @@ void TLD::read(const FileNode& file){
   classifier.read(file);
 }
 
-void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file){
+void TLD::initWithClassifier(std::string name)
+{
+	FileStorage train;
+	train.open(name + ".yml", FileStorage::READ);
+	
+	if(!train.isOpened())
+	{
+		cout << "Cannot find object: " << objectName << endl;
+		exit(1);
+	}
+	
+	FileNodeIterator it, it_end;
+	
+	FileNode pEx;
+	pEx = train["pEx"];
+	it = pEx.begin(); it_end = pEx.end();
+	for(; it != it_end; ++it)
+	{
+		cout << "debug" << endl;
+		Mat posMat;
+		(*it) >> posMat;
+		classifier.pEx.push_back(posMat);
+	}
+	
+	FileNode nEx;
+	nEx = train["nEx"];
+	it = nEx.begin(); it_end = nEx.end();
+	for(; it != it_end; ++it)
+	{
+		Mat negMat;
+		(*it) >> negMat;
+		classifier.nEx.push_back(negMat);
+	}
+	
+	FileNode posteriors;
+	posteriors = train["posteriors"];
+	it = posteriors.begin(); it_end = posteriors.end();
+	for(; it != it_end; ++it)
+	{
+		vector<float> vec_p;
+		(*it)["vector"] >> vec_p;
+		classifier.posteriors.push_back(vec_p);
+	}
+	
+	FileNode pCounter;
+	pCounter = train["pCounter"];
+	it = pCounter.begin(); it_end = pCounter.end();
+	for(; it != it_end; ++it)
+	{
+		vector<int> p;
+		(*it)["vector"] >> p;
+		classifier.pCounter.push_back(p);
+	}
+	
+	FileNode nCounter;
+	nCounter = train["nCounter"];
+	it = nCounter.begin(); it_end = nCounter.end();
+	for(; it != it_end; ++it)
+	{
+		vector<int> n;
+		(*it)["vector"] >> n;
+		classifier.nCounter.push_back(n);
+	}
+	
+	
+	FileNode features;
+	features = train["features"];
+	it = features.begin(); it_end = features.end();
+	for(; it != it_end; ++it)
+	{
+		std::vector<Feature> feat;
+		FileNode feature = (*it)["vector"];
+		FileNodeIterator f = feature.begin(), f_end = feature.end();
+		for(; f != f_end; ++f)
+		{
+			uchar x1, y1, x2, y2;
+			x1 = (int)(*f)["x1"];
+			y1 = (int)(*f)["y1"];
+			x2 = (int)(*f)["x2"];
+			y2 = (int)(*f)["y2"];
+			feat.push_back(Feature(x1,y1,x2,y2));
+		}
+		classifier.features.push_back(feat);
+	}
+	
+	classifier.thr_fern = (float)train["thr_fern"];
+	classifier.structSize = (int)train["structSize"];
+	classifier.nstructs = (int)train["nstructs"];
+	classifier.valid = (float)train["valid"];
+	classifier.ncc_thesame = (float)train["ncc_thesame"];
+	classifier.thr_nn = (float)train["thr_nn"];
+	classifier.acum = (int)train["acum"];
+	classifier.thr_nn_valid = (float)train["thr_nn_valid"];
+	classifier.thrN = (float)train["thrN"];
+	classifier.thrP = (float)train["thrP"];
+	
+	Mat frame1;
+	train["frame1"] >> frame1;
+	FileNode box = train["box"];
+	int x,y,width,height;
+	x = box["x"];
+	y = box["y"];
+	width = box["width"];
+	height = box["height"];
+	
+	init(frame1, Rect(x,y,width,height), NULL, name);
+	
+	train.release();
+	classifier.show();
+}
+
+void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file, std::string name){
   //bb_file = fopen("bounding_boxes.txt","w");
   //Get Bounding Boxes
     buildGrid(frame1,box);
@@ -139,9 +335,23 @@ void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file){
   for (int i=0;i<nEx.size();i++){
       nn_data[i+1]= nEx[i];
   }
+	
+	objectName = name;
+	FileStorage train;
+	train.open(objectName + ".yml", FileStorage::WRITE);
+	train << "frame1" << frame1;
+	train << "box" << "{:";
+	train << "x" << box.x;
+	train << "y" << box.y;
+	train << "width" << box.width;
+	train << "height" << box.height << "}";
+	train.release();
+	
+
   ///Training
   classifier.trainF(ferns_data,2); //bootstrap = 2
   classifier.trainNN(nn_data);
+	
   ///Threshold Evaluation on testing sets
   classifier.evaluateTh(nXT,nExT);
 }

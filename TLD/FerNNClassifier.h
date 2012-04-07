@@ -7,8 +7,20 @@
 
 #include <opencv2/opencv.hpp>
 #include <stdio.h>
+struct Feature
+{
+	uchar x1, y1, x2, y2;
+	Feature() : x1(0), y1(0), x2(0), y2(0) {}
+	Feature(int _x1, int _y1, int _x2, int _y2)
+	: x1((uchar)_x1), y1((uchar)_y1), x2((uchar)_x2), y2((uchar)_y2)
+	{}
+	bool operator ()(const cv::Mat& patch) const
+	{ return patch.at<uchar>(y1,x1) > patch.at<uchar>(y2, x2); }
+};
+
 class FerNNClassifier{
 private:
+	/*
   float thr_fern;
   int structSize;
   int nstructs;
@@ -16,8 +28,16 @@ private:
   float ncc_thesame;
   float thr_nn;
   int acum;
+	 */
 public:
   //Parameters
+	float thr_fern;
+	int structSize;
+	int nstructs;
+	float valid;
+	float ncc_thesame;
+	float thr_nn;
+	int acum;
   float thr_nn_valid;
 
   void read(const cv::FileNode& file);
@@ -35,16 +55,7 @@ public:
   int getNumStructs(){return nstructs;}
   float getFernTh(){return thr_fern;}
   float getNNTh(){return thr_nn;}
-  struct Feature
-      {
-          uchar x1, y1, x2, y2;
-          Feature() : x1(0), y1(0), x2(0), y2(0) {}
-          Feature(int _x1, int _y1, int _x2, int _y2)
-          : x1((uchar)_x1), y1((uchar)_y1), x2((uchar)_x2), y2((uchar)_y2)
-          {}
-          bool operator ()(const cv::Mat& patch) const
-          { return patch.at<uchar>(y1,x1) > patch.at<uchar>(y2, x2); }
-      };
+
   std::vector<std::vector<Feature> > features; //Ferns features (one std::vector for each scale)
   std::vector< std::vector<int> > nCounter; //negative counter
   std::vector< std::vector<int> > pCounter; //positive counter

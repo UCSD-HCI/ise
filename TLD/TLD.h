@@ -3,6 +3,7 @@
 #include "LKTracker.h"
 #include "FerNNClassifier.h"
 #include <fstream>
+#include <sstream>
 
 
 //Bounding Boxes
@@ -110,14 +111,18 @@ private:
   std::vector<int> bad_boxes; //indexes of bboxes with overlap < 0.2
   BoundingBox bbhull; // hull of good_boxes
   BoundingBox best_box; // maximum overlapping bbox
+	
+	std::string objectName;
 
 public:
   //Constructors
   TLD();
+  ~TLD();
   TLD(const cv::FileNode& file);
   void read(const cv::FileNode& file);
   //Methods
-  void init(const cv::Mat& frame1,const cv::Rect &box, FILE* bb_file);
+	void init(const cv::Mat& frame1,const cv::Rect &box, FILE* bb_file,std::string name);
+	void initWithClassifier(std::string name);
   void generatePositiveData(const cv::Mat& frame, int num_warps);
   void generateNegativeData(const cv::Mat& frame);
   void processFrame(const cv::Mat& img1,const cv::Mat& img2,std::vector<cv::Point2f>& points1,std::vector<cv::Point2f>& points2, BoundingBox& bbnext,bool& lastboxfound, bool tl,FILE* bb_file);
