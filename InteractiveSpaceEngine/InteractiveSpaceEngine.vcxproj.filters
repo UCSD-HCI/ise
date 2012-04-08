@@ -75,6 +75,9 @@
     <ClInclude Include="VideoRecorder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KinectSensor.cpp">
@@ -126,6 +129,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VideoRecorder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

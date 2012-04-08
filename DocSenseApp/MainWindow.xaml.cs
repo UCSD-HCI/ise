@@ -41,6 +41,7 @@ namespace DocSenseApp
             sdk.FingerTracker.FingerMove += new EventHandler<InteractiveSpaceSDK.FingerEventArgs>(FingerTracker_FingerMove);
 
             sdk.CreateHandTracker();
+            sdk.CreateObjectTracker();
 
             feedbackWindow = new ProjectorFeedbackWindow();
             feedbackWindow.Show();

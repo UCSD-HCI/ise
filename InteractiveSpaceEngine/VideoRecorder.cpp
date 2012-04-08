@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-VideoRecorder::VideoRecorder(ImageProcessingFactory* ipf) : ipf(ipf), rgbWriter(NULL), depthHistWriter(NULL), depthDataFp(NULL), isRecording(false)
+VideoRecorder::VideoRecorder(ImageProcessingFactory* ipf) : ipf(ipf), rgbWriter(NULL), depthHistWriter(NULL), depthDataFp(NULL), isRecording(false), motionWriter(NULL)
 {
 	
 }
@@ -27,6 +27,9 @@ void VideoRecorder::start(string filepath)
 	string depthDataPath = filepath + ".depth.bin";
 	depthDataFp = fopen(depthDataPath.c_str(), "wb");
 
+	string motionPath = filepath + ".motion.avi";
+	motionWriter = cvCreateVideoWriter(motionPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 12, cvSize(640, 480), 1);
+
 	isRecording = true;
 }
 
@@ -47,6 +50,11 @@ void VideoRecorder::stop()
 	if (depthDataFp != NULL)
 	{
 		fclose(depthDataFp);
+	}
+
+	if (motionWriter != NULL)
+	{
+		cvReleaseVideoWriter(&motionWriter);
 	}
 }
 
@@ -77,4 +85,10 @@ void VideoRecorder::refresh()
 	ReadLockedIplImagePtr depthDataPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
 	fwrite(depthDataPtr->imageData, 1, depthDataPtr->imageSize, depthDataFp);
 	depthDataPtr.release();
+
+	//motion camera
+	ReadLockedIplImagePtr motionPtr = ipf->lockImageProduct(MotionCameraSourceProduct);
+	cvWriteFrame(motionWriter, motionPtr);
+	motionPtr.release();
+
 }

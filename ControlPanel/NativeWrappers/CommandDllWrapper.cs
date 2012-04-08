@@ -79,5 +79,8 @@ namespace ControlPanel.NativeWrappers
         [DllImport(DLL_NAME)]
         public static extern unsafe void stopRecording();
 
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void objectRegister(FloatPoint3D pointInTableSurface, IntPtr callback);
+
     }
 }

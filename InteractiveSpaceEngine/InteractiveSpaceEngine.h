@@ -16,6 +16,7 @@
 #include "MotionCameraReader.h"
 #include "MotionCameraGrabber.h"
 #include "VideoRecorder.h"
+#include "ObjectTracker.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -36,6 +37,7 @@ private:
 	MotionCameraTracker* motionCameraTracker;
 
 	MotionCameraGrabber* motionCameraGrabber;
+	ObjectTracker* objectTracker;
 
 	Calibrator* calibrator;
 
@@ -79,6 +81,7 @@ public:
 	inline MotionCameraReader* getMotionCameraReader() { return motionCameraReader; }
 	inline MotionCameraGrabber* getMotionCameraGrabber() { return motionCameraGrabber; }
 	inline VideoRecorder* getVideoRecorder() { return videoRecorder; }
+	inline ObjectTracker* getObjectTracker() { return objectTracker; }
 
 	inline long long getFrameCount() 
 	{

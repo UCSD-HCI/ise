@@ -48,6 +48,12 @@ void InteractiveSpaceEngine::dispose()
 		thresholdFingerTracker = NULL;
 	}
 
+	if (objectTracker != NULL)
+	{
+		delete objectTracker;
+		objectTracker = NULL;
+	}
+
 	if (motionCameraGrabber != NULL)
 	{
 		delete motionCameraGrabber;
@@ -127,6 +133,8 @@ void InteractiveSpaceEngine::run()
 
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
+
+	objectTracker = new ObjectTracker(motionCameraGrabber);
 
 	videoRecorder = new VideoRecorder(ipf);
 
