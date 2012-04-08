@@ -32,6 +32,7 @@ typedef enum
 	DebugDepthHistogramedProduct,
 	DebugOmniOutputProduct,
 	DebugThresholdOutputProduct,
+	DebugObjectTrackingProduct,
 
 	MotionCameraSourceProduct,
 

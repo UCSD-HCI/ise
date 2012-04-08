@@ -9,5 +9,6 @@ namespace InteractiveSpaceSDK
     public interface ObjectTracker
     {
         void Register(Point3D center, Action onFinished);
+        IEnumerable<IEnumerable<Point3D>> TrackingDocumentBounds { get; }
     }
 }

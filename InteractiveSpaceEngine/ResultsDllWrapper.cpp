@@ -79,3 +79,12 @@ DLL_EXPORT ReadLockedWrapperPtr lockMotionCameraLastGrabbedImage()
 	res.readLock = srcPtr.getReadLock();
 	return res;
 }
+
+DLL_EXPORT ReadLockedWrapperPtr lockTrackingDocBounds(int* docNum)
+{
+	ReadLockedPtr<Quadrilateral*> docBoundsPtr = InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->lockTrackingDocBounds(docNum);
+	ReadLockedWrapperPtr res;
+	res.obj = *docBoundsPtr;
+	res.readLock = docBoundsPtr.getReadLock();
+	return res;
+}

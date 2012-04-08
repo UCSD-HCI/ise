@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ControlPanel.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="InteractiveSpace Control Panel" Height="604" Width="413" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="InteractiveSpace Control Panel" Height="728" Width="415" Loaded="Window_Loaded" Closing="Window_Closing">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Preview Video" Margin="5">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5">
@@ -12,6 +12,9 @@
                     <ToggleButton Name="thresholdTouchVideoToggleButton" Content="ThresholdTouch" Margin="5" Click="thresholdTouchVideoToggleButton_Click"/>
                     <ToggleButton Name="motionCameraVideoToggleButton" Content="MotionCamera" Margin="5" Click="motionCameraVideoToggleButton_Click"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton Name="objTrackingToggleButton" Content="ObjectTracking" Margin="5" Click="objTrackingToggleButton_Click"/>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
         <!--
@@ -21,14 +24,15 @@
             </Grid>
         </GroupBox>
         -->
-        <GroupBox Header="Video Recorder">
+        <GroupBox Header="Utilities">
             <StackPanel Orientation="Horizontal">
-                <Button Name="recordButton" Margin="5" Click="recordButton_Click">Record</Button>
+                <Button Name="recordButton" Margin="5" Click="recordButton_Click">Video Record</Button>
+                <Button Name="systemCalibrateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="systemCalibrateButton_Click">Calibrate</Button>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="System Calibration">
-            <StackPanel>
-                <Button Name="systemCalibrateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="systemCalibrateButton_Click">Calibrate</Button>
+        <GroupBox Header="Options">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Name="docTrackingCheckbox" Margin="5" IsChecked="True" Click="docTrackingCheckbox_Click">DocTracking</CheckBox>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="OmniTouch Parameters">

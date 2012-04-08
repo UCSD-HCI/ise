@@ -26,6 +26,7 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor, Motio
 	products[DepthThresholdFilteredProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 1);
 	products[DepthOpenedProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 1);
 	products[DebugThresholdOutputProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 3);
+	products[DebugObjectTrackingProduct] = kinectSensor->createBlankRGBImage();
 }
 
 ImageProcessingFactory::~ImageProcessingFactory()

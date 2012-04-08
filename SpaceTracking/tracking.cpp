@@ -185,7 +185,7 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 		{
 			const Point* p = &squares[i][0];
 			int n = (int)squares[i].size();
-			polylines(image, &p, &n, 1, true, Scalar(0,255,0), 1, CV_AA);
+			polylines(image, &p, &n, 1, true, Scalar(0,255,0), 2, CV_AA);
 		}
 		
 		//imshow("Document Tracking", image);
@@ -207,116 +207,116 @@ int writer(char *ptr, size_t size, size_t nmemb, string *buffer)
 }
 
 // Does OCR on an image and uses the result to do google search
-void tracking::ocrSearch(Mat image)
-{
-	TessBaseAPI tess = TessBaseAPI();
-	//Init needs to point to tessdata
-	//Use local tessdata path
-	tess.Init("/opt/local/share/tessdata/", NULL);
-	
-	int bpp = image.elemSize();
-	int bpl = bpp*image.size().width;
-	
-	string txt = tess.TesseractRect(image.data, bpp, bpl, 0, 0, image.size().width, image.size().height);
-	
-	//cout << txt << endl << endl;
-	
-	string keywords = "";
-	int numWords = 0;
-	
-	// Only use valid english words that are longer than 3 characters
-	// Limited to 32 search words
-	ResultIterator *it = tess.GetIterator();
-	do {
-		char* word = it->GetUTF8Text(RIL_WORD);
-		if(numWords < 32)
-		{
-			if(strlen(word) > 3 && it->WordIsFromDictionary())
-			{
-				keywords += word;
-				keywords += "%20";
-				numWords++;
-			}
-		}
-		else 
-		{
-			break;
-		}
-		free(word);
-	} while (it->Next(RIL_WORD));
-	
-	tess.End();
-	
-	//cout << keywords << endl << endl;
-	
-	string url = "http://ajax.googleapis.com/ajax/services/search/web?v=2.0&q=";
-	url += keywords;
-	
-	CURL *curl;
-	CURLcode res;
-	string s;
-	
-	curl = curl_easy_init();
-	if(curl) {
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
-		res = curl_easy_perform(curl);
-		
-		/* always cleanup */ 
-		curl_easy_cleanup(curl);
-	}
-	
-	//cout << s << endl << endl;
-	
-	// Parsing Google's JSON results
-	json_t *root;
-	json_error_t error;
-	json_t *responseStatus;
-	json_t *responseData;
-	
-	root = json_loads(s.c_str(), 0, &error);
-	if(!root)
-	{
-		fprintf(stderr, "error: on line %d: %s\n", error.line, error.text);
-		return;
-	}
-	
-	responseStatus = json_object_get(root, "responseStatus");
-	int status = json_integer_value(responseStatus);
-	if(status != 200)
-	{
-		fprintf(stderr, "error: responseStatus %d is not valid\n", status);
-        return;
-	}
-	
-	responseData = json_object_get(root, "responseData");
-	if(!json_is_object(responseData))
-	{
-		fprintf(stderr, "error: responseData is null\n");
-        return;
-	}
-	
-	json_t *results;
-	results = json_object_get(responseData, "results");
-	cout << "Search Results:" << endl;
-	for(int i = 0; i < json_array_size(results); i++)
-	{
-		json_t *result;
-		json_t *url;
-		json_t *title;
-		json_t *content;
-		
-		result = json_array_get(results, i);
-		url = json_object_get(result, "url");
-		title = json_object_get(result, "titleNoFormatting");
-		content = json_object_get(result, "content");
-		
-		cout << json_string_value(title) << endl;
-		cout << json_string_value(content) << endl;
-		cout << json_string_value(url) << endl << endl;
-	}
-}
+//void tracking::ocrSearch(Mat image)
+//{
+//	TessBaseAPI tess = TessBaseAPI();
+//	//Init needs to point to tessdata
+//	//Use local tessdata path
+//	tess.Init("/opt/local/share/tessdata/", NULL);
+//	
+//	int bpp = image.elemSize();
+//	int bpl = bpp*image.size().width;
+//	
+//	string txt = tess.TesseractRect(image.data, bpp, bpl, 0, 0, image.size().width, image.size().height);
+//	
+//	//cout << txt << endl << endl;
+//	
+//	string keywords = "";
+//	int numWords = 0;
+//	
+//	// Only use valid english words that are longer than 3 characters
+//	// Limited to 32 search words
+//	ResultIterator *it = tess.GetIterator();
+//	do {
+//		char* word = it->GetUTF8Text(RIL_WORD);
+//		if(numWords < 32)
+//		{
+//			if(strlen(word) > 3 && it->WordIsFromDictionary())
+//			{
+//				keywords += word;
+//				keywords += "%20";
+//				numWords++;
+//			}
+//		}
+//		else 
+//		{
+//			break;
+//		}
+//		free(word);
+//	} while (it->Next(RIL_WORD));
+//	
+//	tess.End();
+//	
+//	//cout << keywords << endl << endl;
+//	
+//	string url = "http://ajax.googleapis.com/ajax/services/search/web?v=2.0&q=";
+//	url += keywords;
+//	
+//	CURL *curl;
+//	CURLcode res;
+//	string s;
+//	
+//	curl = curl_easy_init();
+//	if(curl) {
+//		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
+//		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
+//		res = curl_easy_perform(curl);
+//		
+//		/* always cleanup */ 
+//		curl_easy_cleanup(curl);
+//	}
+//	
+//	//cout << s << endl << endl;
+//	
+//	// Parsing Google's JSON results
+//	json_t *root;
+//	json_error_t error;
+//	json_t *responseStatus;
+//	json_t *responseData;
+//	
+//	root = json_loads(s.c_str(), 0, &error);
+//	if(!root)
+//	{
+//		fprintf(stderr, "error: on line %d: %s\n", error.line, error.text);
+//		return;
+//	}
+//	
+//	responseStatus = json_object_get(root, "responseStatus");
+//	int status = json_integer_value(responseStatus);
+//	if(status != 200)
+//	{
+//		fprintf(stderr, "error: responseStatus %d is not valid\n", status);
+//        return;
+//	}
+//	
+//	responseData = json_object_get(root, "responseData");
+//	if(!json_is_object(responseData))
+//	{
+//		fprintf(stderr, "error: responseData is null\n");
+//        return;
+//	}
+//	
+//	json_t *results;
+//	results = json_object_get(responseData, "results");
+//	cout << "Search Results:" << endl;
+//	for(int i = 0; i < json_array_size(results); i++)
+//	{
+//		json_t *result;
+//		json_t *url;
+//		json_t *title;
+//		json_t *content;
+//		
+//		result = json_array_get(results, i);
+//		url = json_object_get(result, "url");
+//		title = json_object_get(result, "titleNoFormatting");
+//		content = json_object_get(result, "content");
+//		
+//		cout << json_string_value(title) << endl;
+//		cout << json_string_value(content) << endl;
+//		cout << json_string_value(url) << endl << endl;
+//	}
+//}
 
 // Find the location of the yellow blob and make selection
 void tracking::autoSelection(Mat image, Mat& hist, Rect& selection)

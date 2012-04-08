@@ -17,7 +17,7 @@ namespace InteractiveSpaceSDK.DLL
     {
         private FingerTrackerDLL fingerTracker;
         private HandTrackerDLL handTracker;
-        private ObjectTracker objectTracker;
+        private ObjectTrackerDLL objectTracker;
 
         private MainWindow mainWindow;
         private Thread workingThread;
@@ -25,6 +25,8 @@ namespace InteractiveSpaceSDK.DLL
         private Int64 lastFrameCount;
 
         private Action grabCallback;
+
+        public event EventHandler EngineUpdate;
 
         public void Connect()
         {
@@ -100,7 +102,17 @@ namespace InteractiveSpaceSDK.DLL
                 fingerTracker.Refresh();
             }
 
+            if (objectTracker != null)
+            {
+                objectTracker.Refresh();
+            }
+
             lastFrameCount = newFrameCount;
+
+            if (EngineUpdate != null)
+            {
+                EngineUpdate(this, EventArgs.Empty);
+            }
         }
 
 

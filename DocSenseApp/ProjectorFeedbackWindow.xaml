@@ -9,12 +9,17 @@
             <Rectangle Name="selectionRect" Fill="#460066CC" Stroke="#3399FF" StrokeThickness="1" Width="100" Height="80" Opacity="0"/>
             <Rectangle Name="highlightRect" Fill="White" Width="100" Height="80" Opacity="0"/>
         </gui:SpaceCanvas>
+
+        <my:ObjectTrackingLayerControl x:Name="objectTrackingLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
         <my:CaptureGalleryControl x:Name="gallery" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,302,0,0" Width="232" Height="553" UploadingBegin="gallery_UploadingBegin"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20, 0, 0, 200">
             <gui:SpaceToggleButton Name="grabButton" Text="Capture" FingerDown="grabButton_FingerDown"/>
         </StackPanel>
-        <gui:SpaceHandWheel Name="handWheel" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
         <my:ObjectRegControl x:Name="objectReg" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+
+        <gui:SpaceHandWheel Name="handWheel" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
     </Grid>
 </gui:ProjectorFeedbackWindow>

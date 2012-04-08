@@ -22,7 +22,7 @@ namespace ControlPanel
     /// </summary>
     public partial class MainWindow : Window
     {
-        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow;
+        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow;
         //private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
@@ -137,6 +137,11 @@ namespace ControlPanel
         private void motionCameraVideoToggleButton_Click(object sender, RoutedEventArgs e)
         {
             handleVideoToggleButtonClick(motionCameraVideoToggleButton, ref motionCameraVideoWindow, VideoSourceType.MotionCamera);
+        }
+
+        private void objTrackingToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            handleVideoToggleButtonClick(objTrackingToggleButton, ref objTrackingVideoWindow, VideoSourceType.DebugObjectTracking);
         }
 
         private void handleVideoToggleButtonClick(System.Windows.Controls.Primitives.ToggleButton button, ref VideoWindow window, VideoSourceType videoType)
@@ -369,6 +374,11 @@ namespace ControlPanel
                 isRecording = false;
                 recordButton.Content = "Record";
             }
+        }
+
+        private void docTrackingCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            CommandDllWrapper.setDocTrackEnabled(docTrackingCheckbox.IsChecked.Value);
         }
     }
 }

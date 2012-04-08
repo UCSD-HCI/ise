@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F7E00155-BE6C-4A99-AF50-19E319F997A6}</ProjectGuid>
-    <RootNamespace>InteractiveSpaceEngine</RootNamespace>
+    <ProjectGuid>{55CB2A6C-A9D5-4506-80A3-77279C025E31}</ProjectGuid>
+    <RootNamespace>Detection</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -29,7 +29,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -61,19 +61,29 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(SolutionDir)SpaceTracking\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include\opencv;C:\Program Files\OpenCV2.3.1\install\include;C:\Users\kinect\Kinect\boost_1_47_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(SolutionDir)SpaceTracking\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include\opencv;C:\Program Files\OpenCV2.3.1\install\include;C:\Users\kinect\Kinect\boost_1_47_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>C:\Program Files\OpenCV2.3.1\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>C:\Program Files\OpenCV2.3.1\lib\Release;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include\opencv;C:\Program Files\OpenCV2.3.1\install\include;C:\Users\kinect\Kinect\boost_1_47_0</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Program Files\OpenCV2.3.1\install\include\opencv;C:\Program Files\OpenCV2.3.1\install\include;C:\Users\kinect\Kinect\boost_1_47_0</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Program Files\OpenCV2.3.1\lib\Debug;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>C:\Program Files\OpenCV2.3.1\lib\Debug;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -82,17 +92,17 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opencv_core231d.lib;opencv_calib3d231d.lib;opencv_highgui231d.lib;opencv_video231d.lib;opencv_ml231d.lib;opencv_legacy231d.lib;opencv_imgproc231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;NiSampleExtensionModule64.lib;NiSampleModule64.lib;OpenNI.jni64.lib;openNI64.lib;libvisca.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core231d.lib;opencv_calib3d231d.lib;opencv_highgui231d.lib;opencv_video231d.lib;opencv_ml231d.lib;opencv_legacy231d.lib;opencv_imgproc231d.lib;opencv_features2d231d.lib;opencv_contrib231d.lib;opencv_flann231d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,6 +116,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,54 +130,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;NiSampleExtensionModule64.lib;NiSampleModule64.lib;OpenNI.jni64.lib;openNI64.lib;libvisca.lib;SpaceTracking.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;opencv_features2d231.lib;opencv_contrib231.lib;opencv_flann231.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Calibrator.h" />
-    <ClInclude Include="DebugUtils.h" />
-    <ClInclude Include="DllWrapper.h" />
-    <ClInclude Include="FingerEventsGenerator.h" />
-    <ClInclude Include="FingerPath.h" />
-    <ClInclude Include="FingerSelector.h" />
-    <ClInclude Include="HandTracker.h" />
-    <ClInclude Include="InteractiveSpaceTypes.h" />
-    <ClInclude Include="MotionCameraController.h" />
-    <ClInclude Include="MotionCameraGrabber.h" />
-    <ClInclude Include="MotionCameraReader.h" />
-    <ClInclude Include="MotionCameraTracker.h" />
-    <ClInclude Include="ObjectTracker.h" />
-    <ClInclude Include="OmniTouchFingerTracker.h" />
-    <ClInclude Include="ThreadWorker.h" />
-    <ClInclude Include="ImageProcessingFactory.h" />
-    <ClInclude Include="InteractiveSpaceEngine.h" />
-    <ClInclude Include="KinectSensor.h" />
-    <ClInclude Include="ThreadUtils.h" />
-    <ClInclude Include="ThresholdTouchFingerTracker.h" />
-    <ClInclude Include="VideoRecorder.h" />
+    <ClCompile Include="detection.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Calibrator.cpp" />
-    <ClCompile Include="CommandDllWrapper.cpp" />
-    <ClCompile Include="FingerEventsGenerator.cpp" />
-    <ClCompile Include="FingerPath.cpp" />
-    <ClCompile Include="FingerSelector.cpp" />
-    <ClCompile Include="HandTracker.cpp" />
-    <ClCompile Include="ImageProcessingFactory.cpp" />
-    <ClCompile Include="InteractiveSpaceEngine.cpp" />
-    <ClCompile Include="KinectSensor.cpp" />
-    <ClCompile Include="MotionCameraController.cpp" />
-    <ClCompile Include="MotionCameraGrabber.cpp" />
-    <ClCompile Include="MotionCameraReader.cpp" />
-    <ClCompile Include="MotionCameraTracker.cpp" />
-    <ClCompile Include="ObjectTracker.cpp" />
-    <ClCompile Include="OmniTouchFingerTracker.cpp" />
-    <ClCompile Include="ResultsDllWrapper.cpp" />
-    <ClCompile Include="ThresholdTouchFingerTracker.cpp" />
-    <ClCompile Include="VideoRecorder.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="OpenNIConfig.xml" />
+    <ClInclude Include="detection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

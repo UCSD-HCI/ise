@@ -124,3 +124,9 @@ DLL_EXPORT void objectRegister(FloatPoint3D pointInTableSurface, void* callback)
 {
 	InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->objectRegister(pointInTableSurface, (Callback)callback);
 }
+
+DLL_EXPORT void setDocTrackEnabled(bool isEnabled)
+{
+	InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->setDocTrackEnabled(isEnabled);
+}
+

@@ -17,6 +17,7 @@ namespace ControlPanel
         OmniTouch,
         ThresholdTouch,
         MotionCamera,
+        DebugObjectTracking,
     }
 
     public class VideoSources
@@ -28,7 +29,7 @@ namespace ControlPanel
 
         private int rgbWidth, rgbHeight, depthWidth, depthHeight, motionCameraWidth, motionCameraHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource, motionCameraSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource, motionCameraSource, objectTrackingSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -61,6 +62,8 @@ namespace ControlPanel
             thresholdTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
 
             motionCameraSource = new WriteableBitmap(motionCameraWidth, motionCameraHeight, DPI_X, DPI_Y, PixelFormats.Bgr24, null);
+
+            objectTrackingSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -81,6 +84,9 @@ namespace ControlPanel
 
                 case VideoSourceType.MotionCamera:
                     return MotionCameraSource;
+
+                case VideoSourceType.DebugObjectTracking:
+                    return ObjectTrackingSource;
 
                 default:
                     return null;
@@ -185,6 +191,26 @@ namespace ControlPanel
                 }
 
                 return motionCameraSource;
+            }
+        }
+
+        public ImageSource ObjectTrackingSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (objectTrackingSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugObjectTrackingProduct);
+                        objectTrackingSource.Lock();
+                        objectTrackingSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                        objectTrackingSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return objectTrackingSource;
             }
         }
     }
