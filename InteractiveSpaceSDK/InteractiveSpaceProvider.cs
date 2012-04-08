@@ -17,6 +17,9 @@ namespace InteractiveSpaceSDK
         void CreateHandTracker();
         HandTracker HandTracker { get; }
 
+        void CreateObjectTracker();
+        ObjectTracker ObjectTracker { get; }
+
         void GrabAt(Point3D center, Action onFinished);
         void GetLastGrabbedImageData(out byte[] data, out string mime);
     }

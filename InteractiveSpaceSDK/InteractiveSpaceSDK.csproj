@@ -85,6 +85,7 @@
     <Compile Include="DLL\FingerTrackerDLL.cs" />
     <Compile Include="DLL\HandTrackerDLL.cs" />
     <Compile Include="DLL\InteractiveSpaceProviderDLL.cs" />
+    <Compile Include="DLL\ObjectTrackerDLL.cs" />
     <Compile Include="FingerTracker.cs" />
     <Compile Include="GUI\ISpaceControl.cs" />
     <Compile Include="GUI\ISpacePanel.cs" />
@@ -101,6 +102,7 @@
     </Compile>
     <Compile Include="HandTracker.cs" />
     <Compile Include="InteractiveSpaceProvider.cs" />
+    <Compile Include="ObjectTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

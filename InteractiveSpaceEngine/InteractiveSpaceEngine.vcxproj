@@ -135,6 +135,7 @@
     <ClInclude Include="MotionCameraGrabber.h" />
     <ClInclude Include="MotionCameraReader.h" />
     <ClInclude Include="MotionCameraTracker.h" />
+    <ClInclude Include="ObjectTracker.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
     <ClInclude Include="ThreadWorker.h" />
     <ClInclude Include="ImageProcessingFactory.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="MotionCameraGrabber.cpp" />
     <ClCompile Include="MotionCameraReader.cpp" />
     <ClCompile Include="MotionCameraTracker.cpp" />
+    <ClCompile Include="ObjectTracker.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
     <ClCompile Include="ResultsDllWrapper.cpp" />
     <ClCompile Include="ThresholdTouchFingerTracker.cpp" />

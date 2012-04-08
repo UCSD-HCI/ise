@@ -164,6 +164,7 @@ namespace DocSenseApp
         void ProjectorFeedbackWindow_SpaceProviderReady(object sender, EventArgs e)
         {
             handWheel.SpaceProvider = SpaceProvider;
+            objectReg.SpaceProvider = SpaceProvider;
         }
 
         private void grabButton_FingerDown(object sender, FingerEventArgs e)

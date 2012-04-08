@@ -17,6 +17,8 @@ namespace InteractiveSpaceSDK.DLL
     {
         private FingerTrackerDLL fingerTracker;
         private HandTrackerDLL handTracker;
+        private ObjectTracker objectTracker;
+
         private MainWindow mainWindow;
         private Thread workingThread;
         private volatile bool stopRequested = false;
@@ -143,6 +145,16 @@ namespace InteractiveSpaceSDK.DLL
         public HandTracker HandTracker
         {
             get { return handTracker; }
+        }
+
+        public void CreateObjectTracker()
+        {
+            objectTracker = new ObjectTrackerDLL();
+        }
+
+        public ObjectTracker ObjectTracker
+        {
+            get { return objectTracker; }
         }
     }
 }

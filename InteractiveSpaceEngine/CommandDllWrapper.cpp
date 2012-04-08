@@ -119,3 +119,8 @@ DLL_EXPORT void stopRecording()
 {
 	InteractiveSpaceEngine::sharedEngine()->getVideoRecorder()->stop();
 }
+
+DLL_EXPORT void objectRegister(FloatPoint3D pointInTableSurface, void* callback)
+{
+	InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->objectRegister(pointInTableSurface, (Callback)callback);
+}

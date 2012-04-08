@@ -14,5 +14,7 @@
             <gui:SpaceToggleButton Name="grabButton" Text="Capture" FingerDown="grabButton_FingerDown"/>
         </StackPanel>
         <gui:SpaceHandWheel Name="handWheel" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <my:ObjectRegControl x:Name="objectReg" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </gui:ProjectorFeedbackWindow>

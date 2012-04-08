@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="DocSenseApp.ObjectRegControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:gui="clr-namespace:InteractiveSpaceSDK.GUI;assembly=InteractiveSpaceSDK"
+             mc:Ignorable="d" 
+             Height="513" Width="500">
+    <Grid>  
+        <gui:SpaceImageButton Name="grabButton" ImageSource="Images/objreg.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="80" ImageStretch="Uniform" FingerDown="grabButton_FingerDown"/>
+        <Rectangle Name="registerAreaRect" Width="400" Height="513" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stroke="Gray" StrokeThickness="5"/>
+    </Grid>
+</UserControl>
