@@ -32,7 +32,7 @@
         </GroupBox>
         <GroupBox Header="Options">
             <StackPanel Orientation="Horizontal">
-                <CheckBox Name="docTrackingCheckbox" Margin="5" IsChecked="True" Click="docTrackingCheckbox_Click">DocTracking</CheckBox>
+                <CheckBox Name="docTrackingCheckbox" Margin="5" IsChecked="False" Click="docTrackingCheckbox_Click">DocTracking</CheckBox>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="OmniTouch Parameters">

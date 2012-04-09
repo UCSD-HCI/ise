@@ -4,7 +4,7 @@
 #include "InteractiveSpaceEngine.h"
 using namespace std;
 
-ObjectTracker::ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber) : grabber(grabber), ipf(ipf), isDocTrackEnabled(true)
+ObjectTracker::ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber) : grabber(grabber), ipf(ipf), isDocTrackEnabled(false)
 {
 }
 

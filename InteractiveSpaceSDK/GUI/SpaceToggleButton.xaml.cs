@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 
 namespace InteractiveSpaceSDK.GUI
 {
@@ -29,17 +31,22 @@ namespace InteractiveSpaceSDK.GUI
             }
             set
             {
+                if (isChecked != value)
+                {
+                    isChecked = value;
+                }
+
                 isChecked = value;
 
                 if (isChecked)
                 {
-                    ellipse.Fill = Brushes.Blue;
-                    textBlock.Foreground = Brushes.White;
+                    DoubleAnimation animationOpacity = new DoubleAnimation(0, 1, new Duration(TimeSpan.FromSeconds(0.5)));
+                    glow.BeginAnimation(Ellipse.OpacityProperty, animationOpacity);
                 }
                 else
                 {
-                    ellipse.Fill = Brushes.LightBlue;
-                    textBlock.Foreground = Brushes.Black;
+                    DoubleAnimation animationOpacity = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(1)));
+                    glow.BeginAnimation(Ellipse.OpacityProperty, animationOpacity);
                 }
             }
         }

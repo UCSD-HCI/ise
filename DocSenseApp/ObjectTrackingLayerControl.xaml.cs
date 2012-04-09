@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using InteractiveSpaceSDK;
 using InteractiveSpaceSDK.GUI;
 using System.Windows.Media.Media3D;
+using System.Windows.Media.Effects;
 
 namespace DocSenseApp
 {
@@ -88,18 +89,49 @@ namespace DocSenseApp
                 canvas.Children.Clear();
                 foreach (var docVertices in SpaceProvider.ObjectTracker.TrackingDocumentBounds)
                 {
-                    Polygon docPolygon = new Polygon();
-                    docPolygon.Stroke = Brushes.Green;
-                    docPolygon.StrokeThickness = 4;
+                    //Polygon docPolygon = new Polygon();
+                    //docPolygon.docPolygon.Stroke = Brushes.White;
+                    //docPolygon.StrokeThickness = 4;
+                    //docPolygon.Fill = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
+                    //docPolygon.Effect = docPolygonEffect;
 
-                    docPolygon.Points = new PointCollection();
+                    //docPolygon.Points = new PointCollection();
                     //convert 3D to 2D
+                    double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
                     foreach (Point3D p in docVertices)
                     {
-                        docPolygon.Points.Add(new Point(p.X, p.Y));
+                        if (p.X < minX)
+                        {
+                            minX = p.X;
+                        }
+
+                        if (p.X > maxX)
+                        {
+                            maxX = p.X;
+                        }
+
+                        if (p.Y < minY)
+                        {
+                            minY = p.Y;
+                        }
+
+                        if (p.Y > maxY)
+                        {
+                            maxY = p.Y;
+                        }
+                        //docPolygon.Points.Add(new Point(p.X, p.Y));
                     }
 
-                    canvas.Children.Add(docPolygon);
+                    Ellipse ellipse = new Ellipse();
+                    ellipse.Fill = new RadialGradientBrush(Color.FromArgb(255,255,255,255), Color.FromArgb(0,255,255,255));
+                    ellipse.Width = maxX - minX;
+                    ellipse.Height = maxY - minY;
+
+                    Canvas.SetTop(ellipse, minY);
+                    Canvas.SetLeft(ellipse, minX);
+                    //docPolygon.RenderedGeometry.Bounds
+
+                    canvas.Children.Add(ellipse);
                 }
             }, null);
         }

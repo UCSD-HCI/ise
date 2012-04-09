@@ -3,12 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="100" Height="100">
+             mc:Ignorable="d" Width="120" Height="120">
     <Grid>
-        <Ellipse Name="ellipse" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="LightBlue" Stroke="Blue" StrokeThickness="5"/>
-        <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <TextBlock Name="textBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">Button</TextBlock>
+        <Ellipse Name="glow" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="120" Opacity="0">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="White" Offset="0" />
+                    <GradientStop Color="Transparent" Offset="1" />
+                    <GradientStop Color="White" Offset="0.806" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+        <Image Name="img" Source="/InteractiveSpaceSDK;component/Images/blank-button-round-blue.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="100">
+            <Image.BitmapEffect>
+                <OuterGlowBitmapEffect GlowSize="50" />
+            </Image.BitmapEffect>
+        </Image>
+        <!--<Ellipse Name="ellipse" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="LightBlue" Stroke="Blue" StrokeThickness="5"/>-->
+        <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="100" Height="100">
+            <TextBlock Name="textBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Foreground="White">Button</TextBlock>
         </Viewbox>
     </Grid>
 </UserControl>
