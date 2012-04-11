@@ -22,5 +22,7 @@ namespace InteractiveSpaceSDK
 
         void GrabAt(Point3D center, Action onFinished);
         void GetLastGrabbedImageData(out byte[] data, out string mime);
+
+        event EventHandler EngineUpdate;
     }
 }

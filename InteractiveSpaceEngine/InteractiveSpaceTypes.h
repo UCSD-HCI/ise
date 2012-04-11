@@ -40,6 +40,14 @@ struct DoublePoint3D
 	}
 };
 
+struct Quadrilateral
+{
+	FloatPoint3D p1, p2, p3, p4;
+	Quadrilateral() { }
+	Quadrilateral(const FloatPoint3D& p1, const FloatPoint3D& p2, const FloatPoint3D& p3, const FloatPoint3D& p4) : p1(p1), p2(p2), p3(p3), p4(p4) { }
+	Quadrilateral(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) : p1(x1,y1,0), p2(x2,y2,0), p3(x3,y3,0), p4(x4,y4,0) { }
+};
+
 typedef void (*Callback)();
 typedef void (*ViscaCommandCallback)(bool isCommandCompleted, void* state);
 typedef void (*RGBCalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);

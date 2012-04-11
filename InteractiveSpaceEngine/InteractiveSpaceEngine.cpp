@@ -134,7 +134,7 @@ void InteractiveSpaceEngine::run()
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
 
-	objectTracker = new ObjectTracker(motionCameraGrabber);
+	objectTracker = new ObjectTracker(ipf, motionCameraGrabber);
 
 	videoRecorder = new VideoRecorder(ipf);
 
@@ -187,6 +187,7 @@ void InteractiveSpaceEngine::operator() ()
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
+				objectTracker->refresh();
 				//motionCameraTracker->refresh();				
 
 				if (videoRecorder != NULL)

@@ -276,7 +276,11 @@ int* SpaceDetection::top3Matches(Mat img_scene)
 	std::cout << "Number of matches: " << matches.size() << std::endl;
 	std::cout << "Build time: " << buildTime << " ms; Match time: " << matchTime << " ms" << std::endl;
 	
-	int score[dbDescriptors.size()];
+	//not work in VS
+	//int score[dbDescriptors.size()];
+	
+	int* score = new int[dbDescriptors.size()];
+
 	memset(score, 0, sizeof(score));
 	
 	for(int i = 0; i < matches.size(); i++)
@@ -407,6 +411,9 @@ string SpaceDetection::bestMatch(Mat img_scene)
 		}
 	}
 	cs.release();
+
+	delete [] score;
+	score = NULL;
 	
 	std::cout << "Best Match " << id_tag << std::endl;
 	

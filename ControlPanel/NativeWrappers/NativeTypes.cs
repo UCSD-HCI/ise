@@ -35,6 +35,7 @@ namespace ControlPanel.NativeWrappers
         DebugDepthHistogramedProduct,
         DebugOmniOutputProduct,
         DebugThresholdOutputProduct,
+        DebugObjectTrackingProduct,
 
         MotionCameraSourceProduct,
 
@@ -229,6 +230,20 @@ namespace ControlPanel.NativeWrappers
         public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
         public HandEventType EventType { get { return eventType; } }
     };
+
+    /// <summary>
+    /// <remarks>InteractiveSpaceTypes.h, Quadrilateral</remarks>
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)]
+    public struct Quadrilateral
+    {
+        private FloatPoint3D p1, p2, p3, p4;
+
+        public FloatPoint3D P1 { get { return p1; } }
+        public FloatPoint3D P2 { get { return p2; } }
+        public FloatPoint3D P3 { get { return p3; } }
+        public FloatPoint3D P4 { get { return p4; } }
+    }
 
     public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);

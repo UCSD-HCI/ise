@@ -146,6 +146,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ObjectTrackingLayerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ProjectorFeedbackWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -154,6 +158,9 @@
   <ItemGroup>
     <Compile Include="ObjectRegControl.xaml.cs">
       <DependentUpon>ObjectRegControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectTrackingLayerControl.xaml.cs">
+      <DependentUpon>ObjectTrackingLayerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProjectorFeedbackWindow.xaml.cs">
       <DependentUpon>ProjectorFeedbackWindow.xaml</DependentUpon>
