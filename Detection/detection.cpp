@@ -241,7 +241,7 @@ std::vector<Point2f> SpaceDetection::detectObject(Mat img_scene, string id_tag)
 	return scene_corners;
 }
 
-string SpaceDetection::bestMatch(Mat img_scene)
+int* SpaceDetection::top3Matches(Mat img_scene)
 {
 	if(dbDescriptors.size() == 0)
 	{
@@ -284,8 +284,13 @@ string SpaceDetection::bestMatch(Mat img_scene)
 		score[matches[i].imgIdx]++;
 	}
 	
-	int max = 0;
-	int x;
+	int max1 = 0;
+	int max2 = 0;
+	int max3 = 0;
+	int* top3 = (int*)malloc(3);
+	top3[0] = -1;
+	top3[1] = -1;
+	top3[2] = -1;
 	string id_tag;
 	
 	FileStorage cs(cf, FileStorage::READ);
@@ -294,16 +299,116 @@ string SpaceDetection::bestMatch(Mat img_scene)
 		FileNode node = cs.root(i);
 		FileNodeIterator it = node.begin();
 		std::cout << cvGetFileNodeName((*it).node) << " " << score[i] << std::endl;
+		if(score[i] > max1)
+		{
+			max3 = max2;
+			max2 = max1;
+			max1 = score[i];
+			top3[2] = top3[1];
+			top3[1] = top3[0];
+			top3[0] = i;
+			id_tag = cvGetFileNodeName((*it).node);
+		}
+		else if(score[i] > max2 && score[i] <= max1)
+		{
+			max3 = max2;
+			max2 = score[i];
+			top3[2] = top3[1];
+			top3[1] = i;
+		}
+		else if(score[i] > max3 && score[i] <= max2)
+		{
+			max3 = score[i];
+			top3[2] = i;
+		}
+	}
+	cs.release();
+	
+	return top3;
+}
+
+string SpaceDetection::bestMatch(Mat img_scene)
+{
+	if(dbDescriptors.size() == 0)
+	{
+		throw new string("DB is empty.");
+	}
+	
+	int minHessian = 400;
+	SurfFeatureDetector detector(minHessian);
+	std::vector<KeyPoint> keypoints_scene;
+	detector.detect(img_scene, keypoints_scene);
+	
+	SurfDescriptorExtractor extractor;
+	Mat descriptors_scene;
+	extractor.compute(img_scene, keypoints_scene, descriptors_scene);
+	
+	FlannBasedMatcher matcher;
+	std::vector< DMatch > matches;
+	
+	int* ptr = top3Matches(img_scene);
+	
+	std::cout << "1) " << ptr[0] << std::endl;
+	std::cout << "2) " << ptr[1] << std::endl;
+	std::cout << "3) " << ptr[2] << std::endl;
+	
+	std::vector<Mat> tmpDescriptors;
+	tmpDescriptors.push_back(dbDescriptors[ptr[0]]);
+	tmpDescriptors.push_back(dbDescriptors[ptr[1]]);
+	tmpDescriptors.push_back(dbDescriptors[ptr[2]]);
+	
+	TickMeter tm;
+	
+	tm.start();
+	matcher.add(tmpDescriptors);
+	matcher.train();
+	tm.stop();
+	double buildTime = tm.getTimeMilli();
+	
+	tm.start();
+	matcher.match(descriptors_scene, matches);
+	tm.stop();
+	double matchTime = tm.getTimeMilli();
+	
+	std::cout << "Number of matches: " << matches.size() << std::endl;
+	std::cout << "Build time: " << buildTime << " ms; Match time: " << matchTime << " ms" << std::endl;
+	
+	int score[tmpDescriptors.size()];
+	memset(score, 0, sizeof(score));
+	
+	for(int i = 0; i < matches.size(); i++)
+	{
+		score[matches[i].imgIdx]++;
+	}
+	
+	int max = 0;
+	int idx = -1;
+	for(int i = 0; i < (sizeof(score)/sizeof(int)); i++)
+	{
 		if(score[i] > max)
 		{
 			max = score[i];
-			x = i;
+			idx = ptr[i];
+		}
+	}
+	std::cout << "Best idx " << idx << std::endl;
+	
+	string id_tag;
+	
+	FileStorage cs(cf, FileStorage::READ);
+	for(int i = 0; i < dbDescriptors.size(); i++)
+	{
+		FileNode node = cs.root(i);
+		FileNodeIterator it = node.begin();
+
+		if(i == idx)
+		{
 			id_tag = cvGetFileNodeName((*it).node);
 		}
 	}
 	cs.release();
 	
-	std::cout << "Best match: " << id_tag << std::endl;
+	std::cout << "Best Match " << id_tag << std::endl;
 	
 	return id_tag;
 }
