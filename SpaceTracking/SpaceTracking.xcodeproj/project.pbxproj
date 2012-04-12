@@ -172,6 +172,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					/opt/local/include/ImageMagick,
 					/opt/local/include/tesseract,
 					/opt/local/include/curl,
 					/opt/local/include/opencv,
@@ -180,6 +181,9 @@
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-lMagick++",
+					"-lMagickCore",
+					"-lMagickWand",
 					"-lcurl",
 					"-ltesseract",
 					"-ljansson",
