@@ -131,5 +131,13 @@ namespace InteractiveSpaceSDK.DLL
                 return (from g in fingers.Values where g.FingerState == FingerState.OnSurface select g);
             }
         }
+
+        public IEnumerable<Finger> Fingers
+        {
+            get
+            {
+                return fingers.Values;
+            }
+        }
     }
 }

@@ -72,19 +72,20 @@ namespace InteractiveSpaceSDK.DLL
                 HandCaptured(this, new HandEventArgs(h, this));
             }
 
-            //Trace.WriteLine("Hand captured: " + h.ID + ", " + h.Position.ToString());
+            Trace.WriteLine("Hand captured: " + h.ID + ", " + h.Position.ToString());
         }
 
         private void onHandLost(HandEvent e)
         {
             Hand h = hands[e.ID];   //it won't be null
             h.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
+            hands.Remove(e.ID);
             if (HandLost != null)
             {
                 HandLost(this, new HandEventArgs(h, this));
             }
 
-            //Trace.WriteLine("Hand lost: " + h.ID + ", " + h.Position.ToString());
+            Trace.WriteLine("Hand lost: " + h.ID + ", " + h.Position.ToString());
         }
     }
 

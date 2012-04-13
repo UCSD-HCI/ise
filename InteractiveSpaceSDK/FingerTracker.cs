@@ -28,6 +28,7 @@ namespace InteractiveSpaceSDK
 
         IEnumerable<Finger> OnSurfaceFingers { get; }
         IEnumerable<Finger> HoveringFingers { get; }
+        IEnumerable<Finger> Fingers { get; }
     }
 
     public enum FingerState

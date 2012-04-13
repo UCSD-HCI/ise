@@ -100,6 +100,9 @@
     <Compile Include="GUI\SpaceToggleButton.xaml.cs">
       <DependentUpon>SpaceToggleButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\TrackingVizLayer.xaml.cs">
+      <DependentUpon>TrackingVizLayer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HandTracker.cs" />
     <Compile Include="InteractiveSpaceProvider.cs" />
     <Compile Include="ObjectTracker.cs" />
@@ -121,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\SpaceToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\TrackingVizLayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

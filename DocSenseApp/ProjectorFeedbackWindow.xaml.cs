@@ -165,7 +165,8 @@ namespace DocSenseApp
         {
             handWheel.SpaceProvider = SpaceProvider;
             objectReg.SpaceProvider = SpaceProvider;
-            objectTrackingLayer.SpaceProvider = SpaceProvider;
+            //objectTrackingLayer.SpaceProvider = SpaceProvider;
+            trackingVizLayer.SpaceProvider = SpaceProvider;
         }
 
         private void grabButton_FingerDown(object sender, FingerEventArgs e)

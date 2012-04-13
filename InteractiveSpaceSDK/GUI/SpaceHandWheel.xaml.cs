@@ -143,7 +143,7 @@ namespace InteractiveSpaceSDK.GUI
                                 //Trace.WriteLine("Hand " + e.ID + ": " + rec.Item1.ToString());
                                 rec.Position = e.Position;
                                 rec.FingerCount = getHoveringFingerCount(e.Position);
-                                Trace.WriteLine("Free: " + rec.FingerCount.ToString() + " fingers. ");
+                                //Trace.WriteLine("Free: " + rec.FingerCount.ToString() + " fingers. ");
 
                                 if (rec.FingerCount > GRAB_FINGER_COUNT)
                                 {
@@ -168,7 +168,7 @@ namespace InteractiveSpaceSDK.GUI
                             rec.Position = e.Position;
                             rec.FingerCount = getHoveringFingerCount(rec.Position);
 
-                            Trace.WriteLine("Stopping: " + rec.FingerCount.ToString() + " fingers.");
+                            //Trace.WriteLine("Stopping: " + rec.FingerCount.ToString() + " fingers.");
 
                             if (rec.FingerCount <= GRAB_FINGER_COUNT)
                             {
@@ -180,7 +180,7 @@ namespace InteractiveSpaceSDK.GUI
                             rec.FrameCount++;
                             rec.Position = e.Position;
                             rec.FingerCount = getHoveringFingerCount(rec.Position);
-                            Trace.WriteLine("Grabbing: " + rec.FingerCount.ToString() + " fingers.");
+                            //Trace.WriteLine("Grabbing: " + rec.FingerCount.ToString() + " fingers.");
 
                             if (rec.FingerCount >= STRETCH_FINGER_COUNT)
                             {
@@ -197,7 +197,7 @@ namespace InteractiveSpaceSDK.GUI
                 else if (e.ID == capturedHandId)
                 {
                     int fingerCount = getHoveringFingerCount(e.Position);
-                    Trace.WriteLine("Working: " + fingerCount.ToString() + " fingers.");
+                    //Trace.WriteLine("Working: " + fingerCount.ToString() + " fingers.");
                     if (fingerCount < STRETCH_FINGER_COUNT)
                     {
                         deactivate(e);
