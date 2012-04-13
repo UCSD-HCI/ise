@@ -8,7 +8,7 @@
 #include <cv.h>
 
 #define CHESSBOARD_CAPTURE_FRAMES 20
-#define CORNER_COUNT 28
+#define CORNER_COUNT 24
 
 typedef enum 
 {

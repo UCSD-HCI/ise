@@ -123,15 +123,37 @@ namespace DocSenseApp
                     }
 
                     Ellipse ellipse = new Ellipse();
-                    ellipse.Fill = new RadialGradientBrush(Color.FromArgb(255,255,255,255), Color.FromArgb(0,255,255,255));
+                    ellipse.Fill = new RadialGradientBrush(Color.FromArgb(0, 255, 255, 255), Color.FromArgb(0,255,255,255));
                     ellipse.Width = maxX - minX;
                     ellipse.Height = maxY - minY;
-
+                    
                     Canvas.SetTop(ellipse, minY);
                     Canvas.SetLeft(ellipse, minX);
                     //docPolygon.RenderedGeometry.Bounds
 
                     canvas.Children.Add(ellipse);
+
+                    Viewbox viewBox = new Viewbox()
+                    {
+                        Width = 500, //maxX - minX,
+                        Height = 140, //maxY - minY
+                        RenderTransform = new RotateTransform(-90)
+                    };
+                    Canvas.SetTop(viewBox, maxY - (maxY - minY - viewBox.Width) / 2 );
+                    Canvas.SetLeft(viewBox, minX - viewBox.Height);
+                    canvas.Children.Add(viewBox);
+
+                    TextBlock textBlock = new TextBlock()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(5),
+                        Foreground = Brushes.White,
+                        Text = "Revisiting the Digital Desk\nUIST 2012",
+                        TextAlignment = TextAlignment.Center
+                    };
+                    viewBox.Child = textBlock;
+
                 }
             }, null);
         }

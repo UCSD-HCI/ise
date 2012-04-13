@@ -22,8 +22,8 @@ namespace ControlPanel
     /// </summary>
     public partial class ProjectorFeedbackWindow : Window
     {
-        public const int CHESSBOARD_ROWS = 5;
-        public const int CHESSBOARD_COLS = 8;
+        public const int CHESSBOARD_ROWS = 4;
+        public const int CHESSBOARD_COLS = 9;
 
         private const double HAND_RADIUS = 50;
         private const double FINGER_RADIUS = 10;

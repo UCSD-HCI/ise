@@ -8,6 +8,6 @@
              Height="513" Width="500">
     <Grid>  
         <gui:SpaceImageButton Name="grabButton" ImageSource="Images/objreg.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" Width="80" ImageStretch="Uniform" FingerDown="grabButton_FingerDown"/>
-        <Rectangle Name="registerAreaRect" Width="400" Height="513" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stroke="Gray" StrokeThickness="5"/>
+        <Rectangle Name="registerAreaRect" Width="400" Height="513" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stroke="Gray" StrokeThickness="5" StrokeDashCap="Square" StrokeDashArray="2,3"/>
     </Grid>
 </UserControl>

@@ -6,6 +6,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Canvas Name="canvas">
-            
+        <Rectangle Fill="Black" Width="40" Height="10" Canvas.Top="100" Canvas.Left="20">
+            <Rectangle.RenderTransform>
+                <RotateTransform Angle="-90"/>
+            </Rectangle.RenderTransform>
+        </Rectangle>
     </Canvas>
 </UserControl>

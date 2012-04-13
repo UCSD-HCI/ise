@@ -116,7 +116,7 @@ namespace ControlPanel
                         ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
                         Finger* fingers = (Finger*)ptr.IntPtr;
 
-                        if (videoSourceType == VideoSourceType.RGB) //transform points
+                        if (videoSourceType == VideoSourceType.RGB || videoSourceType == VideoSourceType.DebugObjectTracking) //transform points
                         {
                             FloatPoint3D[] kinectPoints = new FloatPoint3D[fingerNum];
                             FloatPoint3D[] rgbPoints = new FloatPoint3D[fingerNum];
