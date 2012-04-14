@@ -151,6 +151,7 @@ void TLD::read(const FileNode& file){
 
 void TLD::initWithClassifier(std::string name)
 {
+	hasClass = true;
 	FileStorage train;
 	train.open(name + ".yml", FileStorage::READ);
 	
@@ -167,7 +168,6 @@ void TLD::initWithClassifier(std::string name)
 	it = pEx.begin(); it_end = pEx.end();
 	for(; it != it_end; ++it)
 	{
-		cout << "debug" << endl;
 		Mat posMat;
 		(*it) >> posMat;
 		classifier.pEx.push_back(posMat);
@@ -336,6 +336,27 @@ void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file, std::string name
       nn_data[i+1]= nEx[i];
   }
 	
+  ///Training
+  classifier.trainF(ferns_data,2); //bootstrap = 2
+  classifier.trainNN(nn_data);
+	
+  ///Threshold Evaluation on testing sets
+  classifier.evaluateTh(nXT,nExT);
+	
+	if(!hasClass)
+	{
+		Mat rotatedFrame1;
+		for(int deg = 0; deg < 360; deg+=20)
+		{
+			rotatedFrame1 = rotateImage(frame1, best_box, deg);
+			//generateNegativeData(rotatedFrame1);
+			//imshow("rotate", rotatedFrame1);
+			learn(rotatedFrame1);
+			//waitKey(0);
+		}
+	}
+	
+	// Store classifier data
 	objectName = name;
 	FileStorage train;
 	train.open(objectName + ".yml", FileStorage::WRITE);
@@ -346,14 +367,6 @@ void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file, std::string name
 	train << "width" << box.width;
 	train << "height" << box.height << "}";
 	train.release();
-	
-
-  ///Training
-  classifier.trainF(ferns_data,2); //bootstrap = 2
-  classifier.trainNN(nn_data);
-	
-  ///Threshold Evaluation on testing sets
-  classifier.evaluateTh(nXT,nExT);
 }
 
 /* Generate Positive data

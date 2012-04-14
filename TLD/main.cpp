@@ -71,7 +71,7 @@ int main(int argc, char * argv[]){
 
 	bool paused = false;
 	bool tl = false;
-	bool hasClass = true;
+	bool hasClass = false;
 	string objectName = "rayban";
 	///Run-time
 	Mat current_gray;
@@ -150,9 +150,10 @@ int main(int argc, char * argv[]){
 		//Draw Points
 		if (status)
 		{
-			drawPoints(frame,pts1);
-			drawPoints(frame,pts2,Scalar(0,255,0));
-			drawBox(frame,pbox);
+			//drawPoints(frame,pts1);
+			//drawPoints(frame,pts2,Scalar(0,255,0));
+			//drawBox(frame,pbox);
+			circle(frame, Point(pbox.x+(pbox.width/2),pbox.y+(pbox.height/2)), (pbox.width+pbox.height)/4, Scalar(0,0,255), 2);
 		}
 		//Display
 		imshow("TLD", frame);

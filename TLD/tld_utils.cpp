@@ -2,6 +2,15 @@
 using namespace cv;
 using namespace std;
 
+Mat rotateImage(const Mat& source, Rect bb, double angle)
+{
+    Point2f src_center(bb.x+(bb.width/2), bb.y+(bb.height/2));
+    Mat rot_mat = getRotationMatrix2D(src_center, angle, 1.0);
+    Mat dst;
+    warpAffine(source, dst, rot_mat, source.size());
+    return dst;
+}
+
 void drawBox(Mat& image, CvRect box, Scalar color, int thick){
   rectangle( image, cvPoint(box.x, box.y), cvPoint(box.x+box.width,box.y+box.height),color, thick);
 } 

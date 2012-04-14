@@ -1,7 +1,7 @@
 #include <opencv2/opencv.hpp>
 #pragma once
 
-
+cv::Mat rotateImage(const cv::Mat& source, cv::Rect bb, double angle);
 
 void drawBox(cv::Mat& image, CvRect box, cv::Scalar color = cvScalarAll(255), int thick=1); 
 

@@ -113,6 +113,7 @@ private:
   BoundingBox best_box; // maximum overlapping bbox
 	
 	std::string objectName;
+	bool hasClass;
 
 public:
   //Constructors
