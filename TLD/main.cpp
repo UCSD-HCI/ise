@@ -5,8 +5,14 @@
 #include "TLD.h"
 #include <stdio.h>
 
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/path.hpp"
+#include "boost/progress.hpp"
+#include "boost/regex.hpp"
+
 using namespace std;
 using namespace cv;
+namespace fs = boost::filesystem;
 
 //Global variables
 Rect box;
@@ -58,10 +64,6 @@ int main(int argc, char * argv[]){
 		return 1;
 	}
 	
-	//Register mouse callback to draw the bounding box
-	cvNamedWindow("TLD",CV_WINDOW_AUTOSIZE);
-	cvSetMouseCallback( "TLD", mouseHandler, NULL );
-	
 	//TLD framework
 	TLD tld;
 	
@@ -71,18 +73,54 @@ int main(int argc, char * argv[]){
 
 	bool paused = false;
 	bool tl = false;
-	bool hasClass = false;
-	string objectName = "rayban";
+	string objectName;
 	///Run-time
 	Mat current_gray;
 	BoundingBox pbox;
 	vector<Point2f> pts1;
 	vector<Point2f> pts2;
 	bool status=true;
-	Scalar color(0,255,0);
+	bool match = false;
+	Mat templ;
 	
-	if(!hasClass)
+	
+	for(;;)
 	{
+		if( !paused )
+		{
+			capture >> frame;
+			if(frame.empty())
+				break;
+			
+			imshow("TLD", frame);
+		}
+		else {
+			match = findBestMatch(".", frame, objectName);
+			break;
+		}
+		
+		char c = (char)waitKey(10);
+		if( c == 27 )
+			exit(0);
+		switch(c)
+		{
+			case 'p':
+				paused = !paused;
+				break;
+			default:
+				;
+		}
+	}
+	
+	//Register mouse callback to draw the bounding box
+	cvNamedWindow("TLD",CV_WINDOW_AUTOSIZE);
+	cvSetMouseCallback( "TLD", mouseHandler, NULL );
+	
+	if(!match)
+	{
+		cout << "Name the new object: ";
+		cin >> objectName;
+		
 		for(;;)
 		{
 			if( !paused )
@@ -108,6 +146,9 @@ int main(int argc, char * argv[]){
 					continue;
 				}
 				
+				Mat t(frame,box);
+				imwrite(objectName + ".jpg", t);
+				
 				//TLD initialization
 				tld.init(last_gray,box,NULL,objectName);
 				printf("Initial Bounding Box = x:%d y:%d h:%d w:%d\n",box.x,box.y,box.width,box.height);
@@ -118,7 +159,7 @@ int main(int argc, char * argv[]){
 			
 			char c = (char)waitKey(10);
 			if( c == 27 )
-				break;
+				exit(0);
 			switch(c)
 			{
 				case 'p':
@@ -132,9 +173,6 @@ int main(int argc, char * argv[]){
 	else {
 		tld.initWithClassifier(objectName);
 	}
-
-
-
 	
     for(;;)
     {
