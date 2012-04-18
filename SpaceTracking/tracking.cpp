@@ -1,5 +1,28 @@
 #include "tracking.h"
 
+// Converts pdf to jpgs
+void pdf2jpg(string file)
+{	
+	size_t idx;
+	idx = file.rfind('.');
+	
+	vector<Image> imageList;
+	readImages(&imageList, file);
+	
+	for(int i = 0; i < imageList.size(); i++)
+	{
+		stringstream fileName;
+		fileName << file.substr(0,idx) << "-" << i << ".jpg";
+		cout << fileName.str() << endl;
+		Image im;
+		im.density(Geometry(200,200));
+		stringstream page;
+		page << file << "[" << i << "]";
+		im.read(page.str());
+		im.write(fileName.str());
+	}
+}
+
 // helper function:
 // finds a cosine of angle between vectors
 // from pt0->pt1 and from pt0->pt2
