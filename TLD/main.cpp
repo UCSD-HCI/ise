@@ -53,7 +53,8 @@ int main(int argc, char * argv[]){
 	if(argc == 2)
 		capture.open(argv[1]);
 	else {
-		capture.open(0);
+		//capture.open(0);
+		capture.open("/Users/rkanoknu/Downloads/template3.rgb.avi");
 	}
 
 
@@ -72,7 +73,7 @@ int main(int argc, char * argv[]){
 	Mat image;
 
 	bool paused = false;
-	bool tl = false;
+	bool tl = true;
 	string objectName;
 	///Run-time
 	Mat current_gray;
@@ -92,6 +93,8 @@ int main(int argc, char * argv[]){
 			if(frame.empty())
 				break;
 			
+			frame.copyTo(last_gray);
+			cvtColor(last_gray, last_gray, CV_RGB2GRAY);
 			imshow("TLD", frame);
 		}
 		else {
@@ -99,7 +102,7 @@ int main(int argc, char * argv[]){
 			break;
 		}
 		
-		char c = (char)waitKey(10);
+		char c = (char)waitKey(30);
 		if( c == 27 )
 			exit(0);
 		switch(c)
@@ -157,7 +160,7 @@ int main(int argc, char * argv[]){
 			
 			imshow( "TLD", image );
 			
-			char c = (char)waitKey(10);
+			char c = (char)waitKey(30);
 			if( c == 27 )
 				exit(0);
 			switch(c)
@@ -200,7 +203,7 @@ int main(int argc, char * argv[]){
 		pts1.clear();
 		pts2.clear();
 		
-        char c = (char)waitKey(10);
+        char c = (char)waitKey(30);
         if( c == 27 )
             break;
         switch(c)

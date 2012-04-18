@@ -132,6 +132,7 @@ public:
   void clusterConf(const std::vector<BoundingBox>& dbb,const std::vector<float>& dconf,std::vector<BoundingBox>& cbb,std::vector<float>& cconf);
   void evaluate();
   void learn(const cv::Mat& img);
+	void forceLearn(const cv::Mat& img);
   //Tools
   void buildGrid(const cv::Mat& img, const cv::Rect& box);
   float bbOverlap(const BoundingBox& box1,const BoundingBox& box2);
