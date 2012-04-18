@@ -16,7 +16,10 @@ using namespace Magick;
 class tracking
 {
 public:
-	static vector<vector<Point> > docTrack(Mat image, bool draw);
+	Mat SinvH;
+	
+	tracking();
+	vector<vector<Point> > docTrack(Mat& image, bool draw);
 	//static void ocrSearch(Mat image);
 	static RotatedRect penTrack(Mat image, Mat hist, Rect& trackWindow, bool draw);
 	static void autoSelection(Mat image, Mat& hist, Rect& selection);

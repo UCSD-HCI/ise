@@ -10,8 +10,9 @@ int main (int argc, char * const argv[]) {
 	
 	VideoCapture cap;
 	//cap.open("/Users/rkanoknu/Downloads/DocumentsRecognitionSamples/rec_overlap.avi");
-	//cap.open("/Users/rkanoknu/Downloads/yellow.rgb.avi");
-	cap.open("C:\\Users\\kinect\\Desktop\\New folder\\rec_overlap.avi");
+	//cap.open("/Users/rkanoknu/Downloads/DocumentsRecognitionSamples/doctrackingtest.rgb.avi");
+	cap.open("/Users/rkanoknu/Downloads/doctrackingtest.rgb.avi");
+	//cap.open("C:\\Users\\kinect\\Desktop\\New folder\\rec_overlap.avi");
 	
     if( !cap.isOpened() )
     {
@@ -33,7 +34,8 @@ int main (int argc, char * const argv[]) {
 		
 		
 		vector<vector<Point> > squares;
-		squares = tracking::docTrack(frame, true);
+		tracking t;
+		squares = t.docTrack(frame, true);
 		
 		
 		/*

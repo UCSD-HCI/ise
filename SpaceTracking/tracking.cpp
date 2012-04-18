@@ -64,31 +64,41 @@ void tracking::removeSimilar(vector<vector<Point> >& squares)
 			{
 				for(int l = 0; l < 4; l++)
 				{
-					if(findDistance(squares[i][k], squares[j][l]) < 20)
+					if(findDistance(squares[i][k], squares[j][l]) < 40)
 						maybeSame++;
 				}
 			}
-			
+
 			if(maybeSame >= 3)
 			{
-				double a = fabs(contourArea(Mat(squares[i])));
-				double b = fabs(contourArea(Mat(squares[j])));
-				if( abs(a-21000) < abs(b-21000) )
-					squares.erase(squares.begin()+j);
-				else {
-					squares.erase(squares.begin()+i);
-					if(i>0) i--;
-				}
-				
+				squares.erase(squares.begin()+j);
+				j--;
 			}
 		}
 	}
 }
 
-// returns sequence of squares detected on the image.
-// the sequence is stored in the specified memory storage
-vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
+tracking::tracking()
 {
+	FileStorage fs("rgbSurfHomography.xml", FileStorage::READ);
+	Mat H;
+	fs["rgbSurfHomography"] >> H;
+	
+	float Sdata[] = { 0.4, 0, 0, 0, 0.4, 0, 0, 0, 1.0 };
+	Mat S = Mat(3, 3, CV_32F, Sdata).clone();
+	S.convertTo(S, CV_64F);
+	
+	invert(H,H);
+	gemm(S, H, 1, Mat(), 0, SinvH);
+}
+
+// returns sequence of squares detected on the image.
+// coordinates are in projector's perspective
+vector<vector<Point> > tracking::docTrack( Mat& image, bool draw)
+{
+	//RNG rng(12345);
+	warpPerspective(image, image, SinvH, Size(800,600));
+
     vector<vector<Point> > squares;
     
     Mat pyr, timg, gray0(image.size(), CV_8U), gray;
@@ -116,6 +126,12 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 		// approximate contour with accuracy proportional
 		// to the contour perimeter
 		approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.01, true);
+		
+		//Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+		//drawContours( image, contours, i, color, 2, 8, 0, 0, Point() );
+		//const Point* a = &approx[0];
+		//int sz = (int)approx.size();
+		//polylines(image, &a, &sz, 1, true, color, 2, CV_AA);
 			
 		// square contours should have 4 vertices after approximation
 		// relatively large area (to filter out noisy contours)
@@ -124,10 +140,11 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 		// area may be positive or negative - in accordance with the
 		// contour orientation
 		if( approx.size() == 4 &&
-			fabs(contourArea(Mat(approx))) > 19000 &&
-			fabs(contourArea(Mat(approx))) < 21000 &&
+			fabs(contourArea(Mat(approx))) > 26000 &&
+			fabs(contourArea(Mat(approx))) < 36000 &&
 			isContourConvex(Mat(approx)) )
 		{
+			cout << fabs(contourArea(Mat(approx))) << endl;
 			double maxCosine = 0;
 				
 			for( int j = 2; j < 5; j++ )
@@ -156,8 +173,8 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 					d2 = findDistance(approx[0], approx[1]);
 					
 					if(cosine < 0.1 &&
-					   110 < d1 && d1 < 170 &&
-					   110 < d2 && d2 < 170)
+					   140 < d1 && d1 < 220 &&
+					   140 < d2 && d2 < 220)
 					{
 						vector<Point> maybeShape;
 						Point maybePoint;
@@ -167,8 +184,8 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 						maybeShape.push_back(approx[0]);
 						maybeShape.push_back(approx[1]);
 						if(isContourConvex(Mat(maybeShape)) &&
-						   fabs(contourArea(Mat(maybeShape))) > 19000 &&
-						   fabs(contourArea(Mat(maybeShape))) < 22000 )
+						   fabs(contourArea(Mat(maybeShape))) > 26000 &&
+						   fabs(contourArea(Mat(maybeShape))) < 36000 )
 							squares.push_back(maybeShape);
 						
 					}
@@ -180,8 +197,8 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 					d2 = findDistance(approx[j-1], approx[j%(approx.size())]);
 					
 					if(cosine < 0.1 &&
-					   110 < d1 && d1 < 170 &&
-					   110 < d2 && d2 < 170)
+					   140 < d1 && d1 < 220 &&
+					   140 < d2 && d2 < 220)
 					{
 						vector<Point> maybeShape;
 						Point maybePoint;
@@ -191,8 +208,8 @@ vector<vector<Point> > tracking::docTrack( Mat image, bool draw)
 						maybeShape.push_back(approx[j-1]);
 						maybeShape.push_back(approx[j%(approx.size())]);
 						if(isContourConvex(Mat(maybeShape)) &&
-						   fabs(contourArea(Mat(maybeShape))) > 19000 &&
-						   fabs(contourArea(Mat(maybeShape))) < 22000 )
+						   fabs(contourArea(Mat(maybeShape))) > 26000 &&
+						   fabs(contourArea(Mat(maybeShape))) < 36000 )
 							squares.push_back(maybeShape);
 						
 					}
