@@ -144,7 +144,6 @@ vector<vector<Point> > tracking::docTrack( Mat& image, bool draw)
 			fabs(contourArea(Mat(approx))) < 36000 &&
 			isContourConvex(Mat(approx)) )
 		{
-			cout << fabs(contourArea(Mat(approx))) << endl;
 			double maxCosine = 0;
 				
 			for( int j = 2; j < 5; j++ )
@@ -227,8 +226,17 @@ vector<vector<Point> > tracking::docTrack( Mat& image, bool draw)
 			int n = (int)squares[i].size();
 			polylines(image, &p, &n, 1, true, Scalar(0,255,0), 2, CV_AA);
 		}
-		
 		//imshow("Document Tracking", image);
+	}
+	resize(image,image,Size(640,480));
+	
+	for(size_t i = 0; i < squares.size(); i++)
+	{
+		for(int j = 0; j < 4; j++)
+		{
+			squares[i][j].x = 2.5*squares[i][j].x;
+			squares[i][j].y = 2.5*squares[i][j].y;
+		}
 	}
 	
 	return squares;
