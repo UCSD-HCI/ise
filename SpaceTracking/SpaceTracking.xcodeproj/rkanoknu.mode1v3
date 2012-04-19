@@ -313,7 +313,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>main.cpp</string>
+								<string>tracking.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -321,22 +321,20 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>main.cpp</string>
+										<string>tracking.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>C1B69D68153696A300D2C109</string>
+										<string>C14F4068153F820F007646A9</string>
 										<key>history</key>
 										<array>
 											<string>C1AF89C9150FEA6B00A5E5AA</string>
-											<string>C1AF89F1150FECE200A5E5AA</string>
-											<string>C1AF8A03150FEE2500A5E5AA</string>
-											<string>C1AF8B6F1510090700A5E5AA</string>
 											<string>C1AF8B701510090700A5E5AA</string>
-											<string>C1B69D64153696A300D2C109</string>
 											<string>C1B69D65153696A300D2C109</string>
-											<string>C1B69D66153696A300D2C109</string>
-											<string>C1B69D67153696A300D2C109</string>
+											<string>C14F3EB3153F28A1007646A9</string>
+											<string>C14F3FDE153F7247007646A9</string>
+											<string>C14F4063153F81DB007646A9</string>
+											<string>C14F4064153F81DB007646A9</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -348,14 +346,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1072, 435}}</string>
+								<string>{{0, 0}, {1072, 396}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 59 1280 719 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>435pt</string>
+							<string>396pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -368,14 +366,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 440}, {1072, 238}}</string>
+								<string>{{0, 401}, {1072, 277}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 59 1280 719 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>238pt</string>
+							<string>277pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -394,9 +392,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>C1B69D69153696A300D2C109</string>
+				<string>C14F3E82153F1CCB007646A9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>C1B69D6A153696A300D2C109</string>
+				<string>C14F3E83153F1CCB007646A9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -534,9 +532,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>C1AF88E8150FE03C00A5E5AA</string>
-		<string>/Users/rkanoknu/Documents/Research/spaces/InteractiveSpaceEngine/SpaceTracking/SpaceTracking.xcodeproj</string>
+		<string>/Users/rkanoknu/Documents/Research/InteractiveSpaceEngine/SpaceTracking/SpaceTracking.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 59 1280 719 0 0 1280 778 </string>
@@ -618,7 +615,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>C1AF88E8150FE03C00A5E5AA</string>
-				<string>C1B69D5D153696A000D2C109</string>
+				<string>C14F3E84153F1CCB007646A9</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

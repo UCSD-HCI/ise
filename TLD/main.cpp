@@ -5,8 +5,14 @@
 #include "TLD.h"
 #include <stdio.h>
 
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/path.hpp"
+#include "boost/progress.hpp"
+#include "boost/regex.hpp"
+
 using namespace std;
 using namespace cv;
+namespace fs = boost::filesystem;
 
 //Global variables
 Rect box;
@@ -47,7 +53,8 @@ int main(int argc, char * argv[]){
 	if(argc == 2)
 		capture.open(argv[1]);
 	else {
-		capture.open(0);
+		//capture.open(0);
+		capture.open("/Users/rkanoknu/Downloads/template3.rgb.avi");
 	}
 
 
@@ -58,10 +65,6 @@ int main(int argc, char * argv[]){
 		return 1;
 	}
 	
-	//Register mouse callback to draw the bounding box
-	cvNamedWindow("TLD",CV_WINDOW_AUTOSIZE);
-	cvSetMouseCallback( "TLD", mouseHandler, NULL );
-	
 	//TLD framework
 	TLD tld;
 	
@@ -70,19 +73,57 @@ int main(int argc, char * argv[]){
 	Mat image;
 
 	bool paused = false;
-	bool tl = false;
-	bool hasClass = true;
-	string objectName = "rayban";
+	bool tl = true;
+	string objectName;
 	///Run-time
 	Mat current_gray;
 	BoundingBox pbox;
 	vector<Point2f> pts1;
 	vector<Point2f> pts2;
 	bool status=true;
-	Scalar color(0,255,0);
+	bool match = false;
+	Mat templ;
 	
-	if(!hasClass)
+	
+	for(;;)
 	{
+		if( !paused )
+		{
+			capture >> frame;
+			if(frame.empty())
+				break;
+			
+			frame.copyTo(last_gray);
+			cvtColor(last_gray, last_gray, CV_RGB2GRAY);
+			imshow("TLD", frame);
+		}
+		else {
+			match = findBestMatch(".", frame, objectName);
+			break;
+		}
+		
+		char c = (char)waitKey(30);
+		if( c == 27 )
+			exit(0);
+		switch(c)
+		{
+			case 'p':
+				paused = !paused;
+				break;
+			default:
+				;
+		}
+	}
+	
+	//Register mouse callback to draw the bounding box
+	cvNamedWindow("TLD",CV_WINDOW_AUTOSIZE);
+	cvSetMouseCallback( "TLD", mouseHandler, NULL );
+	
+	if(!match)
+	{
+		cout << "Name the new object: ";
+		cin >> objectName;
+		
 		for(;;)
 		{
 			if( !paused )
@@ -108,6 +149,9 @@ int main(int argc, char * argv[]){
 					continue;
 				}
 				
+				Mat t(frame,box);
+				imwrite(objectName + ".jpg", t);
+				
 				//TLD initialization
 				tld.init(last_gray,box,NULL,objectName);
 				printf("Initial Bounding Box = x:%d y:%d h:%d w:%d\n",box.x,box.y,box.width,box.height);
@@ -116,9 +160,9 @@ int main(int argc, char * argv[]){
 			
 			imshow( "TLD", image );
 			
-			char c = (char)waitKey(10);
+			char c = (char)waitKey(30);
 			if( c == 27 )
-				break;
+				exit(0);
 			switch(c)
 			{
 				case 'p':
@@ -132,9 +176,6 @@ int main(int argc, char * argv[]){
 	else {
 		tld.initWithClassifier(objectName);
 	}
-
-
-
 	
     for(;;)
     {
@@ -150,9 +191,10 @@ int main(int argc, char * argv[]){
 		//Draw Points
 		if (status)
 		{
-			drawPoints(frame,pts1);
-			drawPoints(frame,pts2,Scalar(0,255,0));
-			drawBox(frame,pbox);
+			//drawPoints(frame,pts1);
+			//drawPoints(frame,pts2,Scalar(0,255,0));
+			//drawBox(frame,pbox);
+			circle(frame, Point(pbox.x+(pbox.width/2),pbox.y+(pbox.height/2)), (pbox.width+pbox.height)/4, Scalar(0,0,255), 2);
 		}
 		//Display
 		imshow("TLD", frame);
@@ -161,7 +203,7 @@ int main(int argc, char * argv[]){
 		pts1.clear();
 		pts2.clear();
 		
-        char c = (char)waitKey(10);
+        char c = (char)waitKey(30);
         if( c == 27 )
             break;
         switch(c)

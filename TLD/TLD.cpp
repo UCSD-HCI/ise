@@ -35,6 +35,7 @@ TLD::TLD()
 	bad_patches = 100;
 	classifier.init();
 	objectName = "";
+	hasClass = false;
 }
 
 TLD::~TLD()
@@ -151,6 +152,7 @@ void TLD::read(const FileNode& file){
 
 void TLD::initWithClassifier(std::string name)
 {
+	hasClass = true;
 	FileStorage train;
 	train.open(name + ".yml", FileStorage::READ);
 	
@@ -167,7 +169,6 @@ void TLD::initWithClassifier(std::string name)
 	it = pEx.begin(); it_end = pEx.end();
 	for(; it != it_end; ++it)
 	{
-		cout << "debug" << endl;
 		Mat posMat;
 		(*it) >> posMat;
 		classifier.pEx.push_back(posMat);
@@ -336,6 +337,27 @@ void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file, std::string name
       nn_data[i+1]= nEx[i];
   }
 	
+  ///Training
+  classifier.trainF(ferns_data,2); //bootstrap = 2
+  classifier.trainNN(nn_data);
+	
+  ///Threshold Evaluation on testing sets
+  classifier.evaluateTh(nXT,nExT);
+	
+	if(!hasClass)
+	{
+		Mat rotatedFrame1;
+		for(int deg = 0; deg < 360; deg+=1)
+		{
+			rotatedFrame1 = rotateImage(frame1, best_box, deg);
+			//generateNegativeData(rotatedFrame1);
+			//imshow("rotate", rotatedFrame1);
+			forceLearn(rotatedFrame1);
+			//waitKey(0);
+		}
+	}
+	
+	// Store classifier data
 	objectName = name;
 	FileStorage train;
 	train.open(objectName + ".yml", FileStorage::WRITE);
@@ -346,14 +368,6 @@ void TLD::init(const Mat& frame1,const Rect& box,FILE* bb_file, std::string name
 	train << "width" << box.width;
 	train << "height" << box.height << "}";
 	train.release();
-	
-
-  ///Training
-  classifier.trainF(ferns_data,2); //bootstrap = 2
-  classifier.trainNN(nn_data);
-	
-  ///Threshold Evaluation on testing sets
-  classifier.evaluateTh(nXT,nExT);
 }
 
 /* Generate Positive data
@@ -794,6 +808,46 @@ void TLD::learn(const Mat& img){
   classifier.trainF(fern_examples,2);
   classifier.trainNN(nn_examples);
   classifier.show();
+}
+
+void TLD::forceLearn(const Mat& img){
+	printf("[Learning] ");
+	/// Data generation
+	for (int i=0;i<grid.size();i++){
+		grid[i].overlap = bbOverlap(lastbox,grid[i]);
+	}
+	vector<pair<vector<int>,int> > fern_examples;
+	good_boxes.clear();
+	bad_boxes.clear();
+	getOverlappingBoxes(lastbox,num_closest_update);
+	if (good_boxes.size()>0)
+		generatePositiveData(img,num_warps_update);
+	else{
+		lastvalid = false;
+		printf("No good boxes..Not training");
+		return;
+	}
+	fern_examples.reserve(pX.size()+bad_boxes.size());
+	fern_examples.assign(pX.begin(),pX.end());
+	int idx;
+	for (int i=0;i<bad_boxes.size();i++){
+		idx=bad_boxes[i];
+		if (tmp.conf[idx]>=1){
+			fern_examples.push_back(make_pair(tmp.patt[idx],0));
+		}
+	}
+	vector<Mat> nn_examples;
+	nn_examples.reserve(dt.bb.size()+1);
+	nn_examples.push_back(pEx);
+	for (int i=0;i<dt.bb.size();i++){
+		idx = dt.bb[i];
+		if (bbOverlap(lastbox,grid[idx]) < bad_overlap)
+			nn_examples.push_back(dt.patch[i]);
+	}
+	/// Classifiers update
+	classifier.trainF(fern_examples,2);
+	classifier.trainNN(nn_examples);
+	classifier.show();
 }
 
 void TLD::buildGrid(const cv::Mat& img, const cv::Rect& box){

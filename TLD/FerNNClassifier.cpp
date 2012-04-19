@@ -135,7 +135,7 @@ void FerNNClassifier::trainNN(const vector<cv::Mat>& nn_examples){
               pEx = vector<Mat>(1,nn_examples[i]);                 //        tld.pex = x(:,i);
               continue;                                            //        continue;
           }                                                        //      end
-          //pEx.insert(pEx.begin()+isin[1],nn_examples[i]);        //      tld.pex = [tld.pex(:,1:isin(2)) x(:,i) tld.pex(:,isin(2)+1:end)]; % add to model
+          pEx.insert(pEx.begin()+isin[1],nn_examples[i]);        //      tld.pex = [tld.pex(:,1:isin(2)) x(:,i) tld.pex(:,isin(2)+1:end)]; % add to model
           pEx.push_back(nn_examples[i]);
       }                                                            //    end
       if(y[i]==0 && conf>0.5)                                      //  if y(i) == 0 && conf1 > 0.5

@@ -196,6 +196,9 @@
 				LIBRARY_SEARCH_PATHS = /opt/local/lib;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
+					"-lboost_regex",
+					"-lboost_system",
+					"-lboost_filesystem",
 					"-lopencv_core",
 					"-lopencv_imgproc",
 					"-lopencv_highgui",
