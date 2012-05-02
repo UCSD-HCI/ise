@@ -1,7 +1,7 @@
 #include "tracking.h"
 
 // Converts pdf to jpgs
-void pdf2jpg(string file)
+/*void pdf2jpg(string file)
 {	
 	size_t idx;
 	idx = file.rfind('.');
@@ -21,7 +21,7 @@ void pdf2jpg(string file)
 		im.read(page.str());
 		im.write(fileName.str());
 	}
-}
+}*/
 
 // helper function:
 // finds a cosine of angle between vectors
@@ -89,6 +89,17 @@ tracking::tracking()
 	S.convertTo(S, CV_64F);
 	
 	invert(H,H);
+	gemm(S, H, 1, Mat(), 0, SinvH);
+}
+
+tracking::tracking(const CvMat* rgbSurfHomographyInversed)	//directly read H^(-1) from the engine
+{
+	Mat H = Mat(rgbSurfHomographyInversed);
+
+	float Sdata[] = { 0.4, 0, 0, 0, 0.4, 0, 0, 0, 1.0 };
+	Mat S = Mat(3, 3, CV_32F, Sdata).clone();
+	S.convertTo(S, CV_64F);
+
 	gemm(S, H, 1, Mat(), 0, SinvH);
 }
 

@@ -134,7 +134,7 @@ void InteractiveSpaceEngine::run()
 	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
 
-	objectTracker = new ObjectTracker(ipf, motionCameraGrabber);
+	objectTracker = new ObjectTracker(ipf, motionCameraGrabber, calibrator);
 
 	videoRecorder = new VideoRecorder(ipf);
 

@@ -147,7 +147,7 @@ namespace InteractiveSpaceSDK.GUI
                 }
 
                 Ellipse ellipse = new Ellipse();
-                ellipse.Fill = new RadialGradientBrush(Color.FromArgb(0, 255, 255, 255), Color.FromArgb(0, 255, 255, 255));
+                ellipse.Fill = new RadialGradientBrush(Color.FromArgb(255, 255, 255, 255), Color.FromArgb(0, 255, 255, 255));
                 ellipse.Width = maxX - minX;
                 ellipse.Height = maxY - minY;
 

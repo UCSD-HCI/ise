@@ -4,6 +4,8 @@
 #include "InteractiveSpaceTypes.h"
 #include "MotionCameraGrabber.h"
 #include "ImageProcessingFactory.h"
+#include "Calibrator.h"
+#include <tracking.h>
 
 #define MAX_TRACKING_DOC_NUM 10
 
@@ -14,6 +16,8 @@ private:
 	MotionCameraGrabber* grabber;
 	IplImage* lastRegistedImg;
 
+	tracking spaceTracking;
+
 	Quadrilateral trackingDocBounds[MAX_TRACKING_DOC_NUM];
 	int trackingDocNum;
 	Mutex trackingDocMutex;
@@ -23,7 +27,7 @@ private:
 	bool isDocTrackEnabled;
 
 public:
-	ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber);
+	ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber, Calibrator* calibrator);
 	virtual ~ObjectTracker();
 
 	void objectRegister(FloatPoint3D pointInTableSurface, Callback onFinished);

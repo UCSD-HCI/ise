@@ -1,10 +1,10 @@
 #include "ObjectTracker.h"
-#include <tracking.h>
 #include <vector>
 #include "InteractiveSpaceEngine.h"
 using namespace std;
 
-ObjectTracker::ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber) : grabber(grabber), ipf(ipf), isDocTrackEnabled(false)
+ObjectTracker::ObjectTracker(ImageProcessingFactory* ipf, MotionCameraGrabber* grabber, Calibrator* calibrator) : grabber(grabber), ipf(ipf), isDocTrackEnabled(false),
+	spaceTracking(calibrator->getRgbSurfHomographyInversed())
 {
 }
 
@@ -26,7 +26,10 @@ void ObjectTracker::docTrack()
 	src.release();
 
 	cv::Mat frameMat(frame);
-	vector<vector<cv::Point>> res = tracking::docTrack(frameMat, true);
+	vector<vector<cv::Point>> res = spaceTracking.docTrack(frameMat, true);
+	
+	IplImage newFrame = frameMat;
+	cvCopyImage(&newFrame, frame);
 	
 	frame.release();
 
@@ -36,7 +39,7 @@ void ObjectTracker::docTrack()
 		trackingDocNum = 0;
 		for (vector<vector<cv::Point>>::iterator it = res.begin(); it != res.end(); ++it)
 		{
-			FloatPoint3D vertices[4];
+			/*FloatPoint3D vertices[4];
 			FloatPoint3D verticesInTable2D[4];
 			for (int i = 0; i < 4; i++)
 			{
@@ -47,7 +50,16 @@ void ObjectTracker::docTrack()
 			trackingDocBounds[trackingDocNum].p1 = verticesInTable2D[0];
 			trackingDocBounds[trackingDocNum].p2 = verticesInTable2D[1];
 			trackingDocBounds[trackingDocNum].p3 = verticesInTable2D[2];
-			trackingDocBounds[trackingDocNum].p4 = verticesInTable2D[3];
+			trackingDocBounds[trackingDocNum].p4 = verticesInTable2D[3];*/
+			trackingDocBounds[trackingDocNum].p1.x = (*it)[0].x;
+			trackingDocBounds[trackingDocNum].p1.y = (*it)[0].y;
+			trackingDocBounds[trackingDocNum].p2.x = (*it)[1].x;
+			trackingDocBounds[trackingDocNum].p2.y = (*it)[1].y;
+			trackingDocBounds[trackingDocNum].p3.x = (*it)[2].x;
+			trackingDocBounds[trackingDocNum].p3.y = (*it)[2].y;
+			trackingDocBounds[trackingDocNum].p4.x = (*it)[3].x;
+			trackingDocBounds[trackingDocNum].p4.y = (*it)[3].y;
+
 			trackingDocNum++;
 		}
 	}

@@ -101,6 +101,11 @@ public:
 	{
 		return ReadLockedIplImagePtr(*depthImg, depthImgMutex);
 	}
+
+	inline const CvMat* getRgbSurfHomographyInversed() const
+	{
+		return rgbSurfHomographyInversed;
+	}
 };
 
 #endif
