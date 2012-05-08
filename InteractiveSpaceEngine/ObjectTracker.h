@@ -43,6 +43,11 @@ public:
 	{
 		isDocTrackEnabled = isEnabled;
 	}
+
+	inline bool isEnabled()
+	{
+		return isDocTrackEnabled;
+	}
 };
 
 #endif

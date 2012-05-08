@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL),
+	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL), tuioExporter(NULL),
 	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
 {
 }
@@ -18,6 +18,13 @@ InteractiveSpaceEngine::~InteractiveSpaceEngine()
 void InteractiveSpaceEngine::dispose()
 {
 	//threadStop();
+
+	if (tuioExporter != NULL)
+	{
+		delete tuioExporter;
+		tuioExporter = NULL;
+	}
+
 	if (handTracker != NULL)
 	{
 		delete handTracker;
@@ -138,6 +145,8 @@ void InteractiveSpaceEngine::run()
 
 	videoRecorder = new VideoRecorder(ipf);
 
+	tuioExporter = new TuioExporter(fingerEventsGenerator);
+
 	engineFrameCount = 0;
 	fpsCounter = 0;
 	fpsTimer.restart();
@@ -193,6 +202,11 @@ void InteractiveSpaceEngine::operator() ()
 				if (videoRecorder != NULL)
 				{
 					videoRecorder->refresh();
+				}
+
+				if (tuioExporter != NULL)
+				{
+					tuioExporter->refresh();
 				}
 
 				kinectSensorFrameCount = newFrameCount;

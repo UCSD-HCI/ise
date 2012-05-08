@@ -72,8 +72,9 @@
     <IncludePath>C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(SolutionDir)SpaceTracking\;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files\OpenNI\Include;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(SolutionDir)SpaceTracking\;$(SolutionDir)llahdoc_api+\;$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)\TUIO;$(ProjectDir)\oscpack\ip\win32;$(ProjectDir)\oscpack\osc;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -114,18 +115,23 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;NiSampleExtensionModule64.lib;NiSampleModule64.lib;OpenNI.jni64.lib;openNI64.lib;libvisca.lib;SpaceTracking.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;NiSampleExtensionModule64.lib;NiSampleModule64.lib;OpenNI.jni64.lib;openNI64.lib;libvisca.lib;SpaceTracking.lib;llahdoc.lib;atlsd.lib;ws2_32.lib;winmm.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Calibrator.h" />
     <ClInclude Include="DebugUtils.h" />
     <ClInclude Include="DllWrapper.h" />
+    <ClInclude Include="DocumentRecognition.h" />
     <ClInclude Include="FingerEventsGenerator.h" />
     <ClInclude Include="FingerPath.h" />
     <ClInclude Include="FingerSelector.h" />
@@ -137,17 +143,35 @@
     <ClInclude Include="MotionCameraTracker.h" />
     <ClInclude Include="ObjectTracker.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
+    <ClInclude Include="oscpack\ip\NetworkingUtils.h" />
+    <ClInclude Include="oscpack\ip\TimerListener.h" />
+    <ClInclude Include="oscpack\ip\UdpSocket.h" />
+    <ClInclude Include="oscpack\osc\OscException.h" />
+    <ClInclude Include="oscpack\osc\OscHostEndianness.h" />
+    <ClInclude Include="oscpack\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="oscpack\osc\OscPacketListener.h" />
+    <ClInclude Include="oscpack\osc\OscTypes.h" />
     <ClInclude Include="ThreadWorker.h" />
     <ClInclude Include="ImageProcessingFactory.h" />
     <ClInclude Include="InteractiveSpaceEngine.h" />
     <ClInclude Include="KinectSensor.h" />
     <ClInclude Include="ThreadUtils.h" />
     <ClInclude Include="ThresholdTouchFingerTracker.h" />
+    <ClInclude Include="TuioExporter.h" />
+    <ClInclude Include="TUIO\TuioClient.h" />
+    <ClInclude Include="TUIO\TuioContainer.h" />
+    <ClInclude Include="TUIO\TuioCursor.h" />
+    <ClInclude Include="TUIO\TuioListener.h" />
+    <ClInclude Include="TUIO\TuioObject.h" />
+    <ClInclude Include="TUIO\TuioPoint.h" />
+    <ClInclude Include="TUIO\TuioServer.h" />
+    <ClInclude Include="TUIO\TuioTime.h" />
     <ClInclude Include="VideoRecorder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Calibrator.cpp" />
     <ClCompile Include="CommandDllWrapper.cpp" />
+    <ClCompile Include="DocumentRecognition.cpp" />
     <ClCompile Include="FingerEventsGenerator.cpp" />
     <ClCompile Include="FingerPath.cpp" />
     <ClCompile Include="FingerSelector.cpp" />
@@ -161,8 +185,17 @@
     <ClCompile Include="MotionCameraTracker.cpp" />
     <ClCompile Include="ObjectTracker.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
+    <ClCompile Include="oscpack\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="oscpack\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="oscpack\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="oscpack\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="oscpack\osc\OscTypes.cpp" />
     <ClCompile Include="ResultsDllWrapper.cpp" />
     <ClCompile Include="ThresholdTouchFingerTracker.cpp" />
+    <ClCompile Include="TuioExporter.cpp" />
+    <ClCompile Include="TUIO\TuioClient.cpp" />
+    <ClCompile Include="TUIO\TuioServer.cpp" />
+    <ClCompile Include="TUIO\TuioTime.cpp" />
     <ClCompile Include="VideoRecorder.cpp" />
   </ItemGroup>
   <ItemGroup>

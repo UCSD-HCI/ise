@@ -30,6 +30,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjectTracking", "ObjectTra
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceTracking", "SpaceTracking\SpaceTracking.vcxproj", "{E28FD0B0-0889-44D7-87CC-62C6E1D08F7B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "llah", "llah", "{06882A58-02A5-4FBF-89A2-0C05D6E6CEBD}"
+	ProjectSection(SolutionItems) = preProject
+		llahdoc_api+\cv100.dll = llahdoc_api+\cv100.dll
+		llahdoc_api+\cxcore100.dll = llahdoc_api+\cxcore100.dll
+		llahdoc_api+\disc.h = llahdoc_api+\disc.h
+		llahdoc_api+\hash.h = llahdoc_api+\hash.h
+		llahdoc_api+\highgui100.dll = llahdoc_api+\highgui100.dll
+		llahdoc_api+\libguide40.dll = llahdoc_api+\libguide40.dll
+		llahdoc_api+\llahdoc.dll = llahdoc_api+\llahdoc.dll
+		llahdoc_api+\llahdoc.lib = llahdoc_api+\llahdoc.lib
+		llahdoc_api+\llahdoc_dll.h = llahdoc_api+\llahdoc_dll.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

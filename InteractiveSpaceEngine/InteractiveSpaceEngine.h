@@ -17,6 +17,7 @@
 #include "MotionCameraGrabber.h"
 #include "VideoRecorder.h"
 #include "ObjectTracker.h"
+#include "TuioExporter.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -42,6 +43,8 @@ private:
 	Calibrator* calibrator;
 
 	VideoRecorder* videoRecorder;
+
+	TuioExporter* tuioExporter;
 
 	long long kinectSensorFrameCount;
 	volatile long long engineFrameCount;
@@ -82,6 +85,7 @@ public:
 	inline MotionCameraGrabber* getMotionCameraGrabber() { return motionCameraGrabber; }
 	inline VideoRecorder* getVideoRecorder() { return videoRecorder; }
 	inline ObjectTracker* getObjectTracker() { return objectTracker; }
+	inline TuioExporter* getTuioExporter() { return tuioExporter; }
 
 	inline long long getFrameCount() 
 	{
