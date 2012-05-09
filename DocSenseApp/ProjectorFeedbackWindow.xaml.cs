@@ -14,6 +14,7 @@ using InteractiveSpaceSDK;
 using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using everspaces;
+using AnnotoPen;
 
 namespace DocSenseApp
 {
@@ -127,6 +128,7 @@ namespace DocSenseApp
 
         private void ProjectorFeedbackWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
             handWheel.BeginInit();
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/plink.png", UriKind.RelativeOrAbsolute)));
             handWheel.AddButton(new BitmapImage(new Uri(@"pack://application:,,,/Images/evernote.png", UriKind.RelativeOrAbsolute)));
@@ -177,6 +179,10 @@ namespace DocSenseApp
         private void gallery_UploadingBegin(object sender, EventArgs e)
         {
             grabButton.IsChecked = false;
+        }
+
+        private void ProjectorFeedbackWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

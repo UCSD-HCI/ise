@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "llah", "llah", "{06882A58-0
 		llahdoc_api+\llahdoc_dll.h = llahdoc_api+\llahdoc_dll.h
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnotoPenReceiver", "..\PenProtocol\AnnotoPenReceiver\AnnotoPenReceiver.csproj", "{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -202,6 +204,21 @@ Global
 		{E28FD0B0-0889-44D7-87CC-62C6E1D08F7B}.Release|x64.ActiveCfg = Release|x64
 		{E28FD0B0-0889-44D7-87CC-62C6E1D08F7B}.Release|x64.Build.0 = Release|x64
 		{E28FD0B0-0889-44D7-87CC-62C6E1D08F7B}.Release|x86.ActiveCfg = Release|Win32
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|Win32.ActiveCfg = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|x64.ActiveCfg = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|x86.ActiveCfg = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Debug|x86.Build.0 = Debug|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|Any CPU.ActiveCfg = Release|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|Win32.ActiveCfg = Release|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|x64.ActiveCfg = Release|Any CPU
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|x64.Build.0 = Release|Any CPU
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|x86.ActiveCfg = Release|x86
+		{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
