@@ -18,6 +18,7 @@
 #include "VideoRecorder.h"
 #include "ObjectTracker.h"
 #include "TuioExporter.h"
+#include "DocumentRecognition.h"
 
 class InteractiveSpaceEngine : ThreadWorker
 {
@@ -39,6 +40,7 @@ private:
 
 	MotionCameraGrabber* motionCameraGrabber;
 	ObjectTracker* objectTracker;
+	DocumentRecognition* documentRecognition;
 
 	Calibrator* calibrator;
 

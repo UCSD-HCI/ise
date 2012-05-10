@@ -46,6 +46,11 @@ struct Quadrilateral
 	Quadrilateral() { }
 	Quadrilateral(const FloatPoint3D& p1, const FloatPoint3D& p2, const FloatPoint3D& p3, const FloatPoint3D& p4) : p1(p1), p2(p2), p3(p3), p4(p4) { }
 	Quadrilateral(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) : p1(x1,y1,0), p2(x2,y2,0), p3(x3,y3,0), p4(x4,y4,0) { }
+
+	FloatPoint3D getCenter() const
+	{
+		return FloatPoint3D( (p1.x + p2.x + p3.x + p4.x) / 4.0f, (p1.y + p2.y + p3.y + p4.y) / 4.0f, (p1.z + p2.z + p3.z + p4.z) / 4.0f );
+	}
 };
 
 typedef void (*Callback)();

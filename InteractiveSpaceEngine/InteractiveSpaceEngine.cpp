@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL), tuioExporter(NULL),
+	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL), tuioExporter(NULL), documentRecognition(NULL),
 	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
 {
 }
@@ -53,6 +53,12 @@ void InteractiveSpaceEngine::dispose()
 	{
 		delete thresholdFingerTracker;
 		thresholdFingerTracker = NULL;
+	}
+
+	if (documentRecognition != NULL)
+	{
+		delete documentRecognition;
+		documentRecognition = NULL;
 	}
 
 	if (objectTracker != NULL)
@@ -138,10 +144,11 @@ void InteractiveSpaceEngine::run()
 
 	motionCameraController = new MotionCameraController();
 
-	motionCameraTracker = new MotionCameraTracker(kinectSensor, handTracker, calibrator, motionCameraController);
 	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
 
 	objectTracker = new ObjectTracker(ipf, motionCameraGrabber, calibrator);
+	motionCameraTracker = new MotionCameraTracker(handTracker, calibrator, motionCameraController, objectTracker);
+	documentRecognition = new DocumentRecognition(ipf, objectTracker);
 
 	videoRecorder = new VideoRecorder(ipf);
 
@@ -197,7 +204,10 @@ void InteractiveSpaceEngine::operator() ()
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
 				objectTracker->refresh();
-				//motionCameraTracker->refresh();				
+				motionCameraTracker->refresh();
+
+
+				documentRecognition->refresh();
 
 				if (videoRecorder != NULL)
 				{

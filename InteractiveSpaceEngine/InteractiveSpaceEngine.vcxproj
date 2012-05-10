@@ -112,7 +112,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -143,6 +143,7 @@
     <ClInclude Include="MotionCameraTracker.h" />
     <ClInclude Include="ObjectTracker.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
+    <ClInclude Include="oscpack\ip\IpEndpointName.h" />
     <ClInclude Include="oscpack\ip\NetworkingUtils.h" />
     <ClInclude Include="oscpack\ip\TimerListener.h" />
     <ClInclude Include="oscpack\ip\UdpSocket.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="MotionCameraTracker.cpp" />
     <ClCompile Include="ObjectTracker.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
+    <ClCompile Include="oscpack\ip\IpEndpointName.cpp" />
     <ClCompile Include="oscpack\ip\win32\NetworkingUtils.cpp" />
     <ClCompile Include="oscpack\ip\win32\UdpSocket.cpp" />
     <ClCompile Include="oscpack\osc\OscOutboundPacketStream.cpp" />

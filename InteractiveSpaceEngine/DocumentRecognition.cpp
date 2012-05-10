@@ -1,44 +1,58 @@
-#if 0
+#if 1
 
 #include "DocumentRecognition.h"
 #include "InteractiveSpaceEngine.h"
 using namespace std;
 
-DocumentRecognition::DocumentRecognition(ImageProcessingFactory* ipf, ObjectTracker* ot, char* database) : ipf(ipf), ot(ot)
+DocumentRecognition::DocumentRecognition(ImageProcessingFactory* ipf, ObjectTracker* ot) : ipf(ipf), ot(ot)
 {
-	//strcpy(db_dir, database);
-	
-	// Load database
-	db = LlahDocLoadDb( database );
+	UdpListeningReceiveSocket s(
+		IpEndpointName( IpEndpointName::ANY_ADDRESS, 8888 ),
+		&listener );
 }
 
 DocumentRecognition::~DocumentRecognition()
 {
-	// Release database
-	LlahDocReleaseDb( db );
+
 }
 
-int DocumentRecognition::llahRetrieveImage(char* result)
+int DocumentRecognition::llahRetrieveImage()
 {
-	if ( db == NULL )	return -1;
-
 	ReadLockedIplImagePtr src = ipf->lockImageProduct(MotionCameraSourceProduct);
-	cv::Mat srcMat(src);
-	IplImage img = srcMat;
+	//cv::Mat srcMat(src);
+	//IplImage img = srcMat;
+	cvSaveImage("C:\\Users\\kinect\\Desktop\\motion_image\\motion_image.jpg", src);
+	src.release();
 
-	// Retrieve
-	votes = LlahDocRetrieveIplImage( &img, db, result, kMaxPathLen );
-	// Display retrieval result
-	printf( "%s : %d\n", result, votes );
+	UdpTransmitSocket transmitSocket( IpEndpointName( "localhost", 7777 ) );
+    
+    char buffer[OUTPUT_BUFFER_SIZE];
+    osc::OutboundPacketStream p( buffer, OUTPUT_BUFFER_SIZE );
+    
+    p << osc::BeginBundleImmediate
+        << osc::BeginMessage( "/retrieve" ) 
+            << "C:\\Users\\kinect\\Desktop\\motion_image\\motion_image.jpg" << osc::EndMessage
+        << osc::EndBundle;
+    
+    transmitSocket.Send( p.Data(), p.Size() );
 
-	return votes;
+	//it blocks
+	/*
+	while(!listener.isReady())
+	{}
+	listener.setReady(false);*/
+
+	//result = listener.getResult();
+	//TODO: save result
+
+	return listener.getVotes();
 }
 
-int DocumentRecognition::refresh(char* result)
+int DocumentRecognition::refresh()
 {
 	if (ot->isEnabled())
 	{
-		return llahRetrieveImage(result);
+		return llahRetrieveImage();
 	}
 }
 

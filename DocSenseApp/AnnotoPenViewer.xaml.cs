@@ -87,7 +87,7 @@ namespace DocSenseApp
 
                     DrawingAttributes attr = new DrawingAttributes()
                     {
-                        Color = Colors.White,
+                        Color = Colors.White, 
                     };
 
                     currentStroke = new Stroke(pts, attr);
