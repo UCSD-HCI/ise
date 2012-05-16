@@ -15,11 +15,13 @@ void TuioExporter::refresh()
 
 	int nFingerEvents;
 	long long frame;
-	ReadLockedPtr<FingerEvent*> fingerEvents = fingerEventsGenerator->lockEvents(&nFingerEvents, &frame);
+	ReadLockedPtr<FingerEvent*> fingerEventsPtr = fingerEventsGenerator->lockEvents(&nFingerEvents, &frame);
+
+	FingerEvent* fingerEvents = *fingerEventsPtr;	//go around some strange access violation bug
 
 	for (int i = 0; i < nFingerEvents; i++)
 	{
-		FingerEvent e = (*fingerEvents)[i];
+		FingerEvent e = fingerEvents[i];
 		
 		if (e.eventType == FingerDown)
 		{
@@ -37,7 +39,7 @@ void TuioExporter::refresh()
 		}
 	}
 
-	fingerEvents.release();
+	fingerEventsPtr.release();
 
 	tuioServer->stopUntouchedMovingCursors();
 	tuioServer->commitFrame();

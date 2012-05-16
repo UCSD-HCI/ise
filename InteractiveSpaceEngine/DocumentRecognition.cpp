@@ -6,21 +6,21 @@ using namespace std;
 
 DocumentRecognition::DocumentRecognition(ImageProcessingFactory* ipf, ObjectTracker* ot) : ipf(ipf), ot(ot)
 {
-	UdpListeningReceiveSocket s(
-		IpEndpointName( IpEndpointName::ANY_ADDRESS, 8888 ),
-		&listener );
+	//workerThread = boost::thread(&DocumentRecognition::oscListener, this);
+	threadStart();
 }
 
 DocumentRecognition::~DocumentRecognition()
 {
-
+	//TODO: need to kill the thread before joining?
+	//workerThread.join();
+	
+	threadStop();
 }
 
 int DocumentRecognition::llahRetrieveImage()
 {
 	ReadLockedIplImagePtr src = ipf->lockImageProduct(MotionCameraSourceProduct);
-	//cv::Mat srcMat(src);
-	//IplImage img = srcMat;
 	cvSaveImage("C:\\Users\\kinect\\Desktop\\motion_image\\motion_image.jpg", src);
 	src.release();
 
@@ -36,16 +36,19 @@ int DocumentRecognition::llahRetrieveImage()
     
     transmitSocket.Send( p.Data(), p.Size() );
 
-	//it blocks
-	/*
-	while(!listener.isReady())
-	{}
-	listener.setReady(false);*/
-
-	//result = listener.getResult();
+	boost::unique_lock<boost::mutex> lock(listener.listenLock);
+	listener.cond.wait(lock);
+	FILE * pFile;
+	pFile = fopen ("log.txt","a");
+	if (pFile!=NULL)
+	{
+		fprintf(pFile, "%d %s\n", listener.getVotes(), listener.getResult());
+		fclose (pFile);
+	}
+	
 	//TODO: save result
 
-	return listener.getVotes();
+	return 0;
 }
 
 int DocumentRecognition::refresh()
@@ -54,6 +57,17 @@ int DocumentRecognition::refresh()
 	{
 		return llahRetrieveImage();
 	}
+	return -1;
+}
+
+void DocumentRecognition::operator() ()
+{
+	//start listening thread
+    UdpListeningReceiveSocket s(
+            IpEndpointName( IpEndpointName::ANY_ADDRESS, 8888 ),
+            &listener );
+
+    s.RunUntilSigInt();
 }
 
 #endif

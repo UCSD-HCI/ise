@@ -77,6 +77,10 @@ namespace InteractiveSpaceSDK.DLL
 
         private void onHandLost(HandEvent e)
         {
+            if (!hands.ContainsKey(e.ID))
+            {
+                return; //TODO: it shouldn't goes here
+            }
             Hand h = hands[e.ID];   //it won't be null
             h.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
             hands.Remove(e.ID);
