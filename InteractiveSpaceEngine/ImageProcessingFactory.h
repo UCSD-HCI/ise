@@ -18,6 +18,7 @@ typedef unsigned char byte;
 #define rgb888ValAt(imgPtr, row, col) ((byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 3))
 
 class ThresholdTouchFingerTracker;
+class Calibrator;
 
 typedef enum 
 {
@@ -35,6 +36,7 @@ typedef enum
 	DebugObjectTrackingProduct,
 
 	MotionCameraSourceProduct,
+	RectifiedTabletopProduct,
 
 	ImageProductsCount
 } ImageProductType;
@@ -91,6 +93,7 @@ public:
 
 	void refresh(long long kinectSensorFrameCount);
 	void refreshDepthHistogramed();	//for calibration
+	void updateRectifiedTabletop(Calibrator* calibrator);
 };
 
 #endif

@@ -138,6 +138,7 @@
     <Compile Include="ProjectorFeedbackWindow.xaml.cs">
       <DependentUpon>ProjectorFeedbackWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedMemoryExporter.cs" />
     <Compile Include="VideoSources.cs" />
     <Compile Include="VideoWindow.xaml.cs">
       <DependentUpon>VideoWindow.xaml</DependentUpon>

@@ -14,6 +14,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <ToggleButton Name="objTrackingToggleButton" Content="ObjectTracking" Margin="5" Click="objTrackingToggleButton_Click"/>
+                    <ToggleButton Name="rectifiedTabletopToggleButton" Content="RectifiedTabletop" Margin="5" Click="rectifiedTabletopToggleButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

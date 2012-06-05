@@ -107,7 +107,7 @@ namespace ControlPanel
 
                 videoImage.Source = VideoSources.SharedVideoSources.GetSource(videoSourceType);
 
-                if (videoSourceType != VideoSourceType.MotionCamera)
+                if (videoSourceType != VideoSourceType.MotionCamera && videoSourceType != VideoSourceType.RectifiedTabletopProduct)
                 {
                     //draw fingers
                     unsafe

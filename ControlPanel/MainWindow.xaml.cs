@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using ControlPanel.NativeWrappers;
 using System.Diagnostics;
+using System.IO.MemoryMappedFiles;
 
 namespace ControlPanel
 {
@@ -22,7 +23,7 @@ namespace ControlPanel
     /// </summary>
     public partial class MainWindow : Window
     {
-        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow;
+        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow, rectifiedTabletopVideoWindow;
         //private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private Action thresholdCalibrationFinishedCallback;
@@ -31,12 +32,14 @@ namespace ControlPanel
         private Action engineStoppedDelegate;
         public bool IsStopRequested { get; private set; }
         private bool isRecording;
+        private SharedMemoryExporter smExporter;
 
         public event EventHandler EngineUpdate;
 
         public MainWindow()
         {
             InitializeComponent();
+            smExporter = new SharedMemoryExporter();
         }
 
         public void EngineStop()
@@ -142,6 +145,11 @@ namespace ControlPanel
         private void objTrackingToggleButton_Click(object sender, RoutedEventArgs e)
         {
             handleVideoToggleButtonClick(objTrackingToggleButton, ref objTrackingVideoWindow, VideoSourceType.DebugObjectTracking);
+        }
+
+        private void rectifiedTabletopToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            handleVideoToggleButtonClick(rectifiedTabletopToggleButton, ref rectifiedTabletopVideoWindow, VideoSourceType.RectifiedTabletopProduct);
         }
 
         private void handleVideoToggleButtonClick(System.Windows.Controls.Primitives.ToggleButton button, ref VideoWindow window, VideoSourceType videoType)
@@ -331,6 +339,8 @@ namespace ControlPanel
             {
                 EngineUpdate(this, EventArgs.Empty);
             }
+
+            smExporter.Update();
         }
 
         private void recordButton_Click(object sender, RoutedEventArgs e)
@@ -380,5 +390,6 @@ namespace ControlPanel
         {
             CommandDllWrapper.setDocTrackEnabled(docTrackingCheckbox.IsChecked.Value);
         }
+
     }
 }

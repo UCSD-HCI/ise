@@ -18,6 +18,7 @@ namespace ControlPanel
         ThresholdTouch,
         MotionCamera,
         DebugObjectTracking,
+        RectifiedTabletopProduct,
     }
 
     public class VideoSources
@@ -29,7 +30,7 @@ namespace ControlPanel
 
         private int rgbWidth, rgbHeight, depthWidth, depthHeight, motionCameraWidth, motionCameraHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource, motionCameraSource, objectTrackingSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, thresholdTouchSource, motionCameraSource, objectTrackingSource, rectifiedTabletopSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -64,6 +65,7 @@ namespace ControlPanel
             motionCameraSource = new WriteableBitmap(motionCameraWidth, motionCameraHeight, DPI_X, DPI_Y, PixelFormats.Bgr24, null);
 
             objectTrackingSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
+            rectifiedTabletopSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -87,6 +89,9 @@ namespace ControlPanel
 
                 case VideoSourceType.DebugObjectTracking:
                     return ObjectTrackingSource;
+
+                case VideoSourceType.RectifiedTabletopProduct:
+                    return RectifiedTabletopSource;
 
                 default:
                     return null;
@@ -211,6 +216,26 @@ namespace ControlPanel
                 }
 
                 return objectTrackingSource;
+            }
+        }
+
+        public ImageSource RectifiedTabletopSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (rectifiedTabletopSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RectifiedTabletopProduct);
+                        rectifiedTabletopSource.Lock();
+                        rectifiedTabletopSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                        rectifiedTabletopSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return rectifiedTabletopSource;
             }
         }
     }

@@ -1,5 +1,6 @@
 #include "ImageProcessingFactory.h"
 #include "ThresholdTouchFingerTracker.h"
+#include "Calibrator.h"
 #include <stdio.h>
 
 ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor, MotionCameraReader* motionCameraReader) 
@@ -27,6 +28,7 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor, Motio
 	products[DepthOpenedProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 1);
 	products[DebugThresholdOutputProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 3);
 	products[DebugObjectTrackingProduct] = kinectSensor->createBlankRGBImage();
+	products[RectifiedTabletopProduct] = kinectSensor->createBlankRGBImage();
 }
 
 ImageProcessingFactory::~ImageProcessingFactory()
@@ -109,6 +111,30 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 		}
 		*/
 	}
+}
+
+void ImageProcessingFactory::updateRectifiedTabletop(Calibrator* calibrator)
+{
+	WriteLock wLock(productsMutex[RectifiedTabletopProduct]);
+	ReadLockedIplImagePtr rgbSrc = lockImageProduct(RGBSourceProduct);
+
+	const CvMat* rgbInv = calibrator->getRgbSurfHomographyInversed();
+	CvMat* mat = cvCreateMat(3,3,CV_64F);
+	
+	double Sdata[] = { 0.4, 0, 0, 0, 0.4, 0, 0, 0, 1.0 };	//TODO: constant
+	memcpy(mat->data.db, Sdata, 9 * sizeof(double));
+
+	cvGEMM(mat, rgbInv, 1, NULL, 0, mat);
+
+	IplImage* tmpImg = kinectSensor->createBlankRGBImage();
+	cvWarpPerspective(rgbSrc, tmpImg, mat);
+
+	cvCopy(tmpImg, products[RectifiedTabletopProduct]);
+	cvSetImageROI(tmpImg, cvRect(0,0,640,480));
+	cvCopy(tmpImg, products[RectifiedTabletopProduct]);
+	cvReleaseImage(&tmpImg);
+
+	rgbSrc.release();
 }
 
 void ImageProcessingFactory::updateDepthHistogram(ReadLockedIplImagePtr& depthSrc)

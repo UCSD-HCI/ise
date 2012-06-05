@@ -205,7 +205,7 @@ void InteractiveSpaceEngine::operator() ()
 				handTracker->refresh();
 				objectTracker->refresh();
 				motionCameraTracker->refresh();
-
+				ipf->updateRectifiedTabletop(calibrator);
 
 				documentRecognition->refresh();
 

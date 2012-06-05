@@ -38,6 +38,7 @@ namespace ControlPanel.NativeWrappers
         DebugObjectTrackingProduct,
 
         MotionCameraSourceProduct,
+        RectifiedTabletopProduct,
 
         ImageProductsCount
     }
