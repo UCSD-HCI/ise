@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 
 using AnnotoPen;
 using System.Windows.Ink;
+using System.Diagnostics;
 
 namespace DocSenseApp
 {
@@ -70,6 +71,7 @@ namespace DocSenseApp
                 inkCanvas.Strokes.Add(new Stroke(currentPts));
                 currentPts = new StylusPointCollection();*/
                 currentStroke = null;
+                Trace.WriteLine("Pen Up");
             }, null);
         }
 
@@ -97,6 +99,7 @@ namespace DocSenseApp
                 {
                     currentStroke.StylusPoints.Add(pt);
                 }
+                //Trace.WriteLine("Pen Down");
             }, null);
         }
     }

@@ -129,9 +129,9 @@ namespace InteractiveSpaceSDK.GUI
                 }
             }
 
-            Debug.Assert(secondaryScreen != null);
+            //Debug.Assert(secondaryScreen != null);
 
-            System.Drawing.Rectangle workingArea = secondaryScreen.WorkingArea;
+            System.Drawing.Rectangle workingArea = secondaryScreen != null ? secondaryScreen.WorkingArea : System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
             this.Left = workingArea.Left;
             this.Top = workingArea.Top;
             this.Width = workingArea.Width;
