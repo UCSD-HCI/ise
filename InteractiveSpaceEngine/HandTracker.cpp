@@ -4,16 +4,20 @@
 #include "InteractiveSpaceEngine.h"
 using namespace std;
 
+//TODO: @Nadir
+
+//TODO: @Nadir Use Shimona's register callback; change "handsGen" to Shimona's class. 
 HandTracker::HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor) 
 	: fingerSelector(fingerSelector), handsGen(handsGen), kinectSensor(kinectSensor), handNum(0), nextHintId(1),
 	handCapturedCallback(NULL), handLostCallback(NULL), handMoveCallback(NULL)
 {
-	handsGen->RegisterHandCallbacks(handCreateCB, handUpdateCB, handDestroyCB, this, hCallback);
+	handsGen->RegisterHandCallbacks(handCreateCB, handUpdateCB, handDestroyCB, this, hCallback);	//register callbacks to Shimona's code
 }
 
+//TODO: @Nadir Use Shimona's unregister callback
 HandTracker::~HandTracker()
 {
-	handsGen->UnregisterHandCallbacks(hCallback);
+	handsGen->UnregisterHandCallbacks(hCallback);	//unregister callbacks to Shimona's code
 }
 
 void HandTracker::registerCallbacks(HandEventCallback handMoveCallback, HandEventCallback handCapturedCallback, HandEventCallback handLostCallback)
@@ -116,6 +120,10 @@ void HandTracker::raiseEvent(const Hand& hand, HandEventType eventType)
 	}
 }
 
+//TODO: @Nadir change parameter list to fit Shimona's interface
+//pCookie: a custom state passed to the handler. It turns out the handler function must be static, so "this" pointer is stored in pCookie. 
+//user: the hand ID
+//pPosition: kinectPerspectiveSpace (real word coordinates x,y,z)
 void XN_CALLBACK_TYPE HandTracker::handCreateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie)
 {
 	HandTracker* handTracker = (HandTracker*)pCookie;
@@ -157,11 +165,12 @@ void XN_CALLBACK_TYPE HandTracker::handCreateCB(xn::HandsGenerator& generator, X
 	else
 	{
 		//cannot find any entry, give up
-		handTracker->handsGen->StopTracking(user);
+		handTracker->handsGen->StopTracking(user);	//TODO: @Nadir 
 		//DEBUG("Hand create: " << user << " failed");
 	}
 }
 
+//TODO: @Nadir change parameter list to fit Shimona's interface
 void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie)
 {
 	HandTracker* handTracker = (HandTracker*)pCookie;
@@ -184,10 +193,11 @@ void XN_CALLBACK_TYPE HandTracker::handUpdateCB(xn::HandsGenerator& generator, X
 	}
 	else
 	{
-		handTracker->handsGen->StopTracking(user);
+		handTracker->handsGen->StopTracking(user);	//@Nadir
 	}
 }
 
+//TODO: @Nadir change parameter list to fit Shimona's interface
 void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, XnUserID user, XnFloat fTime, void* pCookie)
 {
 	HandTracker* handTracker = (HandTracker*)pCookie;
@@ -297,19 +307,20 @@ void HandTracker::refresh()
 
 	for (vector<int>::const_iterator it = idToStopTracking.begin(); it != idToStopTracking.end(); ++it)
 	{
-		handsGen->StopTracking(*it);
+		handsGen->StopTracking(*it);	//@Nadir: OpenNI: stop tracking -> Shimona's StopHand
 	}
 
 	for (int i = 0; i < handNum; i++)
 	{
 		if (hands[i].handType == NewHandHint)
 		{
+				//FloatPoint3D
 				XnPoint3D p;
 				p.X = hands[i].positionInRealWorld.x;
 				p.Y = hands[i].positionInRealWorld.y;
 				p.Z = hands[i].positionInRealWorld.z;
 				hands[i].handType = TrackRequestedHandHint;
-				handsGen->StartTracking(p);
+				handsGen->StartTracking(p);	//@Nadir: OpenNI start tracking	to Shimona's InitHand
 		}
 	}
 }

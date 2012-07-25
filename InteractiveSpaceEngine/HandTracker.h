@@ -4,7 +4,7 @@
 #include "InteractiveSpaceTypes.h"
 #include "FingerSelector.h"
 #include "ThreadUtils.h"
-#include <XnCppWrapper.h>	//troubled with HandsGenerator callbacks...
+#include <XnCppWrapper.h>	//@Nadir OpenNI library to remove
 #include <vector>
 
 #define MAX_HAND_NUM 2	//wrapper const

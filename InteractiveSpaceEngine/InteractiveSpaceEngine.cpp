@@ -121,7 +121,7 @@ InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
 	return &instance;
 }
 
-void InteractiveSpaceEngine::run()
+void InteractiveSpaceEngine::run()	//initilize
 {
 	kinectSensor = new KinectSensor();
 	motionCameraReader = new MotionCameraReader();

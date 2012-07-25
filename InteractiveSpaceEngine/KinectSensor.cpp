@@ -4,6 +4,9 @@
 #include "ImageProcessingFactory.h"
 using namespace xn;
 
+//TODO: @Nadir
+
+//TODO: @Nadir Initialize the SDK 
 KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1)
 {
 	XnStatus rc;
@@ -21,6 +24,7 @@ KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1)
 	assert(rc == XN_STATUS_OK);
 }
 
+//TODO: @Nadir Stop the SDK
 KinectSensor::~KinectSensor()
 {
 	//threadStop();
@@ -37,6 +41,7 @@ void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
 	//threadStart();
 }
 
+//This is for multi-treahding structure. You may currently ignore it. 
 /*void KinectSensor::operator() ()
 {
 	while(true)
@@ -59,17 +64,20 @@ void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
 	}
 }*/
 
+//TODO: @Nadir
 void KinectSensor::refresh()
 {
-	context.WaitAndUpdateAll();
+	context.WaitAndUpdateAll();		//TODO: @Nadir this line calls the SDK to wait for new frames. It will be blocked until the RGB and Depth stream are updated. 
 		
 	WriteLockedIplImagePtr rgbPtr = ipf->lockWritableImageProduct(RGBSourceProduct);
 	WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
 	WriteLock frameLock(frameCountMutex);
 	//lock 3 resources at the same time to keep synchronization
 		
-	memcpy(rgbPtr->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
-	memcpy(depthPtr->imageData, depthGen.GetData(), depthGen.GetDataSize());
+	//write RGB and depth data to ImageProcessingFactory 
+	//cvCvt, cvCVtColor, cvScale
+	memcpy(rgbPtr->imageData, rgbGen.GetData(), rgbGen.GetDataSize());			//TODO: @Nadir: rgbGen to MS 
+	memcpy(depthPtr->imageData, depthGen.GetData(), depthGen.GetDataSize());	//TODO: depthGen to MS
 
 	frameCount++;
 
@@ -116,6 +124,7 @@ float KinectSensor::distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPo
 	return distSquaredInRealWorld(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
 }
 
+//@Nadir
 FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) const
 {
 	XnPoint3D xnP;
@@ -128,6 +137,7 @@ FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) c
 	return FloatPoint3D(realPoints[0].X, realPoints[0].Y, realPoints[0].Z);
 }
 
+//@Nadir
 FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
 {
 	XnPoint3D xnP;

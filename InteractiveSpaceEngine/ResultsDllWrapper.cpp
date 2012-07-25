@@ -88,3 +88,10 @@ DLL_EXPORT ReadLockedWrapperPtr lockTrackingDocBounds(int* docNum)
 	res.readLock = docBoundsPtr.getReadLock();
 	return res;
 }
+
+/*	TODO: @Nadir
+DLL_EXPORT double getKinectSoundAngle()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getSound()->getAngle();
+}
+*/
