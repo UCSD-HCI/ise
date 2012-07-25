@@ -7,7 +7,9 @@ using namespace std;
 DocumentRecognition::DocumentRecognition(ImageProcessingFactory* ipf, ObjectTracker* ot) : ipf(ipf), ot(ot)
 {
 	//workerThread = boost::thread(&DocumentRecognition::oscListener, this);
-	threadStart();
+
+	//TODO: enable this, automatically start server
+	//threadStart();
 }
 
 DocumentRecognition::~DocumentRecognition()

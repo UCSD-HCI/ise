@@ -4,7 +4,6 @@
 #include "InteractiveSpaceTypes.h"
 #include "FingerSelector.h"
 #include "ThreadUtils.h"
-#include <XnCppWrapper.h>	//@Nadir OpenNI library to remove
 #include <vector>
 
 #define MAX_HAND_NUM 2	//wrapper const
@@ -54,7 +53,7 @@ class HandTracker
 {
 private:
 	FingerSelector* fingerSelector;
-	xn::HandsGenerator* handsGen;
+	//xn::HandsGenerator* handsGen;
 	const KinectSensor* kinectSensor;
 
 	Hand hands[MAX_HAND_NUM];
@@ -65,10 +64,11 @@ private:
 	//event listener
 	HandEventCallback handMoveCallback, handCapturedCallback, handLostCallback;
 
-	XnCallbackHandle hCallback;
+	/*XnCallbackHandle hCallback;
 	static void XN_CALLBACK_TYPE handCreateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie);
 	static void XN_CALLBACK_TYPE handUpdateCB(xn::HandsGenerator& generator, XnUserID user, const XnPoint3D* pPosition, XnFloat fTime, void* pCookie);
 	static void XN_CALLBACK_TYPE handDestroyCB(xn::HandsGenerator& generator, XnUserID user, XnFloat fTime, void* pCookie);
+	*/
 
 	void addHandHint(FloatPoint3D& positionInRealWorld, double confidence);
 	//Hand* addHandTracking();
@@ -78,7 +78,7 @@ private:
 	void raiseEvent(const Hand& hand, HandEventType eventType);
 
 public:
-	HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor);
+	HandTracker(FingerSelector* fingerSelector, /*xn::HandsGenerator* handsGen,*/ const KinectSensor* kinectSensor);
 	virtual ~HandTracker();
 	void refresh();
 

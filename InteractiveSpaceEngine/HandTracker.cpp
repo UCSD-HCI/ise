@@ -7,17 +7,17 @@ using namespace std;
 //TODO: @Nadir
 
 //TODO: @Nadir Use Shimona's register callback; change "handsGen" to Shimona's class. 
-HandTracker::HandTracker(FingerSelector* fingerSelector, xn::HandsGenerator* handsGen, const KinectSensor* kinectSensor) 
-	: fingerSelector(fingerSelector), handsGen(handsGen), kinectSensor(kinectSensor), handNum(0), nextHintId(1),
+HandTracker::HandTracker(FingerSelector* fingerSelector, /*xn::HandsGenerator* handsGen,*/ const KinectSensor* kinectSensor) 
+	: fingerSelector(fingerSelector), /*handsGen(handsGen),*/ kinectSensor(kinectSensor), handNum(0), nextHintId(1),
 	handCapturedCallback(NULL), handLostCallback(NULL), handMoveCallback(NULL)
 {
-	handsGen->RegisterHandCallbacks(handCreateCB, handUpdateCB, handDestroyCB, this, hCallback);	//register callbacks to Shimona's code
+	//handsGen->RegisterHandCallbacks(handCreateCB, handUpdateCB, handDestroyCB, this, hCallback);	//register callbacks to Shimona's code
 }
 
 //TODO: @Nadir Use Shimona's unregister callback
 HandTracker::~HandTracker()
 {
-	handsGen->UnregisterHandCallbacks(hCallback);	//unregister callbacks to Shimona's code
+	//handsGen->UnregisterHandCallbacks(hCallback);	//unregister callbacks to Shimona's code
 }
 
 void HandTracker::registerCallbacks(HandEventCallback handMoveCallback, HandEventCallback handCapturedCallback, HandEventCallback handLostCallback)
@@ -120,6 +120,7 @@ void HandTracker::raiseEvent(const Hand& hand, HandEventType eventType)
 	}
 }
 
+/*
 //TODO: @Nadir change parameter list to fit Shimona's interface
 //pCookie: a custom state passed to the handler. It turns out the handler function must be static, so "this" pointer is stored in pCookie. 
 //user: the hand ID
@@ -214,9 +215,12 @@ void XN_CALLBACK_TYPE HandTracker::handDestroyCB(xn::HandsGenerator& generator, 
 	}
 	//DEBUG("Hand destroy: " << user);
 }
+*/
+
 
 void HandTracker::refresh()
 {
+	/*
 	vector<int> idToStopTracking;
 
 	{
@@ -323,4 +327,5 @@ void HandTracker::refresh()
 				handsGen->StartTracking(p);	//@Nadir: OpenNI start tracking	to Shimona's InitHand
 		}
 	}
+	*/
 }

@@ -20,6 +20,7 @@
 #include "TuioExporter.h"
 #include "DocumentRecognition.h"
 
+
 class InteractiveSpaceEngine : ThreadWorker
 {
 private:

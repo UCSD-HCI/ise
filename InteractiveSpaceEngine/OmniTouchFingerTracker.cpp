@@ -1,8 +1,8 @@
 #include "OmniTouchFingerTracker.h"
 #include <deque>
 #include <math.h>
+#include "DebugUtils.h"
 using namespace std;
-using namespace xn;
 
 OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0)
 {
@@ -115,18 +115,13 @@ void OmniTouchFingerTracker::findStrips()
 					ushort depth = *ushortValAt(srcPtr, i, (partialMaxPos + partialMinPos) / 2);	//use the middle point of the strip to measure depth, assuming it is the center of the finger
 					srcPtr.release();
 
-					XnPoint3D p1, p2;
-					p1.X = partialMaxPos;
-					p1.Y = i;
-					p1.Z = depth;
-
-
 					double distSquared = kinectSensor->distSquaredInRealWorld(
 						partialMaxPos, i, depth,
 						partialMinPos, i, depth);
 
 					if (distSquared >= fingerWidthMin * fingerWidthMin && distSquared <= fingerWidthMax * fingerWidthMax)
 					{
+						DEBUG("dist (" << (partialMaxPos + partialMinPos) / 2 << ", " << i << ", " << depth << "): " << sqrt(distSquared));
 						for (int tj = partialMaxPos; tj <= partialMinPos; tj++)
 						{
 							//bufferPixel(tmpPixelBuffer, i, tj)[0] = 0;
