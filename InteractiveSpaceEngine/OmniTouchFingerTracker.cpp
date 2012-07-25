@@ -121,7 +121,7 @@ void OmniTouchFingerTracker::findStrips()
 
 					if (distSquared >= fingerWidthMin * fingerWidthMin && distSquared <= fingerWidthMax * fingerWidthMax)
 					{
-						DEBUG("dist (" << (partialMaxPos + partialMinPos) / 2 << ", " << i << ", " << depth << "): " << sqrt(distSquared));
+						//DEBUG("dist (" << (partialMaxPos + partialMinPos) / 2 << ", " << i << ", " << depth << "): " << sqrt(distSquared));
 						for (int tj = partialMaxPos; tj <= partialMinPos; tj++)
 						{
 							//bufferPixel(tmpPixelBuffer, i, tj)[0] = 0;

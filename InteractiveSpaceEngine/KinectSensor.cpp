@@ -60,7 +60,7 @@ HRESULT KinectSensor::CreateFirstConnected()
     if (NULL != nuiSensor)
     {
         // Initialize the Kinect and specify that we'll be using depth
-		hr = nuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_AUDIO); 
+		hr = nuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_AUDIO | NUI_INITIALIZE_FLAG_USES_SKELETON); 
 		
         if (SUCCEEDED(hr))
         {
@@ -181,6 +181,15 @@ void KinectSensor::refresh()
 
 	frameCount++;
 
+	//check distance
+	WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
+	int x1 = 160, y1 = 240, x2 = 480, y2 = 240;
+	USHORT z1 = *ushortValAt(depthPtr, y1, x1);
+	USHORT z2 = *ushortValAt(depthPtr, y2, x2);
+	double distSq = distSquaredInRealWorld(x1, y1, (int)z1, x2, y2, (int)z2);
+	depthPtr.release();
+
+	DEBUG("(" << x1 << "," << y1 << "," << z1 << ") - (" << x2 << "," << y2 << "," << z2 << "): " << sqrt(distSq));
 }
 
 IplImage* KinectSensor::createBlankRGBImage()
@@ -199,9 +208,9 @@ float KinectSensor::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, i
 	FloatPoint3D real1 = convertProjectiveToRealWorld(FloatPoint3D(x1, y1, depth1));
 	FloatPoint3D real2 = convertProjectiveToRealWorld(FloatPoint3D(x2, y2, depth2));
 
-	return (real1.x - real2.x) * (real1.x - real2.x)
+	return ((real1.x - real2.x) * (real1.x - real2.x)
 		 + (real1.y - real2.y) * (real1.y - real2.y)
-		 + (real1.z - real2.z) * (real1.z - real2.z);
+		 + (real1.z - real2.z) * (real1.z - real2.z));
 }
 
 float KinectSensor::distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const
@@ -211,7 +220,7 @@ float KinectSensor::distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPo
 
 FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) const
 {
-	Vector4 vec = NuiTransformDepthImageToSkeleton(p.x, p.y, p.z);
+	Vector4 vec = NuiTransformDepthImageToSkeleton((LONG)p.x, (LONG)p.y, (USHORT)p.z);
 
 	return FloatPoint3D(vec.x * 100.0, vec.y * 100.0, vec.z * 100.0);
 }
@@ -230,5 +239,5 @@ FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) c
 
 	NuiTransformSkeletonToDepthImage(vec, &x, &y, &z);
 
-	return FloatPoint3D(x, y, z);
+	return FloatPoint3D((float)x, (float)y, (float)z);
 }
