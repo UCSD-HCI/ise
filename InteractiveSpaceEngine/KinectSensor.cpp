@@ -220,9 +220,9 @@ float KinectSensor::distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPo
 
 FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) const
 {
-	Vector4 vec = NuiTransformDepthImageToSkeleton((LONG)p.x, (LONG)p.y, (USHORT)p.z);
+	Vector4 vec = NuiTransformDepthImageToSkeleton((LONG)p.x, (LONG)p.y, (USHORT)p.z, NUI_IMAGE_RESOLUTION_640x480);
 
-	return FloatPoint3D(vec.x * 100.0, vec.y * 100.0, vec.z * 100.0);
+	return FloatPoint3D(vec.x / vec.w * 100.0, vec.y / vec.w * 100.0, vec.z / vec.w * 100.0);
 }
 
 FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
@@ -237,7 +237,7 @@ FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) c
 	LONG x, y;
 	USHORT z;
 
-	NuiTransformSkeletonToDepthImage(vec, &x, &y, &z);
+	NuiTransformSkeletonToDepthImage(vec, &x, &y, &z, NUI_IMAGE_RESOLUTION_640x480);
 
 	return FloatPoint3D((float)x, (float)y, (float)z);
 }
