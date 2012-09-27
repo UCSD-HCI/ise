@@ -130,7 +130,7 @@ void KinectSensor::refresh()
 {
 	HRESULT hr;
 	INuiFrameTexture * pTexture;
-	 NUI_LOCKED_RECT lockedRect;
+	NUI_LOCKED_RECT lockedRect;
 
 	//get depth
 	NUI_IMAGE_FRAME depthFrame;

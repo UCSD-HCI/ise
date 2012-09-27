@@ -391,5 +391,11 @@ namespace ControlPanel
             CommandDllWrapper.setDocTrackEnabled(docTrackingCheckbox.IsChecked.Value);
         }
 
+        private void captureButton_Click(object sender, RoutedEventArgs e)
+        {
+            FrameCapture fc = new FrameCapture();
+            fc.Save();
+        }
+
     }
 }
