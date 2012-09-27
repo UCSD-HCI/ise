@@ -5,13 +5,13 @@
 #include "ImageProcessingFactory.h"
 #include "KinectSensor.h"
 
-#define TOUCHED_FINGER_EDGE_THRESHOLD 1000
-#define FINGER_EDGE_THRESHOLD 1000 //1000
+//#define TOUCHED_FINGER_EDGE_THRESHOLD 1000
+//#define FINGER_EDGE_THRESHOLD 1000 //1000
 #define STRIP_MAX_BLANK_PIXEL 10
 #define FINGER_MIN_PIXEL_LENGTH 10
 #define FINGER_TO_HAND_OFFSET 100   //in millimeters
 #define CLICK_FLOOD_AREA 500
-#define CLICK_FLOOD_MAX_GRAD 30
+//#define CLICK_FLOOD_MAX_GRAD 200
 
 //just for DEMO
 #define OMNI_CROP_TOP 120
@@ -54,7 +54,7 @@ private:
 	int* histogram;
 	int maxHistogramSize;
 	
-	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax;
+	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad;
 
 	IplImage* debugFindFingersResult;
 	IplImage* floodVisitedFlag;
@@ -71,7 +71,7 @@ public:
 	virtual ~OmniTouchFingerTracker();
 	void refresh();
 
-	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax);
+	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
 
 	inline const std::vector<OmniTouchFinger>& getFingers() const { return fingers; }
 };

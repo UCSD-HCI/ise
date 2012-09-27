@@ -35,7 +35,7 @@ namespace ControlPanel.NativeWrappers
         public static extern unsafe int getMotionCameraHeight();
 
         [DllImport(DLL_NAME)]
-        public static extern unsafe void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength);
+        public static extern unsafe void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void setThresholdTouchParameters(double noiseThreshold, double fingerThreshold, double blindThreshold);

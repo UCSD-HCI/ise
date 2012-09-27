@@ -21,12 +21,15 @@ OmniTouchFingerTracker::~OmniTouchFingerTracker()
 	}
 }
 
-void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax)
+void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad)
 {
 	this->fingerWidthMin = fingerWidthMin;
 	this->fingerWidthMax = fingerWidthMax;
 	this->fingerLengthMin = fingerLengthMin;
 	this->fingerLengthMax = fingerLengthMax;
+	this->fingerRisingThreshold = fingerRisingThreshold;
+	this->fingerFallingThreshold = fingerFallingThreshold;
+	this->clickFloodMaxGrad = clickFloodMaxGrad;
 }
 
 void OmniTouchFingerTracker::refresh()
@@ -61,7 +64,7 @@ void OmniTouchFingerTracker::findStrips()
 			switch(state)
 			{
 			case StripSmooth:	//TODO: smooth
-				if (currVal > FINGER_EDGE_THRESHOLD)
+				if (currVal > fingerRisingThreshold)
 				{
 					partialMax = currVal;
 					partialMaxPos = j;
@@ -70,7 +73,7 @@ void OmniTouchFingerTracker::findStrips()
 				break;
 
 			case StripRising:
-				if (currVal > FINGER_EDGE_THRESHOLD)
+				if (currVal > fingerRisingThreshold)
 				{
 					if (currVal > partialMax)
 					{
@@ -85,13 +88,13 @@ void OmniTouchFingerTracker::findStrips()
 				break;
 
 			case StripMidSmooth:
-				if (currVal < -FINGER_EDGE_THRESHOLD)
+				if (currVal < -fingerFallingThreshold)
 				{
 					partialMin = currVal;
 					partialMinPos = j;
 					state = StripFalling;
 				}
-				else if (currVal > FINGER_EDGE_THRESHOLD)
+				else if (currVal > fingerRisingThreshold)
 				{
 					//previous trial faied, start over
 					partialMax = currVal;
@@ -101,7 +104,7 @@ void OmniTouchFingerTracker::findStrips()
 				break;
 
 			case StripFalling:
-				if (currVal < -FINGER_EDGE_THRESHOLD)
+				if (currVal < -fingerFallingThreshold)
 				{
 					if (currVal < partialMin)
 					{
@@ -288,7 +291,7 @@ void OmniTouchFingerTracker::floodHitTest()
 				}
 
 				ushort neiborDepth = *ushortValAt(depthPtr, row, col);
-				if (abs(neiborDepth - centerPoint.z) > CLICK_FLOOD_MAX_GRAD)
+				if (abs(neiborDepth - centerPoint.z) > clickFloodMaxGrad)
 				{
 					continue;					
 				}

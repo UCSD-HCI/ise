@@ -55,6 +55,9 @@ namespace ControlPanel
             fingerMaxWidthSlider.Value = Properties.Settings.Default.FingerMaxWidth;
             fingerMinLengthSlider.Value = Properties.Settings.Default.FingerMinLength;
             fingerMaxLengthSlider.Value = Properties.Settings.Default.FingerMaxLength;
+            fingerRisingThresholdSlider.Value = Properties.Settings.Default.FingerRisingThreshold;
+            fingerFallingThresholdSlider.Value = Properties.Settings.Default.FingerFallingThreshold;
+            clickFloodMaxGradSlider.Value = Properties.Settings.Default.ClickFloodMaxGrad;
 
             noiseThresholdSlider.Value = Properties.Settings.Default.NoiseThreshold;
             fingerThresholdSlider.Value = Properties.Settings.Default.FingerThreshold;
@@ -65,7 +68,8 @@ namespace ControlPanel
             //projectorFeedbackWindow = new ProjectorFeedbackWindow();
 
             CommandDllWrapper.engineRun();
-            NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
+            NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,
+                fingerRisingThresholdSlider.Value, fingerFallingThresholdSlider.Value, clickFloodMaxGradSlider.Value);
             NativeWrappers.CommandDllWrapper.setThresholdTouchParameters(noiseThresholdSlider.Value, fingerThresholdSlider.Value, blindThresholdSlider.Value);
 
             engineUpdateDelegate = new Action(engineUpdateCallback);
@@ -226,6 +230,24 @@ namespace ControlPanel
                     fingerMaxLengthTextBox.Text = e.NewValue.ToString("0.00");
                 }
             }
+            else if (sender == fingerRisingThresholdSlider)
+            {
+                if (fingerRisingThresholdTextBox != null)
+                {
+                    fingerRisingThresholdTextBox.Text = e.NewValue.ToString("0.00");
+                }
+            }
+            else if (sender == fingerFallingThresholdSlider)
+            {
+                if (fingerFallingThresholdTextBox != null)
+                {
+                    fingerFallingThresholdTextBox.Text = e.NewValue.ToString("0.00");
+                }
+            }
+            else if (sender == clickFloodMaxGradSlider)
+            {
+                clickFloodMaxGradTextBox.Text = e.NewValue.ToString("0.00");
+            }
 
             if (e.Handled && isSlidersValueLoaded)
             {
@@ -233,9 +255,14 @@ namespace ControlPanel
                 Properties.Settings.Default.FingerMaxWidth = fingerMaxWidthSlider.Value;
                 Properties.Settings.Default.FingerMinLength = fingerMinLengthSlider.Value;
                 Properties.Settings.Default.FingerMaxLength = fingerMaxLengthSlider.Value;
+                Properties.Settings.Default.FingerRisingThreshold = fingerRisingThresholdSlider.Value;
+                Properties.Settings.Default.FingerFallingThreshold = fingerFallingThresholdSlider.Value;
+                Properties.Settings.Default.ClickFloodMaxGrad = clickFloodMaxGradSlider.Value;
+                
                 Properties.Settings.Default.Save();
 
-                NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value);
+                NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,
+                    fingerRisingThresholdSlider.Value, fingerFallingThresholdSlider.Value, clickFloodMaxGradSlider.Value);
             }
         }
 
