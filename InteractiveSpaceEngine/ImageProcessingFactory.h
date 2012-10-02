@@ -5,7 +5,6 @@
 #include <assert.h>
 #include "ThreadUtils.h"
 #include "KinectSensor.h"
-#include "MotionCameraReader.h"
 
 #define KINECT_MAX_DEPTH 65536
 
@@ -26,16 +25,11 @@ typedef enum
 	DepthSourceProduct,	//this depth data is from the Kinect thread
 	DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
 	
-	DepthThresholdFilteredProduct,
-	DepthOpenedProduct,
 	DepthSobeledProduct,
 
 	DebugDepthHistogramedProduct,
 	DebugOmniOutputProduct,
-	DebugThresholdOutputProduct,
-	DebugObjectTrackingProduct,
 
-	MotionCameraSourceProduct,
 	RectifiedTabletopProduct,
 
 	ImageProductsCount
@@ -48,8 +42,6 @@ private:
 	Mutex productsMutex[ImageProductsCount];
 
 	KinectSensor* kinectSensor;
-	MotionCameraReader* motionCameraReader;
-	const ThresholdTouchFingerTracker* thresholdTouchFingerTracker;
 
 	int depthHistogram[KINECT_MAX_DEPTH];
 
@@ -59,13 +51,8 @@ private:
 	void depthFilteredOpen(const IplImage* src, IplImage* dst);
 
 public:
-	ImageProcessingFactory(KinectSensor* kinectSensor, MotionCameraReader* motionCameraReader);
+	ImageProcessingFactory(KinectSensor* kinectSensor);
 	virtual ~ImageProcessingFactory();
-
-	inline void setThresholdTouchFingerTracker(const ThresholdTouchFingerTracker* tracker)
-	{
-		this->thresholdTouchFingerTracker = tracker;
-	}
 
 	inline ReadLockedIplImagePtr lockImageProduct(ImageProductType type)
 	{

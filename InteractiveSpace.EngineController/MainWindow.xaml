@@ -1,0 +1,138 @@
+﻿<Window x:Class="InteractiveSpace.EngineController.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InteractiveSpace Control Panel" Height="435" Width="391" Loaded="Window_Loaded" Closing="Window_Closing">
+    <StackPanel Orientation="Vertical">
+        <GroupBox Header="Preview Video" Margin="5">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton Name="rawVideoToggleButton" Content="RGB" Margin="5" Click="rawVideoToggleButton_Click"/>
+                    <ToggleButton Name="depthVideoToggleButton" Content="Depth" Margin="5" Click="depthVideoToggleButton_Click"/>
+                    <ToggleButton Name="multiTouchVideoToggleButton" Content="OmniTouch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>
+                    <ToggleButton Name="rectifiedTabletopToggleButton" Content="RectifiedTabletop" Margin="5" Click="rectifiedTabletopToggleButton_Click" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <!--
+        <GroupBox Header="Capture" Margin="5">
+            <Grid>
+                <Button Name="captureButton" HorizontalAlignment="Left" Click="captureButton_Click">Capture</Button>
+            </Grid>
+        </GroupBox>
+        -->
+        <GroupBox Header="Utilities">
+            <StackPanel Orientation="Horizontal">
+                <Button Name="captureButton" Margin="5" Click="captureButton_Click">Frame Capture</Button>
+                <Button Name="recordButton" Margin="5" Click="recordButton_Click">Video Record</Button>
+                <Button Name="systemCalibrateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="systemCalibrateButton_Click">Calibrate</Button>
+            </StackPanel>
+        </GroupBox>
+        <!--<GroupBox Header="Options"></GroupBox>-->
+        <GroupBox Header="OmniTouch Parameters">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Slider Grid.Row="1" Grid.Column="0" Name="fingerMinWidthSlider" Minimum="0" Maximum="10" HorizontalAlignment="Center" Orientation="Vertical" ValueChanged="omniSliders_ValueChanged" SmallChange="0.01" LargeChange="5" />
+                <TextBox Grid.Row="2" Name="fingerMinWidthTextBox" IsReadOnly="True" Margin="2,2,2,0" TextAlignment="Center" Height="22" VerticalAlignment="Top" />
+                <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Min Width</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="1" Name="fingerMaxWidthSlider" Minimum="0" Maximum="100" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="0.1" LargeChange="5"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Name="fingerMaxWidthTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Max Width</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="2" Name="fingerMinLengthSlider" Minimum="0" Maximum="200" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="0.1" LargeChange="5"/>
+                <TextBox Grid.Row="2" Grid.Column="2" Name="fingerMinLengthTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Min Length</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="3" Name="fingerMaxLengthSlider" Minimum="0" Maximum="200" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="0.1" LargeChange="5"/>
+                <TextBox Grid.Row="2" Grid.Column="3" Name="fingerMaxLengthTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Max Length</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="4" Name="fingerRisingThresholdSlider" Minimum="0" Maximum="5000" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="10" LargeChange="100"/>
+                <TextBox Grid.Row="2" Grid.Column="4" Name="fingerRisingThresholdTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Rising Edge</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="5" Name="fingerFallingThresholdSlider" Minimum="0" Maximum="5000" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="10" LargeChange="100"/>
+                <TextBox Grid.Row="2" Grid.Column="5" Name="fingerFallingThresholdTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Falling Edge</TextBlock>
+
+                <Slider Grid.Row="1" Grid.Column="6" Name="clickFloodMaxGradSlider" Minimum="0" Maximum="500" Orientation="Vertical" HorizontalAlignment="Center" ValueChanged="omniSliders_ValueChanged" SmallChange="5" LargeChange="10"/>
+                <TextBox Grid.Row="2" Grid.Column="6" Name="clickFloodMaxGradTextBox" IsReadOnly="True" Margin="2" TextAlignment="Center"/>
+                <TextBlock Grid.Row="3" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center">Click Max Grad</TextBlock>
+            </Grid>
+        </GroupBox>
+        <!--
+        <GroupBox Header="Hand Tracking" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">ID</Label>
+                <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">Color</Label>
+                <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">X</Label>
+                <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center">Y</Label>
+                <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center">Z</Label>
+                <StackPanel Name="handTrackingStackPanel" Grid.Row="1" Grid.ColumnSpan="5" Orientation="Vertical">
+
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Finger Tracking" Margin="5">
+            <Grid Name="fingerTrackingGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">ID</Label>
+                <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center">Color</Label>
+                <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">X</Label>
+                <Label Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center">Y</Label>
+                <Label Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center">Z</Label>
+            </Grid>
+        </GroupBox>
+        -->
+        <GroupBox Header="System Information">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="40"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label>FPS</Label>
+                <Label Name="fpsLabel" Grid.Column="1"></Label>
+            </Grid>
+        </GroupBox>
+    </StackPanel>
+</Window>
+

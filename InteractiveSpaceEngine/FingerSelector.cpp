@@ -1,7 +1,7 @@
 #include "FingerSelector.h"
 using namespace std;
 
-FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, ThresholdTouchFingerTracker* thresholdTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), thresholdTracker(thresholdTracker),
+FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), thresholdTracker(thresholdTracker),
 	kinectSensor(kinectSensor), fingerNum(0), handHintNum(0)
 {
 
@@ -25,18 +25,6 @@ void FingerSelector::refresh()
 		fingers[i].fingerType = OmniFinger;
 		fingers[i].fingerState = omniTracker->getFingers()[j].isOnSurface ? FingerOnSurface : FingerHovering;
 		fingers[i].id = 0;
-	}
-
-	for (int j = 0; i < MAX_FINGER_NUM && j < thresholdTracker->getFingers().size(); i++, j++)
-	{
-		fingers[i].positionInKinectProj.x = thresholdTracker->getFingers()[j].x;
-		fingers[i].positionInKinectProj.y = thresholdTracker->getFingers()[j].y;
-		fingers[i].positionInKinectProj.z = thresholdTracker->getFingers()[j].z;
-
-		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
-		fingers[i].fingerType = ThresholdFinger;
-		fingers[i].fingerState = FingerOnSurface;
-		fingers[i].id = 0;	//FingerEventsGenerator will assign id
 	}
 
 	fingerNum = i;

@@ -60,16 +60,7 @@
     <ClInclude Include="DebugUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThresholdTouchFingerTracker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Calibrator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionCameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionCameraTracker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FingerEventsGenerator.h">
@@ -78,19 +69,7 @@
     <ClInclude Include="FingerPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MotionCameraReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MotionCameraGrabber.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VideoRecorder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectTracker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DocumentRecognition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TUIO\TuioClient.h">
@@ -173,16 +152,7 @@
     <ClCompile Include="HandTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ThresholdTouchFingerTracker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Calibrator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionCameraController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionCameraTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FingerEventsGenerator.cpp">
@@ -191,19 +161,7 @@
     <ClCompile Include="FingerPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MotionCameraReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MotionCameraGrabber.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VideoRecorder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectTracker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DocumentRecognition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TUIO\TuioClient.cpp">
@@ -241,5 +199,6 @@
     <None Include="OpenNIConfig.xml">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\InteractiveSpace.SDK\InteractiveSpaceSDK.csproj" />
   </ItemGroup>
 </Project>

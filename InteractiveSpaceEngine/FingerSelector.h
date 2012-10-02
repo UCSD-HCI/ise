@@ -4,7 +4,6 @@
 #include <vector>
 #include "InteractiveSpaceTypes.h"
 #include "OmniTouchFingerTracker.h"
-#include "ThresholdTouchFingerTracker.h"
 #include "ThreadUtils.h"
 #include "KinectSensor.h"
 
@@ -17,7 +16,6 @@
 typedef enum
 {
 	OmniFinger,
-	ThresholdFinger,
 } FingerType;
 
 typedef enum
@@ -91,7 +89,7 @@ private:
 	void generateHandHints();
 
 public:
-	FingerSelector(OmniTouchFingerTracker* omniTracker, ThresholdTouchFingerTracker* thresholdTracker, const KinectSensor* kinectSensor);
+	FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor);
 	virtual ~FingerSelector();
 	void refresh();
 

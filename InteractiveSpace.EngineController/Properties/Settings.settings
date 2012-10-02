@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="InteractiveSpace.EngineController.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FingerMinWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.18</Value>
+    </Setting>
+    <Setting Name="FingerMaxWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">4.62</Value>
+    </Setting>
+    <Setting Name="FingerMinLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3.02</Value>
+    </Setting>
+    <Setting Name="FingerMaxLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">13.74</Value>
+    </Setting>
+    <Setting Name="FingerRisingThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1505.62</Value>
+    </Setting>
+    <Setting Name="FingerFallingThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1674.16</Value>
+    </Setting>
+    <Setting Name="ClickFloodMaxGrad" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">218.65</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

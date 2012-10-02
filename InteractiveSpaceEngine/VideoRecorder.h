@@ -2,16 +2,16 @@
 #define VIDEO_RECORDER
 
 #include <cv.h>
-#include "ImageProcessingFactory.h"
 #include <string>
 #include <stdio.h>
+#include <highgui.h>
+#include "ImageProcessingFactory.h"
 
 class VideoRecorder
 {
 private:
 	CvVideoWriter* rgbWriter;
 	CvVideoWriter* depthHistWriter;
-	CvVideoWriter* motionWriter;
 	FILE* depthDataFp;
 	ImageProcessingFactory* ipf;
 	bool isRecording;

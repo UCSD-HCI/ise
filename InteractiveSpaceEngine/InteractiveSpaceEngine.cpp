@@ -4,8 +4,8 @@
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1), motionCameraController(NULL), 
-	motionCameraTracker(NULL), fingerEventsGenerator(NULL), motionCameraReader(NULL), motionCameraGrabber(NULL), tuioExporter(NULL), documentRecognition(NULL),
+InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1),  
+	fingerEventsGenerator(NULL), tuioExporter(NULL), 
 	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
 {
 }
@@ -49,48 +49,6 @@ void InteractiveSpaceEngine::dispose()
 		omniTracker = NULL;
 	}
 
-	if (thresholdFingerTracker != NULL)
-	{
-		delete thresholdFingerTracker;
-		thresholdFingerTracker = NULL;
-	}
-
-	if (documentRecognition != NULL)
-	{
-		delete documentRecognition;
-		documentRecognition = NULL;
-	}
-
-	if (objectTracker != NULL)
-	{
-		delete objectTracker;
-		objectTracker = NULL;
-	}
-
-	if (motionCameraGrabber != NULL)
-	{
-		delete motionCameraGrabber;
-		motionCameraGrabber = NULL;
-	}
-
-	if (motionCameraTracker != NULL)
-	{
-		delete motionCameraTracker;
-		motionCameraTracker = NULL;
-	}
-
-	if (motionCameraController != NULL)
-	{
-		delete motionCameraController;
-		motionCameraController = NULL;
-	}
-
-	if (motionCameraReader != NULL)
-	{
-		delete motionCameraReader;
-		motionCameraReader = NULL;
-	}
-
 	if (videoRecorder != NULL)
 	{
 		delete videoRecorder;
@@ -124,31 +82,18 @@ InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
 void InteractiveSpaceEngine::run()	//initilize
 {
 	kinectSensor = new KinectSensor();
-	motionCameraReader = new MotionCameraReader();
-	ipf = new ImageProcessingFactory(kinectSensor, motionCameraReader);
+	ipf = new ImageProcessingFactory(kinectSensor);
 
 	kinectSensor->setImageProcessingFactory(ipf);
 	kinectSensorFrameCount = -1;
 
-	motionCameraReader->setImageProcessingFactory(ipf);
-
 	calibrator = new Calibrator(kinectSensor, ipf);
 
 	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor);
-	thresholdFingerTracker = new ThresholdTouchFingerTracker(kinectSensor, ipf);
-	ipf->setThresholdTouchFingerTracker(thresholdFingerTracker);
-	fingerSelector = new FingerSelector(omniTracker, thresholdFingerTracker, kinectSensor);
+	fingerSelector = new FingerSelector(omniTracker, kinectSensor);
 	fingerEventsGenerator = new FingerEventsGenerator(fingerSelector);
 
 	handTracker = new HandTracker(fingerSelector, /*kinectSensor->getHandsGenerator(), */kinectSensor);
-
-	motionCameraController = new MotionCameraController();
-
-	motionCameraGrabber = new MotionCameraGrabber(motionCameraController, motionCameraReader, ipf);
-
-	objectTracker = new ObjectTracker(ipf, motionCameraGrabber, calibrator);
-	motionCameraTracker = new MotionCameraTracker(handTracker, calibrator, motionCameraController, objectTracker);
-	documentRecognition = new DocumentRecognition(ipf, objectTracker);
 
 	videoRecorder = new VideoRecorder(ipf);
 
@@ -178,8 +123,6 @@ void InteractiveSpaceEngine::operator() ()
 
 
 		kinectSensor->refresh();
-		motionCameraController->refresh();
-		motionCameraReader->refresh();
 
 		if (calibrator->isCalibrating())
 		{
@@ -205,11 +148,7 @@ void InteractiveSpaceEngine::operator() ()
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
-				objectTracker->refresh();
-				motionCameraTracker->refresh();
 				ipf->updateRectifiedTabletop(calibrator);
-
-				documentRecognition->refresh();
 
 				if (videoRecorder != NULL)
 				{

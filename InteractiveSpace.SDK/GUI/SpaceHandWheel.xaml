@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="InteractiveSpace.SDK.GUI.SpaceHandWheel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Width="1600" Height="1200">
+    <Canvas>
+        <Canvas Name="wheelCanvas" Width="700" Height="700" Canvas.Left="450" Canvas.Top="350">
+            <Path Name="selectionSector" Canvas.Left="350" Canvas.Top="350" Fill="White"></Path>
+        </Canvas>
+    </Canvas>
+</UserControl>

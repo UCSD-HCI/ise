@@ -33,29 +33,9 @@ DLL_EXPORT int getDepthHeight()
 	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(DepthSourceProduct);
 }
 
-DLL_EXPORT int getMotionCameraWidth()
-{
-	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductWidth(MotionCameraSourceProduct);
-}
-
-DLL_EXPORT int getMotionCameraHeight()
-{
-	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(MotionCameraSourceProduct);
-}
-
 DLL_EXPORT void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad)
 {
 	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setParameters(fingerMinWidth, fingerMaxWidth, fingerMinLength, fingerMaxLength, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad);
-}
-
-DLL_EXPORT void setThresholdTouchParameters(double noiseThreshold, double fingerThreshold, double blindThreshold)
-{
-	InteractiveSpaceEngine::sharedEngine()->getThresholdTouchFingerTracker()->setParameters(noiseThreshold, fingerThreshold, blindThreshold);
-}
-
-DLL_EXPORT void thresholdTouchCalibrate(void* onFinihsedCallback)
-{
-	InteractiveSpaceEngine::sharedEngine()->getThresholdTouchFingerTracker()->calibrate((Callback)onFinihsedCallback);
 }
 
 DLL_EXPORT void systemCalibrationStart()
@@ -90,16 +70,6 @@ DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordina
 	return result;
 }
 
-DLL_EXPORT void motionCameraCenterAt(FloatPoint3D pointInTableSurface, void* callback)
-{
-	InteractiveSpaceEngine::sharedEngine()->getMotionCameraController()->centerAt(pointInTableSurface, (ViscaCommandCallback)callback);
-}
-
-DLL_EXPORT void motionCameraGrabAndSave(FloatPoint3D pointInTableSurface, void* callback)
-{
-	InteractiveSpaceEngine::sharedEngine()->getMotionCameraGrabber()->grabAndSave(pointInTableSurface, "test.jpg", (Callback)callback);
-}
-
 DLL_EXPORT void registerHandEventCallbacks(void* handMoveCallback, void* handCapturedCallback, void* handLostCallback)
 {
 	InteractiveSpaceEngine::sharedEngine()->getHandTracker()->registerCallbacks((HandEventCallback)handMoveCallback, (HandEventCallback)handCapturedCallback, (HandEventCallback)handLostCallback);
@@ -118,15 +88,5 @@ DLL_EXPORT void startRecording(char* filepath)
 DLL_EXPORT void stopRecording()
 {
 	InteractiveSpaceEngine::sharedEngine()->getVideoRecorder()->stop();
-}
-
-DLL_EXPORT void objectRegister(FloatPoint3D pointInTableSurface, void* callback)
-{
-	InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->objectRegister(pointInTableSurface, (Callback)callback);
-}
-
-DLL_EXPORT void setDocTrackEnabled(bool isEnabled)
-{
-	InteractiveSpaceEngine::sharedEngine()->getObjectTracker()->setDocTrackEnabled(isEnabled);
 }
 
