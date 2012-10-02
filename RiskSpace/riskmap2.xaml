@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Width="2193.33" Height="1212" Clip="F1 M 0,0L 2193.33,0L 2193.33,1212L 0,1212L 0,0">
+	<Image x:Name="Layer_10" Source="riskmap2_files/image0.png" Width="1645" Height="909" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,-1.27157e-006,4.06901e-005"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_17" Source="riskmap2_files/image1.png" Width="521" Height="578" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,1452,340"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_16" Source="riskmap2_files/image2.png" Width="217" Height="293" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,1297.33,326.667"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_15" Source="riskmap2_files/image3.png" Width="127" Height="176" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,1224,436"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_14" Source="riskmap2_files/image4.png" Width="932" Height="346" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,884,48"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_13" Source="riskmap2_files/image5.png" Width="308" Height="401" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,920,481.333"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_12" Source="riskmap2_files/image6.png" Width="203" Height="380" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,560,668"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+	<Image x:Name="Layer_11" Source="riskmap2_files/image7.png" Width="691" Height="506" Canvas.Left="0" Canvas.Top="0">
+		<Image.RenderTransform>
+			<TransformGroup>
+				<MatrixTransform Matrix="1.33333,0,0,1.33333,38.6667,32"/>
+			</TransformGroup>
+		</Image.RenderTransform>
+	</Image>
+</Canvas>

@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="FrameCapture.cs" />
     <Compile Include="IntColorConverter.cs" />
+    <Compile Include="MultiTouchVistaController.cs" />
     <Compile Include="NativeWrappers\CommandDllWrapper.cs" />
     <Compile Include="NativeWrappers\NativeTypes.cs" />
     <Compile Include="NativeWrappers\ResultsDllWrapper.cs" />

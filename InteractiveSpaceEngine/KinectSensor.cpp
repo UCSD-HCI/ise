@@ -182,6 +182,7 @@ void KinectSensor::refresh()
 	frameCount++;
 
 	//check distance
+	/*
 	WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
 	int x1 = 160, y1 = 240, x2 = 480, y2 = 240;
 	USHORT z1 = *ushortValAt(depthPtr, y1, x1);
@@ -190,6 +191,7 @@ void KinectSensor::refresh()
 	depthPtr.release();
 
 	DEBUG("(" << x1 << "," << y1 << "," << z1 << ") - (" << x2 << "," << y2 << "," << z2 << "): " << sqrt(distSq));
+	*/
 }
 
 IplImage* KinectSensor::createBlankRGBImage()

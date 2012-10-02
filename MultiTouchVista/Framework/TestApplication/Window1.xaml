@@ -1,0 +1,60 @@
+﻿<mt:Window x:Class="TestApplication.Window1"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mt="http://schemas.multitouch.com/Multitouch/2008/04"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
+		xmlns:local="clr-namespace:TestApplication"
+		xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+		Title="Window1" Height="400" Width="400">
+    <UniformGrid Columns="3" Rows="3">
+		<ItemsControl Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White"
+				 x:Name="list1"
+				 ItemsSource="{Binding Contacts1}"
+				 mt:MultitouchScreen.ContactEnter="list1_ContactEnter"
+				 mt:MultitouchScreen.ContactMoved="list1_ContactMoved"
+				 mt:MultitouchScreen.ContactLeave="list1_ContactLeave"
+				 />
+		<!--<mt:TouchCanvas Grid.Column="1" StrokeCollected="TouchCanvas_StrokeCollected"/>-->
+		<UniformGrid Grid.Column="3" Columns="3" Rows="3">
+			<mt:Button Content="click me" Click="Button_Click"/>
+			<mt:RepeatButton x:Name="repeatButton" Content="0" Click="RepeatButton_Click"/>
+			<mt:ScrollBar Orientation="Horizontal"/>
+			<mt:Button Content="command" Command="{x:Static local:Window1.TestCommand}">
+				<mt:Button.CommandBindings>
+					<CommandBinding Command="{x:Static local:Window1.TestCommand}" Executed="CommandBinding_Executed"/>
+				</mt:Button.CommandBindings>
+			</mt:Button>
+			<Button Click="Button_Click">wpf button</Button>
+		</UniformGrid>
+		<mt:ScrollViewer>
+			<Image Source="{Binding Pictures[0]}"/>
+		</mt:ScrollViewer>
+		<ItemsControl x:Name="itemsControl"
+					  Grid.Row="1" Grid.ColumnSpan="3"
+					  ItemsSource="{Binding Pictures}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<mt:TouchablePanel/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.Resources>
+				<DataTemplate DataType="{x:Type sys:String}">
+					<themes:SystemDropShadowChrome>
+						<Border BorderBrush="Black" BorderThickness="1">
+							<Border BorderBrush="White" BorderThickness="10">
+								<Image Source="{Binding}" MaxWidth="480"/>
+							</Border>
+						</Border>
+					</themes:SystemDropShadowChrome>
+				</DataTemplate>
+			</ItemsControl.Resources>
+		</ItemsControl>
+		<Border Grid.Column="3" Grid.Row="3" Background="White" BorderThickness="3">
+			<Image Source="{Binding CameraImage}" x:Name="image"/>
+		</Border>
+		<StackPanel>
+			<ListBox x:Name="listInkEditingModes" SelectedItem="{Binding InkEditingMode}" ItemsSource="{Binding InkEditingModes}" mt:MultitouchScreen.NewContact="ListBox_NewContact"/>
+			<mt:InkCanvas EditingMode="{Binding InkEditingMode}" />
+		</StackPanel>
+	</UniformGrid>
+</mt:Window>

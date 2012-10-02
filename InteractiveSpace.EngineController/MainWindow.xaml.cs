@@ -32,6 +32,7 @@ namespace InteractiveSpace.EngineController
         public bool IsStopRequested { get; private set; }
         private bool isRecording;
         private SharedMemoryExporter smExporter;
+        private MultiTouchVistaController multiTouchVistaController;
 
         public event EventHandler EngineUpdate;
 
@@ -61,6 +62,9 @@ namespace InteractiveSpace.EngineController
             isSlidersValueLoaded = true;
 
             //projectorFeedbackWindow = new ProjectorFeedbackWindow();
+
+            multiTouchVistaController = new MultiTouchVistaController();
+            multiTouchVistaController.StartServer(@"..\..\MultiTouchVista\Output");
 
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,
@@ -105,6 +109,8 @@ namespace InteractiveSpace.EngineController
             {
                 motionCameraVideoWindow.Close();
             }
+
+            multiTouchVistaController.StopServer();
         }
 
         private void onEngineStopped()

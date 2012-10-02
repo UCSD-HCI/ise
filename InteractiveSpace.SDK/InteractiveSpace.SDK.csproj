@@ -50,7 +50,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+    <OutputPath>..\x64\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -131,6 +131,10 @@
     <ProjectReference Include="..\InteractiveSpace.EngineController\InteractiveSpace.EngineController.csproj">
       <Project>{4B152F4F-97AB-443B-BF9C-A5B1347B580D}</Project>
       <Name>InteractiveSpace.EngineController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj">
+      <Project>{F3219531-A4B9-4B65-B7EA-27C43E98C21D}</Project>
+      <Name>Multitouch.Framework.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

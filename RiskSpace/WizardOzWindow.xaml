@@ -1,0 +1,27 @@
+﻿<Window x:Class="RiskSpace.WizardOzWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wizard-Oz" Height="670" Width="664" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Canvas Name="imageCanvas" Grid.Row="0" Width="640" Height="480">
+            <Image Name="videoImage" Width="640" Height="480" MouseDown="videoImage_MouseDown"/>
+            <TextBox Name="diceTextBox" MaxLength="1" FontSize="30" Width="50" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="diceTextBox_TextChanged" Visibility="Hidden"/>
+         </Canvas>
+        <StackPanel Name="cardPanel" Orientation="Horizontal" Grid.Row="1" Visibility="Collapsed">
+            <Button Name="card1Button" Margin="5" FontSize="25" Width="40" Height="40" Tag="1" Click="cardButton_Click">1</Button>
+            <Button Name="card2Button" Margin="5" FontSize="25" Width="40" Height="40" Tag="2" Click="cardButton_Click">2</Button>
+            <Button Name="card3Button" Margin="5" FontSize="25" Width="40" Height="40" Tag="3" Click="cardButton_Click">3</Button>
+            <Button Name="cardAcceptButton" Margin="5" FontSize="25" Padding="5" Click="cardFinishButton_Click">Accept</Button>
+            <Button Name="cardRejectButton" Margin="5" FontSize="25" Padding="5" Click="cardFinishButton_Click">Reject</Button>
+        </StackPanel>
+        <Button Name="finishButton" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Margin="5" Click="finishButton_Click" Visibility="Collapsed">Finish</Button>
+        <TextBlock Name="msgTextBlock" Grid.Row="3" Margin="5">Wizard-Oz</TextBlock>
+        
+    </Grid>
+</Window>

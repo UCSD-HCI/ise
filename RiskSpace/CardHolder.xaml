@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="RiskSpace.CardHolder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Visibility="Hidden">
+    <StackPanel Orientation="Vertical">
+        <Rectangle Name="card1" Grid.Column="0" Stroke="White" StrokeThickness="3" Width="111" Height="164" Margin="10"/>
+        <Rectangle Name="card2" Grid.Column="1" Stroke="White" StrokeThickness="3" Width="111" Height="164" Margin="10"/>
+        <Rectangle Name="card3" Grid.Column="2" Stroke="White" StrokeThickness="3" Width="111" Height="164" Margin="10"/>
+    </StackPanel>
+</UserControl>
