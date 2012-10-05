@@ -133,6 +133,7 @@
                 <Label Name="fpsLabel" Grid.Column="1"></Label>
             </Grid>
         </GroupBox>
+        
     </StackPanel>
 </Window>
 

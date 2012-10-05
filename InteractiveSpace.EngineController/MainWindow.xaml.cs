@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using InteractiveSpace.EngineController.NativeWrappers;
 using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
+using System.IO;
 
 namespace InteractiveSpace.EngineController
 {
@@ -64,7 +65,21 @@ namespace InteractiveSpace.EngineController
             //projectorFeedbackWindow = new ProjectorFeedbackWindow();
 
             multiTouchVistaController = new MultiTouchVistaController();
-            multiTouchVistaController.StartServer(@"..\..\MultiTouchVista\Output");
+
+            string multiTouchVistaPath = @"..\..\MultiTouchVista\Output";
+            if (!Directory.Exists(multiTouchVistaPath))
+            {
+                multiTouchVistaPath = @".\";
+            }
+
+            try
+            {
+                multiTouchVistaController.StartServer(multiTouchVistaPath);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
             CommandDllWrapper.engineRun();
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,

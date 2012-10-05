@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<rgbSurfHomography type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    3.8813673317981684e-001 2.1465784412336899e-002
+    1.3427343734941081e+001 1.0523215617946370e-002
+    3.9571885197043832e-001 -1.3329513815933478e+000
+    2.4640195445998722e-005 8.5637716015942467e-005 1.</data></rgbSurfHomography>
+</opencv_storage>
