@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mt="http://schemas.multitouch.com/Multitouch/2008/04"
-        Title="MainWindow" Height="1120" Width="1678">
+        Title="MainWindow" Height="1120" Width="1678" Closing="Window_Closing">
     <Grid Name="mainGrid">
-        <Button Content="Button" Height="143" HorizontalAlignment="Left" Margin="690,778,0,0" Name="button1" VerticalAlignment="Top" Width="284" mt:MultitouchScreen.ContactRemoved="okButton_ContactRemoved" />
+        <Button Content="Button" Height="143" HorizontalAlignment="Left" Margin="690,778,0,0" Name="button1" VerticalAlignment="Top" Width="284" mt:MultitouchScreen.ContactRemoved="okButton_ContactRemoved"/>
     </Grid>
 </mt:Window>

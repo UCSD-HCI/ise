@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Multitouch.Framework.WPF.Input;
 
 namespace InteractiveSpaceTemplate
 {
@@ -19,17 +20,26 @@ namespace InteractiveSpaceTemplate
     /// </summary>
     public partial class MainWindow : Multitouch.Framework.WPF.Controls.Window
     {
+        InteractiveSpace.SDK.InteractiveSpaceProvider spaceProvider;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            InteractiveSpace.SDK.InteractiveSpaceProvider provider = new InteractiveSpace.SDK.DLL.InteractiveSpaceProviderDLL();
-            provider.Connect();
+            MultitouchScreen.AllowNonContactEvents = true;
+
+            spaceProvider = new InteractiveSpace.SDK.DLL.InteractiveSpaceProviderDLL();
+            spaceProvider.Connect();
         }
 
         private void okButton_ContactRemoved(object sender, Multitouch.Framework.WPF.Input.ContactEventArgs e)
         {
             MessageBox.Show("Success");
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            spaceProvider.Close();
         }
     }
 }

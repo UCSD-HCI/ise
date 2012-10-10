@@ -126,9 +126,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="lib\AddIns\MultipleMice\MultipleMice.dll.config" />
     <None Include="lib\InteractiveSpace.EngineController.exe.config" />
-    <None Include="lib\InteractiveSpaceEngine.lib" />
-    <None Include="lib\Multitouch.Service.Logic.dll.config" />
+    <None Include="lib\Multitouch.Service.Logic.dll.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -157,8 +159,6 @@
     <None Include="lib\Multitouch.Service.Logic.dll" />
     <None Include="lib\System.ComponentModel.Composition.dll" />
     <None Include="lib\System.ComponentModel.Composition.xml" />
-    <None Include="lib\TUIO.dll" />
-    <None Include="lib\TuioProvider.dll" />
     <None Include="lib\AdvanceMath.xml" />
     <None Include="lib\depthSurfHomography.xml" />
     <None Include="lib\DynamicUtilities.dll" />
@@ -175,6 +175,14 @@
     <None Include="lib\Physics2DDotNet.xml" />
     <None Include="lib\rgbSurfHomography.xml" />
     <None Include="lib\thresholdSurfaceMap.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\AddIns\MultipleMice\MultipleMice.dll" />
+    <Content Include="lib\AddIns\MultipleMice\MultipleMice.pdb" />
+    <Content Include="lib\AddIns\TuioProvider\TUIO.dll" />
+    <Content Include="lib\AddIns\TuioProvider\TUIO.pdb" />
+    <Content Include="lib\AddIns\TuioProvider\TuioProvider.dll" />
+    <Content Include="lib\AddIns\TuioProvider\TuioProvider.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -138,6 +138,15 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y $(OutDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(OutDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(OutDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(OutDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(OutDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib
+xcopy /Y /E $(SolutionDir)MultiTouchVista\Output $(SolutionDir)InteractiveSpaceTemplate\lib
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
