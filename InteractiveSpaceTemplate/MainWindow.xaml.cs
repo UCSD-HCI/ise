@@ -40,7 +40,7 @@ namespace InteractiveSpaceTemplate
 
         private void button_NewContact(object sender, NewContactEventArgs e)
         {
-            Button b = (Button)sender;
+            Button b = (Button)sender; 
             b.Background = Brushes.OrangeRed;
             b.Content = "Touching";
         }
