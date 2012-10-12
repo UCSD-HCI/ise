@@ -60,5 +60,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         [DllImport(DLL_NAME)]
         public static extern unsafe void stopRecording();
+
+        [DllImport(DLL_NAME)]
+        public static extern unsafe void setOmniTouchCropping(int left, int top, int right, int bottom);
     }
 }

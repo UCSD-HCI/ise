@@ -90,3 +90,7 @@ DLL_EXPORT void stopRecording()
 	InteractiveSpaceEngine::sharedEngine()->getVideoRecorder()->stop();
 }
 
+DLL_EXPORT void setOmniTouchCropping(int left, int top, int right, int bottom)
+{
+	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setCropping(left, top, right, bottom);
+}

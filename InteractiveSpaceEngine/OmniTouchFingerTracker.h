@@ -13,12 +13,6 @@
 #define CLICK_FLOOD_AREA 500
 //#define CLICK_FLOOD_MAX_GRAD 200
 
-//just for DEMO
-#define OMNI_CROP_TOP 120
-#define OMNI_CROP_BOTTOM 450
-#define OMNI_CROP_LEFT 20
-#define OMNI_CROP_RIGHT 640
-
 typedef enum
 {
 	StripSmooth,
@@ -55,6 +49,7 @@ private:
 	int maxHistogramSize;
 	
 	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad;
+	int cropLeft, cropTop, cropRight, cropBottom;
 
 	IplImage* debugFindFingersResult;
 	IplImage* floodVisitedFlag;
@@ -65,6 +60,7 @@ private:
 	void findFingers();
 	void generateOutputImage();
 	void floodHitTest();
+	void loadCropping();
 
 public:
 	OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor);
@@ -72,6 +68,8 @@ public:
 	void refresh();
 
 	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
+	void setCropping(int left, int top, int right, int bottom);
+	void getCropping(int* left, int* top, int* right, int* bottom);
 
 	inline const std::vector<OmniTouchFinger>& getFingers() const { return fingers; }
 };

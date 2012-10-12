@@ -9,17 +9,15 @@
         </Grid.RowDefinitions>
 
         <Canvas Width="640" Height="480" Grid.Row="0" Name="canvas">
-            <Image Name="videoImage" Canvas.Left="0" Canvas.Top="0" Width="640" Height="480" MouseDown="videoImage_MouseDown" MouseMove="videoImage_MouseMove"/>
-            <Line X1="160" X2="160" Y1="0" Y2="480" Stroke="Orange"/>
+            <Image Name="videoImage" Canvas.Left="0" Canvas.Top="0" Width="640" Height="480" MouseDown="videoImage_MouseDown" MouseMove="videoImage_MouseMove" MouseUp="videoImage_MouseUp"/>
+            <Rectangle Name="cropRect" Canvas.Left="0" Canvas.Top="0" Width="640" Height="480" Stroke="Orange" StrokeThickness="2" Visibility="Hidden" IsHitTestVisible="False"/>
+            <!--<Line X1="160" X2="160" Y1="0" Y2="480" Stroke="Orange"/>
             <Line X1="480" X2="480" Y1="0" Y2="480" Stroke="Orange"/>
-            <Line X1="0" X2="640" Y1="240" Y2="240" Stroke="Orange"/>
+            <Line X1="0" X2="640" Y1="240" Y2="240" Stroke="Orange"/>-->
         </Canvas>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,0">
-            <Label>Screen:</Label>
-            <Label Name="screenCoordLabel"></Label>
-            <Label Margin="20, 0, 0, 0">Real:</Label>
-            <Label Name="realCoordLabel"></Label>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,20,0,0">
+            <ToggleButton Name="cropButton" Visibility="Collapsed" Checked="cropButton_Checked">OmniTouch Crop</ToggleButton>
         </StackPanel>
     </Grid>
 </Window>

@@ -52,13 +52,15 @@ namespace InteractiveSpace.EngineController
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            fingerMinWidthSlider.Value = Properties.Settings.Default.FingerMinWidth;
-            fingerMaxWidthSlider.Value = Properties.Settings.Default.FingerMaxWidth;
-            fingerMinLengthSlider.Value = Properties.Settings.Default.FingerMinLength;
-            fingerMaxLengthSlider.Value = Properties.Settings.Default.FingerMaxLength;
-            fingerRisingThresholdSlider.Value = Properties.Settings.Default.FingerRisingThreshold;
-            fingerFallingThresholdSlider.Value = Properties.Settings.Default.FingerFallingThreshold;
-            clickFloodMaxGradSlider.Value = Properties.Settings.Default.ClickFloodMaxGrad;
+            var settings = Properties.Settings.Default;
+
+            fingerMinWidthSlider.Value = settings.FingerMinWidth;
+            fingerMaxWidthSlider.Value = settings.FingerMaxWidth;
+            fingerMinLengthSlider.Value = settings.FingerMinLength;
+            fingerMaxLengthSlider.Value = settings.FingerMaxLength;
+            fingerRisingThresholdSlider.Value = settings.FingerRisingThreshold;
+            fingerFallingThresholdSlider.Value = settings.FingerFallingThreshold;
+            clickFloodMaxGradSlider.Value = settings.ClickFloodMaxGrad;
 
             isSlidersValueLoaded = true;
 
@@ -89,6 +91,9 @@ namespace InteractiveSpace.EngineController
             NativeWrappers.CommandDllWrapper.registerEngineUpdateCallback(Marshal.GetFunctionPointerForDelegate(engineUpdateDelegate));
 
             //projectorFeedbackWindow.Show();
+
+            //omni cropping
+            NativeWrappers.CommandDllWrapper.setOmniTouchCropping(settings.OmniTouchCroppingLeft, settings.OmniTouchCroppingTop, settings.OmniTouchCroppingRight, settings.OmniTouchCroppingBottom);
 
             fpsTimer = new System.Threading.Timer(new System.Threading.TimerCallback(fpsTimer_Tick), null, 0, 1000);
         }

@@ -4,7 +4,8 @@
 #include "DebugUtils.h"
 using namespace std;
 
-OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0)
+OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0),
+	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0)
 {
 	maxHistogramSize = KINECT_MAX_DEPTH * 48 * 2;
 	histogram = new int[maxHistogramSize];
@@ -45,19 +46,19 @@ void OmniTouchFingerTracker::findStrips()
 {
 	ReadLockedIplImagePtr sobelPtr = ipf->lockImageProduct(DepthSobeledProduct);
 
-	for (int i = 0; i < OMNI_CROP_TOP; i++)
+	for (int i = 0; i < cropTop; i++)
 	{
 		strips.push_back(vector<OmniTouchStrip>());
 	}
 
-	for (int i = OMNI_CROP_TOP; i < OMNI_CROP_BOTTOM; i++)
+	for (int i = cropTop; i < ipf->getImageProductHeight(DepthSobeledProduct) - cropBottom; i++)
 	{
 		strips.push_back(vector<OmniTouchStrip>());
 
 		StripState state = StripSmooth;
 		int partialMin, partialMax;
 		int partialMinPos, partialMaxPos;
-		for (int j = OMNI_CROP_LEFT; j < OMNI_CROP_RIGHT; j++)
+		for (int j = cropLeft; j < ipf->getImageProductWidth(DepthSobeledProduct) - cropRight; j++)
 		{
 			int currVal = *intValAt(sobelPtr, i, j);
 
@@ -153,7 +154,7 @@ void OmniTouchFingerTracker::findFingers()
 	vector<OmniTouchStrip*> stripBuffer;	//used to fill back
 	fingers.clear();
 
-	for (int i = OMNI_CROP_TOP; i < OMNI_CROP_BOTTOM; i++)
+	for (int i = cropTop; i < ipf->getImageProductHeight(DepthSobeledProduct) - cropBottom; i++)
 	{
 		for (vector<OmniTouchStrip>::iterator it = strips[i].begin(); it != strips[i].end(); ++it)
 		{
@@ -168,7 +169,7 @@ void OmniTouchFingerTracker::findFingers()
 
 			//search down
 			int blankCounter = 0;
-			for (int si = i; si < OMNI_CROP_BOTTOM; si++)
+			for (int si = i; si < ipf->getImageProductHeight(DepthSobeledProduct) - cropBottom; si++)
 			{
 				OmniTouchStrip* currTop = stripBuffer[stripBuffer.size() - 1];
 
@@ -398,3 +399,12 @@ void OmniTouchFingerTracker::generateOutputImage()
 	dstPtr.release();
 	sobelPtr.release();
 }
+
+void OmniTouchFingerTracker::setCropping(int left, int top, int right, int bottom)
+{
+	this->cropLeft = left;
+	this->cropTop = top;
+	this->cropRight = right;
+	this->cropBottom = bottom;
+}
+

@@ -106,5 +106,53 @@ namespace InteractiveSpace.EngineController.Properties {
                 this["ClickFloodMaxGrad"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int OmniTouchCroppingLeft {
+            get {
+                return ((int)(this["OmniTouchCroppingLeft"]));
+            }
+            set {
+                this["OmniTouchCroppingLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("120")]
+        public int OmniTouchCroppingTop {
+            get {
+                return ((int)(this["OmniTouchCroppingTop"]));
+            }
+            set {
+                this["OmniTouchCroppingTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int OmniTouchCroppingRight {
+            get {
+                return ((int)(this["OmniTouchCroppingRight"]));
+            }
+            set {
+                this["OmniTouchCroppingRight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int OmniTouchCroppingBottom {
+            get {
+                return ((int)(this["OmniTouchCroppingBottom"]));
+            }
+            set {
+                this["OmniTouchCroppingBottom"] = value;
+            }
+        }
     }
 }
