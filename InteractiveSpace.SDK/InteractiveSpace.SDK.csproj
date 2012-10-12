@@ -139,11 +139,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(OutDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib
-copy /Y $(OutDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib
-copy /Y $(OutDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib
-copy /Y $(OutDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib
-copy /Y $(OutDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib
+    <PostBuildEvent>copy /Y $(TargetDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(TargetDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(TargetDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib
+copy /Y $(TargetDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib
 xcopy /Y /E $(SolutionDir)MultiTouchVista\Output $(SolutionDir)InteractiveSpaceTemplate\lib
 </PostBuildEvent>
   </PropertyGroup>

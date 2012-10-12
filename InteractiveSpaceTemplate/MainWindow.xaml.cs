@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Multitouch.Framework.WPF.Input;
+using InteractiveSpace.SDK;
+using InteractiveSpace.SDK.DLL;
 
 namespace InteractiveSpaceTemplate
 {
@@ -20,7 +22,7 @@ namespace InteractiveSpaceTemplate
     /// </summary>
     public partial class MainWindow : Multitouch.Framework.WPF.Controls.Window
     {
-        InteractiveSpace.SDK.InteractiveSpaceProvider spaceProvider;
+        InteractiveSpaceProvider spaceProvider;
 
         public MainWindow()
         {
@@ -28,18 +30,32 @@ namespace InteractiveSpaceTemplate
 
             MultitouchScreen.AllowNonContactEvents = true;
 
-            spaceProvider = new InteractiveSpace.SDK.DLL.InteractiveSpaceProviderDLL();
+            spaceProvider = new InteractiveSpaceProviderDLL();
             spaceProvider.Connect();
+
+            //Uncomment these lines to draw fingers on the projected screen
+            //spaceProvider.CreateFingerTracker();
+            //vizLayer.SpaceProvider = spaceProvider;
         }
 
-        private void okButton_ContactRemoved(object sender, Multitouch.Framework.WPF.Input.ContactEventArgs e)
+        private void button_NewContact(object sender, NewContactEventArgs e)
         {
-            MessageBox.Show("Success");
+            Button b = (Button)sender;
+            b.Background = Brushes.OrangeRed;
+            b.Content = "Touching";
+        }
+
+        private void button_ContactRemoved(object sender, ContactEventArgs e)
+        {
+            Button b = (Button)sender;
+            b.Background = Brushes.White;
+            b.Content = "Touch Me!";
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             spaceProvider.Close();
         }
+
     }
 }

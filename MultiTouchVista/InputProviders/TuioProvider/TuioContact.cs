@@ -7,6 +7,24 @@ namespace TuioProvider
 {
 	class TuioContact : Contact
 	{
+        private static System.Windows.Forms.Screen secondaryScreen = null;
+
+        static TuioContact()
+        {
+            //get monitor settings 
+            // Try to position application to first non-primary monitor
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            {
+                if (!screen.Primary)
+                {
+                    secondaryScreen = screen;
+
+                    Console.WriteLine("TUIO Contacts: Secondary screen found at " + secondaryScreen.WorkingArea.ToString());
+                    break;
+                }
+            }
+        }
+
 		public TuioContact(TuioCursor cursor, ContactState state, System.Drawing.Size monitorSize)
 			: base(cursor.getFingerID(), state, new Point(0, 0), 20, 20)
 		{
@@ -14,18 +32,6 @@ namespace TuioProvider
             float x, y;
 
             //Edit by Wander
-            //get monitor settings 
-            // Try to position application to first non-primary monitor
-            System.Windows.Forms.Screen secondaryScreen = null;
-            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
-            {
-                if (!screen.Primary)
-                {
-                    secondaryScreen = screen;
-                    break;
-                }
-            }
-
             if (secondaryScreen == null)
             {
                 x = cursor.getScreenX(monitorSize.Width);

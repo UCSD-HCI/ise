@@ -38,7 +38,21 @@ namespace InteractiveSpace.EngineController
         {
             if (process != null)
             {
-                process.StandardInput.WriteLine();
+                if (process.StartInfo.RedirectStandardInput)
+                {
+                    process.StandardInput.WriteLine();
+                }
+                else
+                {
+                    try
+                    {
+                        process.CloseMainWindow();
+                    }
+                    catch (Exception)
+                    {
+                        process.Kill();
+                    }
+                }
             }
         }
     }
