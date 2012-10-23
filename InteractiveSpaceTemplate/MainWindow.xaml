@@ -6,7 +6,7 @@
         Title="MainWindow" Height="1120" Width="1678" Closing="Window_Closing">
     <Grid Name="mainGrid">
         <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="Black"/>
-        <Button Name="button1" Content="Touch Me!" Height="143" HorizontalAlignment="Left" Margin="212,646,0,0" VerticalAlignment="Top" Width="284" mt:MultitouchScreen.NewContact="button_NewContact" mt:MultitouchScreen.ContactRemoved="button_ContactRemoved" FontSize="40" Background="White" />
-        <Button Name="button2" Content="Touch Me!" Height="143" HorizontalAlignment="Left" Margin="878,646,0,0" VerticalAlignment="Top" Width="284" mt:MultitouchScreen.NewContact="button_NewContact" mt:MultitouchScreen.ContactRemoved="button_ContactRemoved" FontSize="40" Background="White" />
+        <Button Name="button1" mt:MultitouchScreen.NewContact="button_NewContact" mt:MultitouchScreen.ContactRemoved="button_ContactRemoved" Content="Touch Me!" Height="143" HorizontalAlignment="Left" Margin="212,646,0,0" VerticalAlignment="Top" Width="284" FontSize="40" Background="White" />
+        <Button Name="button2" mt:MultitouchScreen.NewContact="button_NewContact" mt:MultitouchScreen.ContactRemoved="button_ContactRemoved" Content="Touch Me!" Height="143" HorizontalAlignment="Left" Margin="878,646,0,0" VerticalAlignment="Top" Width="284" FontSize="40" Background="White" />
     </Grid>
 </mt:Window>
