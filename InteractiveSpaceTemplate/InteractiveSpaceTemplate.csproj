@@ -35,38 +35,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\InteractiveSpaceTemplate.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\InteractiveSpaceTemplate.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -101,13 +69,21 @@
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="InteractiveSpace.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="InteractiveSpace.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=X86" Condition="'$(Platform)'=='x86'">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\InteractiveSpace.SDK.dll</HintPath>
+      <HintPath>libx86\InteractiveSpace.SDK.dll</HintPath>
     </Reference>
-    <Reference Include="Multitouch.Framework.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Multitouch.Framework.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Platform)'=='x86'">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\Multitouch.Framework.WPF.dll</HintPath>
+      <HintPath>libx86\Multitouch.Framework.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="InteractiveSpace.SDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64" Condition="'$(Platform)'=='x64'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libx64\InteractiveSpace.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Multitouch.Framework.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Platform)'=='x64'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libx64\Multitouch.Framework.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -128,9 +104,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -143,10 +116,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -166,11 +135,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="lib\AddIns\MultipleMice\MultipleMice.dll.config" />
-    <None Include="lib\InteractiveSpace.EngineController.exe.config" />
-    <None Include="lib\Multitouch.Service.Logic.dll.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="libx64\AddIns\MultipleMice\MultipleMice.dll.config" />
+    <None Include="libx64\ControlPanel.exe.config" />
+    <None Include="libx64\InteractiveSpace.EngineController.exe.config" />
+    <None Include="libx64\InteractiveSpace.EngineController.vshost.exe.config" />
+    <None Include="libx64\Multitouch.Configuration.WPF.vshost.exe.manifest" />
+    <None Include="libx64\Multitouch.Service.Console.vshost.exe.manifest" />
+    <None Include="libx64\Multitouch.Service.Logic.dll.config" />
+    <None Include="libx86\AddIns\MultipleMice\MultipleMice.dll.config" />
+    <None Include="libx86\ControlPanel.exe.config" />
+    <None Include="libx86\InteractiveSpace.EngineController.exe.config" />
+    <None Include="libx86\InteractiveSpace.EngineController.vshost.exe.config" />
+    <None Include="libx86\Multitouch.Configuration.WPF.vshost.exe.manifest" />
+    <None Include="libx86\Multitouch.Service.Console.vshost.exe.manifest" />
+    <None Include="libx86\Multitouch.Service.Logic.dll.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -178,103 +156,166 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\AdvanceMath.dll" />
-    <None Include="lib\Libraries.dll" />
-    <None Include="lib\ManagedWinapi.dll" />
-    <None Include="lib\Microsoft.Practices.Composite.dll" />
-    <None Include="lib\Microsoft.Practices.Composite.Presentation.dll" />
-    <None Include="lib\Microsoft.Practices.Composite.Presentation.xml" />
-    <None Include="lib\Microsoft.Practices.Composite.UnityExtensions.dll" />
-    <None Include="lib\Microsoft.Practices.Composite.UnityExtensions.xml" />
-    <None Include="lib\Microsoft.Practices.Composite.xml" />
-    <None Include="lib\Microsoft.Practices.ObjectBuilder2.dll" />
-    <None Include="lib\Microsoft.Practices.ObjectBuilder2.xml" />
-    <None Include="lib\Microsoft.Practices.ServiceLocation.dll" />
-    <None Include="lib\Microsoft.Practices.ServiceLocation.xml" />
-    <None Include="lib\Microsoft.Practices.Unity.dll" />
-    <None Include="lib\Microsoft.Practices.Unity.xml" />
-    <None Include="lib\Multitouch.Configuration.dll" />
-    <None Include="lib\Multitouch.Contracts.dll" />
-    <None Include="lib\Multitouch.Service.Console.exe" />
-    <None Include="lib\Multitouch.Service.Logic.dll" />
-    <None Include="lib\System.ComponentModel.Composition.dll" />
-    <None Include="lib\System.ComponentModel.Composition.xml" />
-    <None Include="lib\AdvanceMath.xml" />
-    <None Include="lib\depthSurfHomography.xml" />
-    <None Include="lib\DynamicUtilities.dll" />
-    <None Include="lib\DynamicUtilities.xml" />
-    <None Include="lib\InteractiveSpace.EngineController.exe" />
-    <None Include="lib\InteractiveSpace.SDK.dll" />
-    <None Include="lib\InteractiveSpaceEngine.dll" />
-    <None Include="lib\Multitouch.Framework.dll" />
-    <None Include="lib\Multitouch.Framework.WPF.dll" />
-    <None Include="lib\Multitouch.Framework.WPF.xml" />
-    <None Include="lib\Multitouch.Framework.xml" />
-    <None Include="lib\Newtonsoft.Json.xml" />
-    <None Include="lib\Physics2DDotNet.dll" />
-    <None Include="lib\Physics2DDotNet.xml" />
-    <None Include="lib\rgbSurfHomography.xml" />
-    <None Include="lib\thresholdSurfaceMap.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\AddIns\MultipleMice\MultipleMice.dll" />
-    <Content Include="lib\AddIns\MultipleMice\MultipleMice.pdb" />
-    <Content Include="lib\AddIns\TuioProvider\TUIO.dll" />
-    <Content Include="lib\AddIns\TuioProvider\TUIO.pdb" />
-    <Content Include="lib\AddIns\TuioProvider\TuioProvider.dll" />
-    <Content Include="lib\AddIns\TuioProvider\TuioProvider.pdb" />
-    <Content Include="lib\AdvanceMath.pdb" />
-    <Content Include="lib\DynamicUtilities.pdb" />
-    <Content Include="lib\Framework\AdvanceMath.dll" />
-    <Content Include="lib\Framework\AdvanceMath.pdb" />
-    <Content Include="lib\InteractiveSpace.EngineController.pdb" />
-    <Content Include="lib\InteractiveSpace.SDK.pdb" />
-    <Content Include="lib\InteractiveSpaceEngine.pdb" />
-    <Content Include="lib\Libraries.pdb" />
-    <Content Include="lib\Multitouch.Configuration.pdb" />
-    <Content Include="lib\Multitouch.Configuration.WPF.exe" />
-    <Content Include="lib\Multitouch.Configuration.WPF.pdb" />
-    <Content Include="lib\Multitouch.Contracts.pdb" />
-    <Content Include="lib\Multitouch.Framework.pdb" />
-    <Content Include="lib\Multitouch.Framework.WPF.pdb" />
-    <Content Include="lib\Multitouch.Service.Console.pdb" />
-    <Content Include="lib\Multitouch.Service.exe" />
-    <Content Include="lib\Multitouch.Service.Logic.pdb" />
-    <Content Include="lib\Multitouch.Service.pdb" />
-    <Content Include="lib\opencv_calib3d231.dll" />
-    <Content Include="lib\opencv_contrib231.dll" />
-    <Content Include="lib\opencv_core231.dll" />
-    <Content Include="lib\opencv_features2d231.dll" />
-    <Content Include="lib\opencv_ffmpeg_64.dll" />
-    <Content Include="lib\opencv_flann231.dll" />
-    <Content Include="lib\opencv_gpu231.dll" />
-    <Content Include="lib\opencv_highgui231.dll" />
-    <Content Include="lib\opencv_imgproc231.dll" />
-    <Content Include="lib\opencv_legacy231.dll" />
-    <Content Include="lib\opencv_ml231.dll" />
-    <Content Include="lib\opencv_objdetect231.dll" />
-    <Content Include="lib\opencv_ts231.dll" />
-    <Content Include="lib\opencv_video231.dll" />
-    <Content Include="lib\Physics2DDotNet.pdb" />
-    <Content Include="lib\System.ComponentModel.Composition.pdb" />
-    <Content Include="lib\tbb.dll" />
-    <Resource Include="lib\Framework\AdvanceMath.xml" />
-    <Content Include="lib\Framework\DynamicUtilities.dll" />
-    <Content Include="lib\Framework\DynamicUtilities.pdb" />
-    <Resource Include="lib\Framework\DynamicUtilities.xml" />
-    <Content Include="lib\Framework\Multitouch.Framework.dll" />
-    <Content Include="lib\Framework\Multitouch.Framework.pdb" />
-    <Content Include="lib\Framework\Multitouch.Framework.WPF.dll" />
-    <Content Include="lib\Framework\Multitouch.Framework.WPF.pdb" />
-    <Resource Include="lib\Framework\Multitouch.Framework.WPF.XML" />
-    <Resource Include="lib\Framework\Multitouch.Framework.XML" />
-    <Content Include="lib\Framework\Physics2DDotNet.dll" />
-    <Content Include="lib\Framework\Physics2DDotNet.pdb" />
-    <Resource Include="lib\Framework\Physics2DDotNet.xml" />
+    <None Include="libx64\AddIns\MultipleMice\MultipleMice.dll" />
+    <None Include="libx64\AddIns\MultipleMice\MultipleMice.pdb" />
+    <None Include="libx64\AddIns\TuioProvider\TUIO.dll" />
+    <None Include="libx64\AddIns\TuioProvider\TUIO.pdb" />
+    <None Include="libx64\AddIns\TuioProvider\TuioProvider.dll" />
+    <None Include="libx64\AddIns\TuioProvider\TuioProvider.pdb" />
+    <None Include="libx64\AdvanceMath.dll" />
+    <None Include="libx64\AdvanceMath.xml" />
+    <None Include="libx64\depthSurfHomography.xml" />
+    <None Include="libx64\DynamicUtilities.dll" />
+    <None Include="libx64\DynamicUtilities.xml" />
+    <None Include="libx64\Framework\AdvanceMath.dll" />
+    <None Include="libx64\Framework\AdvanceMath.pdb" />
+    <None Include="libx64\Framework\AdvanceMath.xml" />
+    <None Include="libx64\Framework\DynamicUtilities.dll" />
+    <None Include="libx64\Framework\DynamicUtilities.pdb" />
+    <None Include="libx64\Framework\DynamicUtilities.xml" />
+    <None Include="libx64\Framework\Multitouch.Framework.dll" />
+    <None Include="libx64\Framework\Multitouch.Framework.pdb" />
+    <None Include="libx64\Framework\Multitouch.Framework.WPF.dll" />
+    <None Include="libx64\Framework\Multitouch.Framework.WPF.pdb" />
+    <None Include="libx64\Framework\Multitouch.Framework.WPF.XML" />
+    <None Include="libx64\Framework\Multitouch.Framework.XML" />
+    <None Include="libx64\Framework\Physics2DDotNet.dll" />
+    <None Include="libx64\Framework\Physics2DDotNet.pdb" />
+    <None Include="libx64\Framework\Physics2DDotNet.xml" />
+    <None Include="libx64\InteractiveSpace.EngineController.exe" />
+    <None Include="libx64\InteractiveSpace.SDK.dll" />
+    <None Include="libx64\InteractiveSpaceEngine.dll" />
+    <None Include="libx64\Libraries.dll" />
+    <None Include="libx64\Libraries.pdb" />
+    <None Include="libx64\ManagedWinapi.dll" />
+    <None Include="libx64\Microsoft.Practices.Composite.dll" />
+    <None Include="libx64\Microsoft.Practices.Composite.Presentation.dll" />
+    <None Include="libx64\Microsoft.Practices.Composite.Presentation.xml" />
+    <None Include="libx64\Microsoft.Practices.Composite.UnityExtensions.dll" />
+    <None Include="libx64\Microsoft.Practices.Composite.UnityExtensions.xml" />
+    <None Include="libx64\Microsoft.Practices.Composite.xml" />
+    <None Include="libx64\Microsoft.Practices.ObjectBuilder2.dll" />
+    <None Include="libx64\Microsoft.Practices.ObjectBuilder2.xml" />
+    <None Include="libx64\Microsoft.Practices.ServiceLocation.dll" />
+    <None Include="libx64\Microsoft.Practices.ServiceLocation.xml" />
+    <None Include="libx64\Microsoft.Practices.Unity.dll" />
+    <None Include="libx64\Microsoft.Practices.Unity.xml" />
+    <None Include="libx64\Multitouch.Configuration.dll" />
+    <None Include="libx64\Multitouch.Configuration.pdb" />
+    <None Include="libx64\Multitouch.Configuration.WPF.exe" />
+    <None Include="libx64\Multitouch.Configuration.WPF.pdb" />
+    <None Include="libx64\Multitouch.Configuration.WPF.vshost.exe" />
+    <None Include="libx64\Multitouch.Contracts.dll" />
+    <None Include="libx64\Multitouch.Contracts.pdb" />
+    <None Include="libx64\Multitouch.Framework.dll" />
+    <None Include="libx64\Multitouch.Framework.WPF.dll" />
+    <None Include="libx64\Multitouch.Framework.WPF.xml" />
+    <None Include="libx64\Multitouch.Framework.xml" />
+    <None Include="libx64\Multitouch.Service.Console.exe" />
+    <None Include="libx64\Multitouch.Service.Console.pdb" />
+    <None Include="libx64\Multitouch.Service.Console.vshost.exe" />
+    <None Include="libx64\Multitouch.Service.exe" />
+    <None Include="libx64\Multitouch.Service.Logic.dll" />
+    <None Include="libx64\Multitouch.Service.Logic.pdb" />
+    <None Include="libx64\Multitouch.Service.pdb" />
+    <None Include="libx64\Newtonsoft.Json.xml" />
+    <None Include="libx64\Physics2DDotNet.dll" />
+    <None Include="libx64\Physics2DDotNet.xml" />
+    <None Include="libx64\rgbSurfHomography.xml" />
+    <None Include="libx64\System.ComponentModel.Composition.dll" />
+    <None Include="libx64\System.ComponentModel.Composition.pdb" />
+    <None Include="libx64\System.ComponentModel.Composition.xml" />
+    <None Include="libx64\thresholdSurfaceMap.xml" />
+    <None Include="libx86\AddIns\MultipleMice\MultipleMice.dll" />
+    <None Include="libx86\AddIns\MultipleMice\MultipleMice.pdb" />
+    <None Include="libx86\AddIns\TuioProvider\TUIO.dll" />
+    <None Include="libx86\AddIns\TuioProvider\TUIO.pdb" />
+    <None Include="libx86\AddIns\TuioProvider\TuioProvider.dll" />
+    <None Include="libx86\AddIns\TuioProvider\TuioProvider.pdb" />
+    <Content Include="libx86\AdvanceMath.dll" />
+    <Resource Include="libx86\AdvanceMath.xml" />
+    <Resource Include="libx86\depthSurfHomography.xml" />
+    <Content Include="libx86\DynamicUtilities.dll" />
+    <Resource Include="libx86\DynamicUtilities.xml" />
+    <None Include="libx86\Framework\AdvanceMath.dll" />
+    <None Include="libx86\Framework\AdvanceMath.pdb" />
+    <None Include="libx86\Framework\AdvanceMath.xml" />
+    <None Include="libx86\Framework\DynamicUtilities.dll" />
+    <None Include="libx86\Framework\DynamicUtilities.pdb" />
+    <None Include="libx86\Framework\DynamicUtilities.xml" />
+    <None Include="libx86\Framework\Multitouch.Framework.dll" />
+    <None Include="libx86\Framework\Multitouch.Framework.pdb" />
+    <None Include="libx86\Framework\Multitouch.Framework.WPF.dll" />
+    <None Include="libx86\Framework\Multitouch.Framework.WPF.pdb" />
+    <None Include="libx86\Framework\Multitouch.Framework.WPF.XML" />
+    <None Include="libx86\Framework\Multitouch.Framework.XML" />
+    <None Include="libx86\Framework\Physics2DDotNet.dll" />
+    <None Include="libx86\Framework\Physics2DDotNet.pdb" />
+    <None Include="libx86\Framework\Physics2DDotNet.xml" />
+    <Content Include="libx86\InteractiveSpace.EngineController.exe" />
+    <Content Include="libx86\InteractiveSpace.SDK.dll" />
+    <Content Include="libx86\InteractiveSpaceEngine.dll" />
+    <Content Include="libx86\Kinect10.dll" />
+    <Content Include="libx86\KinectAudio10.dll" />
+    <Content Include="libx86\Libraries.dll" />
+    <Content Include="libx86\Libraries.pdb" />
+    <Content Include="libx86\ManagedWinapi.dll" />
+    <Content Include="libx86\Microsoft.Practices.Composite.dll" />
+    <Content Include="libx86\Microsoft.Practices.Composite.Presentation.dll" />
+    <Resource Include="libx86\Microsoft.Practices.Composite.Presentation.xml" />
+    <Content Include="libx86\Microsoft.Practices.Composite.UnityExtensions.dll" />
+    <Resource Include="libx86\Microsoft.Practices.Composite.UnityExtensions.xml" />
+    <Resource Include="libx86\Microsoft.Practices.Composite.xml" />
+    <Content Include="libx86\Microsoft.Practices.ObjectBuilder2.dll" />
+    <Resource Include="libx86\Microsoft.Practices.ObjectBuilder2.xml" />
+    <Content Include="libx86\Microsoft.Practices.ServiceLocation.dll" />
+    <Resource Include="libx86\Microsoft.Practices.ServiceLocation.xml" />
+    <Content Include="libx86\Microsoft.Practices.Unity.dll" />
+    <Resource Include="libx86\Microsoft.Practices.Unity.xml" />
+    <Content Include="libx86\Multitouch.Configuration.dll" />
+    <Content Include="libx86\Multitouch.Configuration.pdb" />
+    <Content Include="libx86\Multitouch.Configuration.WPF.exe" />
+    <Content Include="libx86\Multitouch.Configuration.WPF.pdb" />
+    <Content Include="libx86\Multitouch.Configuration.WPF.vshost.exe" />
+    <Content Include="libx86\Multitouch.Contracts.dll" />
+    <Content Include="libx86\Multitouch.Contracts.pdb" />
+    <Content Include="libx86\Multitouch.Framework.dll" />
+    <Content Include="libx86\Multitouch.Framework.WPF.dll" />
+    <Resource Include="libx86\Multitouch.Framework.WPF.xml" />
+    <Resource Include="libx86\Multitouch.Framework.xml" />
+    <Content Include="libx86\Multitouch.Service.Console.exe" />
+    <Content Include="libx86\Multitouch.Service.Console.pdb" />
+    <Content Include="libx86\Multitouch.Service.Console.vshost.exe" />
+    <Content Include="libx86\Multitouch.Service.exe" />
+    <Content Include="libx86\Multitouch.Service.Logic.dll" />
+    <Content Include="libx86\Multitouch.Service.Logic.pdb" />
+    <Content Include="libx86\Multitouch.Service.pdb" />
+    <Content Include="libx86\opencv_calib3d231.dll" />
+    <Content Include="libx86\opencv_contrib231.dll" />
+    <Content Include="libx86\opencv_core231.dll" />
+    <Content Include="libx86\opencv_features2d231.dll" />
+    <Content Include="libx86\opencv_ffmpeg.dll" />
+    <Content Include="libx86\opencv_flann231.dll" />
+    <Content Include="libx86\opencv_gpu231.dll" />
+    <Content Include="libx86\opencv_highgui231.dll" />
+    <Content Include="libx86\opencv_imgproc231.dll" />
+    <Content Include="libx86\opencv_legacy231.dll" />
+    <Content Include="libx86\opencv_ml231.dll" />
+    <Content Include="libx86\opencv_objdetect231.dll" />
+    <Content Include="libx86\opencv_ts231.dll" />
+    <Content Include="libx86\opencv_video231.dll" />
+    <Content Include="libx86\Physics2DDotNet.dll" />
+    <Resource Include="libx86\Physics2DDotNet.xml" />
+    <Resource Include="libx86\rgbSurfHomography.xml" />
+    <Content Include="libx86\System.ComponentModel.Composition.dll" />
+    <Content Include="libx86\System.ComponentModel.Composition.pdb" />
+    <Resource Include="libx86\System.ComponentModel.Composition.xml" />
+    <Content Include="libx86\tbb.dll" />
+    <Content Include="libx86\tbbmalloc.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)lib\*.*" "$(TargetDir)" /E /C /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)lib$(PlatformName)\*.*" "$(TargetDir)" /E /C /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
