@@ -255,8 +255,6 @@
     <Content Include="libx86\InteractiveSpace.EngineController.exe" />
     <Content Include="libx86\InteractiveSpace.SDK.dll" />
     <Content Include="libx86\InteractiveSpaceEngine.dll" />
-    <Content Include="libx86\Kinect10.dll" />
-    <Content Include="libx86\KinectAudio10.dll" />
     <Content Include="libx86\Libraries.dll" />
     <Content Include="libx86\Libraries.pdb" />
     <Content Include="libx86\ManagedWinapi.dll" />
