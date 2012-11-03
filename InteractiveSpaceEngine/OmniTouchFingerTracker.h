@@ -50,6 +50,7 @@ private:
 	
 	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad;
 	int cropLeft, cropTop, cropRight, cropBottom;
+	bool enabled;
 
 	IplImage* debugFindFingersResult;
 	IplImage* floodVisitedFlag;
@@ -72,6 +73,13 @@ public:
 	void getCropping(int* left, int* top, int* right, int* bottom);
 
 	inline const std::vector<OmniTouchFinger>& getFingers() const { return fingers; }
+
+	inline void setEnabled(bool enabled) 
+	{ 
+		this->enabled = enabled; 
+		ipf->setSobelEnabled(enabled);
+	}
+	inline bool isEnabled() { return enabled; }
 };
 
 #endif

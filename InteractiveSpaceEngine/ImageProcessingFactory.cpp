@@ -1,9 +1,10 @@
 #include "ImageProcessingFactory.h"
 #include "Calibrator.h"
+#include "InteractiveSpaceEngine.h"
 #include <stdio.h>
 
 ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) 
-	: kinectSensor(kinectSensor)
+	: kinectSensor(kinectSensor), tabletopRectifiedEnabled(false), sobelEnabled(true)
 {
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
@@ -73,6 +74,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 		refreshDepthHistogramed();
 
 		//sobel for OmniTouch
+		if (sobelEnabled)
 		{
 			WriteLock wLock(productsMutex[DepthSobeledProduct]);
 			ReadLockedIplImagePtr depthSrc = lockImageProduct(DepthSynchronizedProduct);
@@ -86,6 +88,11 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 
 void ImageProcessingFactory::updateRectifiedTabletop(Calibrator* calibrator)
 {
+	if (!tabletopRectifiedEnabled)
+	{
+		return;
+	}
+
 	WriteLock wLock(productsMutex[RectifiedTabletopProduct]);
 	ReadLockedIplImagePtr rgbSrc = lockImageProduct(RGBSourceProduct);
 

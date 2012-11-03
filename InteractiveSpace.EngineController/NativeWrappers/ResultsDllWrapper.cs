@@ -37,6 +37,12 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe float getFPS();
 
+        [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+        public static extern unsafe Matrix33 getRgbSurfHomography();
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe Matrix33 getDepthSurfHomography();
+
         /*
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe double getKinectSoundAngle();

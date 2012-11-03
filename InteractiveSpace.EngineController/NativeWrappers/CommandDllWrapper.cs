@@ -63,5 +63,11 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe void setOmniTouchCropping(int left, int top, int right, int bottom);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void setOmniTouchEnabled(int isEnabled);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void setTabletopRectifiedEnabled(int isEnabled);
     }
 }

@@ -106,6 +106,16 @@ public:
 	{
 		return rgbSurfHomographyInversed;
 	}
+
+	inline const CvMat* getRgbSurfHomography() const 
+	{
+		return rgbSurfHomography;
+	}
+
+	inline const CvMat* getDepthSurfHomography() const
+	{
+		return depthSurfHomography;
+	}
 };
 
 #endif

@@ -346,5 +346,16 @@ namespace InteractiveSpace.EngineController
             fc.Save();
         }
 
+        private void omniTouchCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            CommandDllWrapper.setOmniTouchEnabled(omniTouchCheckBox.IsChecked.Value ? 1 : 0);
+        }
+
+        private void rectifiedTabletopCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
+        }
+
+        
     }
 }

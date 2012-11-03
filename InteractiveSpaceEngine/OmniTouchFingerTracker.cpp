@@ -5,7 +5,7 @@
 using namespace std;
 
 OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0),
-	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0)
+	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0), enabled(true)
 {
 	maxHistogramSize = KINECT_MAX_DEPTH * 48 * 2;
 	histogram = new int[maxHistogramSize];
@@ -35,6 +35,11 @@ void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerW
 
 void OmniTouchFingerTracker::refresh()
 {
+	if (!enabled)
+	{
+		return;
+	}
+
 	memset(debugFindFingersResult->imageData, 0, debugFindFingersResult->widthStep * debugFindFingersResult->height);
 	findStrips();
 	findFingers();

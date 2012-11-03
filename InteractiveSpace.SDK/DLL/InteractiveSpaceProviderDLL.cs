@@ -17,13 +17,12 @@ namespace InteractiveSpace.SDK.DLL
     {
         private FingerTrackerDLL fingerTracker;
         private HandTrackerDLL handTracker;
+        private RawVideoStreamingDLL rawVideoStreaming;
 
         private MainWindow mainWindow;
         private Thread workingThread;
         private volatile bool stopRequested = false;
         private Int64 lastFrameCount;
-
-        private Action grabCallback;
 
         public event EventHandler EngineUpdate;
 
@@ -101,6 +100,11 @@ namespace InteractiveSpace.SDK.DLL
                 fingerTracker.Refresh();
             }
 
+            if (rawVideoStreaming != null)
+            {
+                rawVideoStreaming.Refresh(mainWindow.Dispatcher);
+            }
+
             lastFrameCount = newFrameCount;
 
             if (EngineUpdate != null)
@@ -119,5 +123,41 @@ namespace InteractiveSpace.SDK.DLL
             get { return handTracker; }
         }
 
+
+
+        public void CreateRawVideoStreaming()
+        {
+            rawVideoStreaming = new RawVideoStreamingDLL();
+        }
+
+        public RawVideoStreaming RawVideoStreaming
+        {
+            get { return rawVideoStreaming; }
+        }
+
+
+        public double[,] GetRgbToTabletopHomography()
+        {
+            Matrix33 m = ResultsDllWrapper.getRgbSurfHomography();
+
+            return new double[3, 3]
+            {
+                {m.M11, m.M12, m.M13},
+                {m.M21, m.M22, m.M23},
+                {m.M31, m.M32, m.M33}
+            };
+        }
+
+        public double[,] GetDepthToTabletopHomography()
+        {
+            Matrix33 m = ResultsDllWrapper.getDepthSurfHomography();
+
+            return new double[3, 3]
+            {
+                {m.M11, m.M12, m.M13},
+                {m.M21, m.M22, m.M23},
+                {m.M31, m.M32, m.M33}
+            };
+        }
     }
 }

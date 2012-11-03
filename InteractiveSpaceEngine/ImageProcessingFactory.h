@@ -50,6 +50,9 @@ private:
 	void depthThresholdFilter(const IplImage* src, IplImage* dst, IplImage* debugImg);
 	void depthFilteredOpen(const IplImage* src, IplImage* dst);
 
+	bool sobelEnabled;
+	bool tabletopRectifiedEnabled;
+
 public:
 	ImageProcessingFactory(KinectSensor* kinectSensor);
 	virtual ~ImageProcessingFactory();
@@ -81,6 +84,12 @@ public:
 	void refresh(long long kinectSensorFrameCount);
 	void refreshDepthHistogramed();	//for calibration
 	void updateRectifiedTabletop(Calibrator* calibrator);
+
+	inline bool isSobelEnabled() const { return sobelEnabled; }
+	inline void setSobelEnabled(bool enabled) { sobelEnabled = enabled; }
+
+	inline bool isTabletopRectifiedEnabled() const { return tabletopRectifiedEnabled; }
+	inline void setTabletopRectifiedEnabled(bool enabled) { tabletopRectifiedEnabled = enabled; }
 };
 
 #endif

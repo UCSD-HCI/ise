@@ -241,6 +241,22 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         public FloatPoint3D P4 { get { return p4; } }
     }
 
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)]
+    public struct Matrix33
+    {
+        private double m11, m12, m13, m21, m22, m23, m31, m32, m33;
+
+        public double M11 { get { return m11; } }
+        public double M12 { get { return m12; } }
+        public double M13 { get { return m13; } }
+        public double M21 { get { return m21; } }
+        public double M22 { get { return m22; } }
+        public double M23 { get { return m23; } }
+        public double M31 { get { return m31; } }
+        public double M32 { get { return m32; } }
+        public double M33 { get { return m33; } }
+    }
+
     public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 

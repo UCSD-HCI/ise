@@ -17,6 +17,12 @@ namespace InteractiveSpace.SDK
         void CreateHandTracker();
         HandTracker HandTracker { get; }
 
+        void CreateRawVideoStreaming();
+        RawVideoStreaming RawVideoStreaming { get; }
+
         event EventHandler EngineUpdate;
+
+        double[,] GetRgbToTabletopHomography();
+        double[,] GetDepthToTabletopHomography();
     }
 }

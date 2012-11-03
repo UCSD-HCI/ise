@@ -71,9 +71,26 @@ DLL_EXPORT float getFPS()
 	return InteractiveSpaceEngine::sharedEngine()->getFPS();
 }
 
+DLL_EXPORT Matrix33 getRgbSurfHomography()
+{
+	const CvMat* cvMat = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRgbSurfHomography();
+	double* m = cvMat->data.db;
+	Matrix33 r(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+	return r;
+}
+
+DLL_EXPORT Matrix33 getDepthSurfHomography()
+{
+	const CvMat* cvMat = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthSurfHomography();
+	double* m = cvMat->data.db;
+	Matrix33 r(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+	return r;
+}
+
 /*	TODO: @Nadir
 DLL_EXPORT double getKinectSoundAngle()
 {
 	return InteractiveSpaceEngine::sharedEngine()->getSound()->getAngle();
 }
 */
+

@@ -148,6 +148,7 @@ void InteractiveSpaceEngine::operator() ()
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
+
 				ipf->updateRectifiedTabletop(calibrator);
 
 				if (videoRecorder != NULL)
