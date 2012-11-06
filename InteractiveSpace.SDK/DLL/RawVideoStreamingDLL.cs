@@ -33,7 +33,7 @@ namespace InteractiveSpace.SDK.DLL
             depthSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray16, null);
         }
 
-        public void Refresh(Dispatcher dispatcher)
+        internal void Refresh(Dispatcher dispatcher)
         {
             dispatcher.BeginInvoke((Action)delegate
             {
