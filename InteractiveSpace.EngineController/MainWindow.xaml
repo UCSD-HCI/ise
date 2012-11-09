@@ -10,6 +10,7 @@
                     <ToggleButton Name="depthVideoToggleButton" Content="Depth" Margin="5" Click="depthVideoToggleButton_Click"/>
                     <ToggleButton Name="multiTouchVideoToggleButton" Content="OmniTouch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>
                     <ToggleButton Name="rectifiedTabletopToggleButton" Content="RectifiedTabletop" Margin="5" Click="rectifiedTabletopToggleButton_Click" />
+                    <ToggleButton Name="webCamToggleButton" Content="Webcam" Margin="5" Click="webCamToggleButton_Click" />
                 </StackPanel>
             </StackPanel>
         </GroupBox>

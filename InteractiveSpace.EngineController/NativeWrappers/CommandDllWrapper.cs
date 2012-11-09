@@ -28,6 +28,12 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe int getDepthHeight();
 
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int getWebcamWidth();
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe int getWebcamHeight();
+
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
 

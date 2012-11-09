@@ -16,6 +16,7 @@ namespace InteractiveSpace.EngineController
         DepthHistogramed,
         OmniTouch,
         RectifiedTabletopProduct,
+        Webcam,
     }
 
     public class VideoSources
@@ -25,9 +26,9 @@ namespace InteractiveSpace.EngineController
 
         private static VideoSources instance = null;
 
-        private int rgbWidth, rgbHeight, depthWidth, depthHeight;
+        private int rgbWidth, rgbHeight, depthWidth, depthHeight, webcamWidth, webcamHeight;
 
-        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, rectifiedTabletopSource;
+        private WriteableBitmap rgbSource, depthHistogramedSource, omniTouchSource, rectifiedTabletopSource, webcamSource;
 
         public static VideoSources SharedVideoSources
         {
@@ -50,12 +51,15 @@ namespace InteractiveSpace.EngineController
                 rgbHeight = CommandDllWrapper.getRGBHeight();
                 depthWidth = CommandDllWrapper.getDepthWidth();
                 depthHeight = CommandDllWrapper.getDepthHeight();
+                webcamWidth = CommandDllWrapper.getWebcamWidth();
+                webcamHeight = CommandDllWrapper.getWebcamHeight();
             }
 
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthHistogramedSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
             omniTouchSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             rectifiedTabletopSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
+            webcamSource = new WriteableBitmap(webcamWidth, webcamHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
         }
 
         public ImageSource GetSource(VideoSourceType type)
@@ -73,6 +77,9 @@ namespace InteractiveSpace.EngineController
 
                 case VideoSourceType.RectifiedTabletopProduct:
                     return RectifiedTabletopSource;
+
+                case VideoSourceType.Webcam:
+                    return WebcamSource;
 
                 default:
                     return null;
@@ -156,6 +163,26 @@ namespace InteractiveSpace.EngineController
                 }
 
                 return rectifiedTabletopSource;
+            }
+        }
+
+        public ImageSource WebcamSource
+        {
+            get
+            {
+                unsafe
+                {
+                    if (webcamSource != null)
+                    {
+                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.WebcamSourceProduct);
+                        webcamSource.Lock();
+                        webcamSource.WritePixels(new Int32Rect(0, 0, webcamWidth, webcamHeight), ptr.IntPtr, webcamWidth * webcamHeight * 3, webcamWidth * 3);
+                        webcamSource.Unlock();
+                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    }
+                }
+
+                return webcamSource;
             }
         }
     }

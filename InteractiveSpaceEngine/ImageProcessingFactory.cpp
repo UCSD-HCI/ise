@@ -1,10 +1,11 @@
 #include "ImageProcessingFactory.h"
 #include "Calibrator.h"
 #include "InteractiveSpaceEngine.h"
+#include "WebcamReader.h"
 #include <stdio.h>
 
-ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) 
-	: kinectSensor(kinectSensor), tabletopRectifiedEnabled(false), sobelEnabled(true)
+ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor, WebcamReader* webcamReader) 
+	: kinectSensor(kinectSensor), webcamReader(webcamReader), tabletopRectifiedEnabled(false), sobelEnabled(true)
 {
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
@@ -14,6 +15,7 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor)
 	products[RGBSourceProduct] = kinectSensor->createBlankRGBImage();
 	products[DepthSourceProduct] = kinectSensor->createBlankDepthImage();
 	products[DepthSynchronizedProduct] = kinectSensor->createBlankDepthImage();
+	products[WebcamSourceProduct] = webcamReader->createImage();
 
 	CvSize rgbSize = cvSize(products[RGBSourceProduct]->width, products[RGBSourceProduct]->height);
 	CvSize depthSize = cvSize(products[DepthSourceProduct]->width, products[DepthSourceProduct]->height);

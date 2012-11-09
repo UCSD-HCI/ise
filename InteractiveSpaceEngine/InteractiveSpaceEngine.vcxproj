@@ -148,6 +148,7 @@
     <ClInclude Include="FingerSelector.h" />
     <ClInclude Include="HandTracker.h" />
     <ClInclude Include="InteractiveSpaceTypes.h" />
+    <ClInclude Include="WebcamReader.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
     <ClInclude Include="oscpack\ip\IpEndpointName.h" />
     <ClInclude Include="oscpack\ip\NetworkingUtils.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="ImageProcessingFactory.cpp" />
     <ClCompile Include="InteractiveSpaceEngine.cpp" />
     <ClCompile Include="KinectSensor.cpp" />
+    <ClCompile Include="WebcamReader.cpp" />
     <ClCompile Include="OmniTouchFingerTracker.cpp" />
     <ClCompile Include="oscpack\ip\IpEndpointName.cpp" />
     <ClCompile Include="oscpack\ip\win32\NetworkingUtils.cpp" />
@@ -199,7 +201,6 @@
     <ClCompile Include="VideoRecorder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\InteractiveSpace.SDK\InteractiveSpaceSDK.csproj" />
     <None Include="OpenNIConfig.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

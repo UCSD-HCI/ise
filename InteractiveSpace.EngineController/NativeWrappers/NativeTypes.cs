@@ -35,6 +35,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         RectifiedTabletopProduct,
 
+        WebcamSourceProduct,
+
         ImageProductsCount
     }
 

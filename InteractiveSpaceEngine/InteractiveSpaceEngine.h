@@ -12,6 +12,7 @@
 #include "FingerEventsGenerator.h"
 #include "VideoRecorder.h"
 #include "TuioExporter.h"
+#include "WebcamReader.h"
 
 
 class InteractiveSpaceEngine : ThreadWorker
@@ -21,6 +22,7 @@ private:
 
 	//thread workers
 	KinectSensor* kinectSensor;
+	WebcamReader* webcamReader;
 	ImageProcessingFactory* ipf;
 	
 	OmniTouchFingerTracker* omniTracker;
@@ -60,6 +62,7 @@ public:
 	virtual void operator() ();
 
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
+	inline WebcamReader* getWebcamReader() { return webcamReader; }
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }
 	inline OmniTouchFingerTracker* getOmniTouchFingerTracker() { return omniTracker; }
 	inline FingerSelector* getFingerSelector() { return fingerSelector; }
