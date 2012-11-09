@@ -70,8 +70,8 @@
     <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(KINECTSDK10_DIR)\inc;C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
-    <LibraryPath>$(KINECTSDK10_DIR)\lib\amd64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(KINECTSDK10_DIR)\inc;$(BOOST_INC_DIR);$(OPENCV_INC_DIR);$(OPENCV_INC_DIR)\opencv;$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
+    <LibraryPath>$(KINECTSDK10_DIR)\lib\amd64;$(BOOST_LIB_DIR);$(OPENCV_LIB_DIR);$(OutDir);$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)\TUIO;$(ProjectDir)\oscpack\ip\win32;$(ProjectDir)\oscpack\osc;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
