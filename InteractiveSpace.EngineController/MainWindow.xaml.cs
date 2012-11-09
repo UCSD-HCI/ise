@@ -24,7 +24,7 @@ namespace InteractiveSpace.EngineController
     /// </summary>
     public partial class MainWindow : Window
     {
-        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow, rectifiedTabletopVideoWindow;
+        private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow, rectifiedTabletopVideoWindow, webcamVideoWindow;
         //private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private System.Threading.Timer fpsTimer;
@@ -156,10 +156,15 @@ namespace InteractiveSpace.EngineController
             handleVideoToggleButtonClick(multiTouchVideoToggleButton, ref multiTouchVideoWindow, VideoSourceType.OmniTouch);
         }
 
-         private void rectifiedTabletopToggleButton_Click(object sender, RoutedEventArgs e)
+        private void rectifiedTabletopToggleButton_Click(object sender, RoutedEventArgs e)
         {
             handleVideoToggleButtonClick(rectifiedTabletopToggleButton, ref rectifiedTabletopVideoWindow, VideoSourceType.RectifiedTabletopProduct);
         }
+
+         private void webCamToggleButton_Click(object sender, RoutedEventArgs e)
+         {
+             handleVideoToggleButtonClick(webCamToggleButton, ref webcamVideoWindow, VideoSourceType.Webcam);
+         }
 
         private void handleVideoToggleButtonClick(System.Windows.Controls.Primitives.ToggleButton button, ref VideoWindow window, VideoSourceType videoType)
         {
@@ -355,6 +360,8 @@ namespace InteractiveSpace.EngineController
         {
             CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
         }
+
+
 
         
     }

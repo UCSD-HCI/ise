@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "ThreadUtils.h"
 #include "KinectSensor.h"
+#include "WebcamReader.h"
 
 #define KINECT_MAX_DEPTH 65536
 
@@ -32,6 +33,8 @@ typedef enum
 
 	RectifiedTabletopProduct,
 
+	WebcamSourceProduct,
+
 	ImageProductsCount
 } ImageProductType;
 
@@ -42,6 +45,7 @@ private:
 	Mutex productsMutex[ImageProductsCount];
 
 	KinectSensor* kinectSensor;
+	WebcamReader* webcamReader;
 
 	int depthHistogram[KINECT_MAX_DEPTH];
 
@@ -54,7 +58,7 @@ private:
 	bool tabletopRectifiedEnabled;
 
 public:
-	ImageProcessingFactory(KinectSensor* kinectSensor);
+	ImageProcessingFactory(KinectSensor* kinectSensor, WebcamReader* webcamReader);
 	virtual ~ImageProcessingFactory();
 
 	inline ReadLockedIplImagePtr lockImageProduct(ImageProductType type)

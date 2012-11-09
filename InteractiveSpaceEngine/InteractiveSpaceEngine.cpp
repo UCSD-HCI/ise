@@ -5,7 +5,7 @@
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1),  
-	fingerEventsGenerator(NULL), tuioExporter(NULL), 
+	fingerEventsGenerator(NULL), tuioExporter(NULL), webcamReader(NULL), 
 	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
 {
 }
@@ -72,6 +72,12 @@ void InteractiveSpaceEngine::dispose()
 		delete kinectSensor;
 		kinectSensor = NULL;
 	}
+
+	if (webcamReader != NULL)
+	{
+		delete webcamReader;
+		webcamReader = NULL;
+	}
 }
 
 InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
@@ -82,10 +88,13 @@ InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
 void InteractiveSpaceEngine::run()	//initilize
 {
 	kinectSensor = new KinectSensor();
-	ipf = new ImageProcessingFactory(kinectSensor);
+	webcamReader = new WebcamReader();
+	ipf = new ImageProcessingFactory(kinectSensor, webcamReader);
 
 	kinectSensor->setImageProcessingFactory(ipf);
 	kinectSensorFrameCount = -1;
+
+	webcamReader->setImageProcessingFactory(ipf);
 
 	calibrator = new Calibrator(kinectSensor, ipf);
 
@@ -123,6 +132,7 @@ void InteractiveSpaceEngine::operator() ()
 
 
 		kinectSensor->refresh();
+		webcamReader->refresh();
 
 		if (calibrator->isCalibrating())
 		{

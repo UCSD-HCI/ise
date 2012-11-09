@@ -33,6 +33,16 @@ DLL_EXPORT int getDepthHeight()
 	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(DepthSourceProduct);
 }
 
+DLL_EXPORT int getWebcamWidth()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductWidth(WebcamSourceProduct);
+}
+
+DLL_EXPORT int getWebcamHeight()
+{
+	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductHeight(WebcamSourceProduct);
+}
+
 DLL_EXPORT void setOmniTouchParameters(double fingerMinWidth, double fingerMaxWidth, double fingerMinLength, double fingerMaxLength, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad)
 {
 	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setParameters(fingerMinWidth, fingerMaxWidth, fingerMinLength, fingerMaxLength, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad);

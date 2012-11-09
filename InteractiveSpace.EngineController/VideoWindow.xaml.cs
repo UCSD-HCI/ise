@@ -112,7 +112,7 @@ namespace InteractiveSpace.EngineController
 
                 videoImage.Source = VideoSources.SharedVideoSources.GetSource(videoSourceType);
 
-                if (videoSourceType != VideoSourceType.RectifiedTabletopProduct)
+                if (videoSourceType != VideoSourceType.RectifiedTabletopProduct && videoSourceType != VideoSourceType.Webcam)
                 {
                     //draw fingers
                     unsafe
