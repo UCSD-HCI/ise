@@ -164,7 +164,6 @@
     <None Include="libx64\AddIns\TuioProvider\TuioProvider.pdb" />
     <None Include="libx64\AdvanceMath.dll" />
     <None Include="libx64\AdvanceMath.xml" />
-    <None Include="libx64\depthSurfHomography.xml" />
     <None Include="libx64\DynamicUtilities.dll" />
     <None Include="libx64\DynamicUtilities.xml" />
     <None Include="libx64\Framework\AdvanceMath.dll" />
@@ -221,7 +220,6 @@
     <None Include="libx64\Newtonsoft.Json.xml" />
     <None Include="libx64\Physics2DDotNet.dll" />
     <None Include="libx64\Physics2DDotNet.xml" />
-    <None Include="libx64\rgbSurfHomography.xml" />
     <None Include="libx64\System.ComponentModel.Composition.dll" />
     <None Include="libx64\System.ComponentModel.Composition.pdb" />
     <None Include="libx64\System.ComponentModel.Composition.xml" />
@@ -234,7 +232,6 @@
     <None Include="libx86\AddIns\TuioProvider\TuioProvider.pdb" />
     <Content Include="libx86\AdvanceMath.dll" />
     <Resource Include="libx86\AdvanceMath.xml" />
-    <Resource Include="libx86\depthSurfHomography.xml" />
     <Content Include="libx86\DynamicUtilities.dll" />
     <Resource Include="libx86\DynamicUtilities.xml" />
     <None Include="libx86\Framework\AdvanceMath.dll" />
@@ -304,7 +301,6 @@
     <Content Include="libx86\opencv_video231.dll" />
     <Content Include="libx86\Physics2DDotNet.dll" />
     <Resource Include="libx86\Physics2DDotNet.xml" />
-    <Resource Include="libx86\rgbSurfHomography.xml" />
     <Content Include="libx86\System.ComponentModel.Composition.dll" />
     <Content Include="libx86\System.ComponentModel.Composition.pdb" />
     <Resource Include="libx86\System.ComponentModel.Composition.xml" />
