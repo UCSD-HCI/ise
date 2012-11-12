@@ -3,23 +3,34 @@
 #include <assert.h>
 #include "DebugUtils.h"
 
-WebcamReader::WebcamReader() : ipf(NULL)
+WebcamReader::WebcamReader() : ipf(NULL), enabled(true)
 {
 	capture = cvCaptureFromCAM(CV_CAP_ANY);
 
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1280 );
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 720 );
+	//assert(capture);
+	if (!capture)
+	{
+		DEBUG("No webcam found.");
+		enabled = false;
 
-	assert(capture);
+		imageSize = cvSize(640, 480);
+		imageDepth = 8;
+		imageChannels = 3;
+	}
+	else
+	{
+		cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 1920 );
+		cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT, 1080 );
 
-	IplImage* frame = cvQueryFrame(capture);	//read a sample frame to get sizes
-	imageSize = cvSize(frame->width, frame->height);
-	imageDepth = frame->depth;
-	imageChannels = frame->nChannels;
+		IplImage* frame = cvQueryFrame(capture);	//read a sample frame to get sizes
+		imageSize = cvSize(frame->width, frame->height);
+		imageDepth = frame->depth;
+		imageChannels = frame->nChannels;
 
-	timer.restart();
+		timer.restart();
 
-	DEBUG("Webcam: " << frame->width << ", " << frame->height << ", " << frame->depth << ", " << frame->nChannels);
+		DEBUG("Webcam: " << frame->width << ", " << frame->height << ", " << frame->depth << ", " << frame->nChannels);
+	}
 }
 
 WebcamReader::~WebcamReader()
@@ -75,7 +86,7 @@ IplImage* WebcamReader::createImage()
 
 void WebcamReader::refresh()
 {
-	if (timer.elapsed() < 1.0 / MAX_FPS)
+	if (!enabled || !capture || timer.elapsed() < 1.0 / MAX_FPS)
 	{
 		return;
 	}

@@ -361,6 +361,11 @@ namespace InteractiveSpace.EngineController
             CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
         }
 
+        private void webcamCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            CommandDllWrapper.setWebcamEnabled(webcamCheckBox.IsChecked.Value ? 1 : 0);
+        }
+
 
 
         

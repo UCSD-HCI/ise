@@ -115,4 +115,8 @@ DLL_EXPORT void setTabletopRectifiedEnabled(int isEnabled)
 	InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->setTabletopRectifiedEnabled(isEnabled > 0);
 }
 
+DLL_EXPORT void setWebcamEnabled(int isEnabled)
+{
+	InteractiveSpaceEngine::sharedEngine()->getWebcamReader()->setEnabled(isEnabled > 0);
+}
 
