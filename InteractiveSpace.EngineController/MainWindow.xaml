@@ -9,8 +9,8 @@
                     <ToggleButton Name="rawVideoToggleButton" Content="RGB" Margin="5" Click="rawVideoToggleButton_Click"/>
                     <ToggleButton Name="depthVideoToggleButton" Content="Depth" Margin="5" Click="depthVideoToggleButton_Click"/>
                     <ToggleButton Name="multiTouchVideoToggleButton" Content="OmniTouch" Margin="5" Click="multiTouchVideoToggleButton_Click"/>
-                    <ToggleButton Name="rectifiedTabletopToggleButton" Content="RectifiedTabletop" Margin="5" Click="rectifiedTabletopToggleButton_Click" />
                     <ToggleButton Name="webCamToggleButton" Content="Webcam" Margin="5" Click="webCamToggleButton_Click" />
+                    <ToggleButton Name="rectifiedTabletopToggleButton" Content="RectifiedTabletop" Margin="5" Click="rectifiedTabletopToggleButton_Click" />
                 </StackPanel>
             </StackPanel>
         </GroupBox>
@@ -18,6 +18,7 @@
         <GroupBox Header="Enabled Components">
             <StackPanel>
                 <CheckBox Name="omniTouchCheckBox" Margin="5" IsChecked="True" Click="omniTouchCheckBox_Click">OmniTouch</CheckBox>
+                <CheckBox Name="webcamCheckBox" Margin="5" IsChecked="True" Click="webcamCheckBox_Click">Webcam</CheckBox>
                 <CheckBox Name="rectifiedTabletopCheckBox" Margin="5" IsChecked="False" Click="rectifiedTabletopCheckBox_Click">Rectified Tabletop</CheckBox>
             </StackPanel>
         </GroupBox>

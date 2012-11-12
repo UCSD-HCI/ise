@@ -75,5 +75,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void setTabletopRectifiedEnabled(int isEnabled);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void setWebcamEnabled(int isEnabled);
     }
 }

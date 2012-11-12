@@ -26,6 +26,8 @@ private:
 	int imageChannels;
 	int imageDepth;
 
+	bool enabled;
+
 public:
 	WebcamReader();
 	~WebcamReader();
@@ -44,6 +46,9 @@ public:
 	//virtual void operator() (); //thread worker
 
 	void refresh();
+
+	inline bool isEnabled() const { return enabled; }
+	inline void setEnabled(bool enabled) { this->enabled = enabled; }
 };
 
 #endif
