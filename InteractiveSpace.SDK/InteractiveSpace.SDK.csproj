@@ -171,19 +171,11 @@
       <Project>{4B152F4F-97AB-443B-BF9C-A5B1347B580D}</Project>
       <Name>InteractiveSpace.EngineController</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj">
-      <Project>{F3219531-A4B9-4B65-B7EA-27C43E98C21D}</Project>
-      <Name>Multitouch.Framework.WPF</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem copy /Y $(TargetDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem xcopy /Y /E $(SolutionDir)MultiTouchVista\Output $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

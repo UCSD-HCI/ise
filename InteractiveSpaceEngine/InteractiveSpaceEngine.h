@@ -13,6 +13,7 @@
 #include "VideoRecorder.h"
 #include "TuioExporter.h"
 #include "WebcamReader.h"
+#include "DocumentRecognizer.h"
 
 
 class InteractiveSpaceEngine : ThreadWorker
@@ -29,6 +30,7 @@ private:
 	FingerSelector* fingerSelector;
 	FingerEventsGenerator* fingerEventsGenerator;
 	HandTracker* handTracker;
+	DocumentRecognizer* docRecognizer;
 
 	Calibrator* calibrator;
 
