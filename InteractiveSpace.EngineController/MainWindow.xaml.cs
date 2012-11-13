@@ -364,6 +364,13 @@ namespace InteractiveSpace.EngineController
         private void webcamCheckBox_Click(object sender, RoutedEventArgs e)
         {
             CommandDllWrapper.setWebcamEnabled(webcamCheckBox.IsChecked.Value ? 1 : 0);
+		}
+		
+        private void LLAHButton_Click(object sender, RoutedEventArgs e)
+        {
+            LLAHWindow llahWin = new LLAHWindow();
+            llahWin.MainWindow = this;            
+            llahWin.Show();
         }
 
 

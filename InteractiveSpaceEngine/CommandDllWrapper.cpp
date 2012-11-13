@@ -120,3 +120,8 @@ DLL_EXPORT void setWebcamEnabled(int isEnabled)
 	InteractiveSpaceEngine::sharedEngine()->getWebcamReader()->setEnabled(isEnabled > 0);
 }
 
+DLL_EXPORT int getLLAHInfo(int left, int top, int right, int bottom)
+{
+	return (int)InteractiveSpaceEngine::sharedEngine()->getFPS();
+}
+

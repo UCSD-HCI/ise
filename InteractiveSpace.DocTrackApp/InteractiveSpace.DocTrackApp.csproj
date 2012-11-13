@@ -163,10 +163,6 @@
       <Project>{35BC03D0-5325-460C-AC49-144D0A6FFEF1}</Project>
       <Name>InteractiveSpace.SDK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj">
-      <Project>{F3219531-A4B9-4B65-B7EA-27C43E98C21D}</Project>
-      <Name>Multitouch.Framework.WPF</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\objreg.png" />

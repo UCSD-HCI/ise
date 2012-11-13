@@ -7,26 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.EngineCont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.SDK", "InteractiveSpace.SDK\InteractiveSpace.SDK.csproj", "{35BC03D0-5325-460C-AC49-144D0A6FFEF1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultiTouchVista", "MultiTouchVista", "{AED2D03C-E214-4DB5-AFBF-E93F0B051956}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libraries", "MultiTouchVista\Libraries\Libraries.csproj", "{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Configuration", "MultiTouchVista\Configuration\Multitouch.Configuration\Multitouch.Configuration.csproj", "{9B60DB89-E078-4A56-9D10-13308E90EF6D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Configuration.WPF", "MultiTouchVista\Configuration\Multitouch.Configuration.WPF\Multitouch.Configuration.WPF.csproj", "{07089C7C-AC71-403B-9492-189F9C1EAF32}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Contracts", "MultiTouchVista\Multitouch.Contracts\Multitouch.Contracts.csproj", "{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Framework", "MultiTouchVista\Framework\Multitouch.Framework\Multitouch.Framework.csproj", "{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Service.Console", "MultiTouchVista\Multitouch.Service.Console\Multitouch.Service.Console.csproj", "{094B04DC-3833-4CC1-8161-D9BD26616D57}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Service.Logic", "MultiTouchVista\Multitouch.Service.Logic\Multitouch.Service.Logic.csproj", "{1720CC0B-4411-4FE5-A51C-D539BB19AC54}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuioProvider", "MultiTouchVista\InputProviders\TuioProvider\TuioProvider.csproj", "{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Framework.WPF", "MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj", "{F3219531-A4B9-4B65-B7EA-27C43E98C21D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocSenseApp", "DocSenseApp\DocSenseApp.csproj", "{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.DocTrackApp", "InteractiveSpace.DocTrackApp\InteractiveSpace.DocTrackApp.csproj", "{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}"
@@ -59,60 +39,6 @@ Global
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.Build.0 = Release|x86
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.ActiveCfg = Release|Any CPU
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.Build.0 = Release|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Release|Win32.ActiveCfg = Release|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Release|Win32.Build.0 = Release|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Release|x64.ActiveCfg = Release|Any CPU
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Release|x64.Build.0 = Release|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Release|Win32.ActiveCfg = Release|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Release|Win32.Build.0 = Release|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Release|x64.ActiveCfg = Release|Any CPU
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D}.Release|x64.Build.0 = Release|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Release|Win32.ActiveCfg = Release|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Release|Win32.Build.0 = Release|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Release|x64.ActiveCfg = Release|Any CPU
-		{07089C7C-AC71-403B-9492-189F9C1EAF32}.Release|x64.Build.0 = Release|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Release|Win32.ActiveCfg = Release|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Release|Win32.Build.0 = Release|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Release|x64.ActiveCfg = Release|Any CPU
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20}.Release|x64.Build.0 = Release|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Release|Win32.Build.0 = Release|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Release|x64.ActiveCfg = Release|Any CPU
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA}.Release|x64.Build.0 = Release|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Release|Win32.ActiveCfg = Release|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Release|Win32.Build.0 = Release|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Release|x64.ActiveCfg = Release|Any CPU
-		{094B04DC-3833-4CC1-8161-D9BD26616D57}.Release|x64.Build.0 = Release|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Release|Win32.ActiveCfg = Release|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Release|Win32.Build.0 = Release|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Release|x64.ActiveCfg = Release|Any CPU
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54}.Release|x64.Build.0 = Release|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Release|Win32.ActiveCfg = Release|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Release|Win32.Build.0 = Release|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Release|x64.ActiveCfg = Release|Any CPU
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A}.Release|x64.Build.0 = Release|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|Win32.Build.0 = Release|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.ActiveCfg = Release|Any CPU
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.Build.0 = Release|Any CPU
 		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|Win32.ActiveCfg = Debug|x64
 		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.ActiveCfg = Debug|x64
 		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.Build.0 = Debug|x64
@@ -127,16 +53,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{9B60DB89-E078-4A56-9D10-13308E90EF6D} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{07089C7C-AC71-403B-9492-189F9C1EAF32} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{741BC9A8-EFDE-4BA7-8F91-DC9B4F548A20} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{F78A290F-5D34-4D20-9EAA-D4963BCA09AA} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{094B04DC-3833-4CC1-8161-D9BD26616D57} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{1720CC0B-4411-4FE5-A51C-D539BB19AC54} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{CA2F4CDB-9DB6-4901-9ECB-B81516DB313A} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
-		{F3219531-A4B9-4B65-B7EA-27C43E98C21D} = {AED2D03C-E214-4DB5-AFBF-E93F0B051956}
 	EndGlobalSection
 EndGlobal

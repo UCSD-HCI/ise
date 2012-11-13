@@ -196,16 +196,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\PenProtocol\AnnotoPenReceiver\AnnotoPenReceiver.csproj">
-      <Project>{6521FCB5-2BBD-44A7-B0D8-278F5A1B4158}</Project>
-      <Name>AnnotoPenReceiver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\everspaces\everspaces\everspaces.csproj">
-      <Project>{82FFF17B-640D-48F6-9D29-46DA11EA3CD1}</Project>
-      <Name>everspaces</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\evernote.png" />
   </ItemGroup>
   <ItemGroup>
