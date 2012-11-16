@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuioProvider", "MultiTouchV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Framework.WPF", "MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj", "{F3219531-A4B9-4B65-B7EA-27C43E98C21D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocSenseApp", "DocSenseApp\DocSenseApp.csproj", "{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.DocTrackApp", "InteractiveSpace.DocTrackApp\InteractiveSpace.DocTrackApp.csproj", "{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -56,8 +60,8 @@ Global
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.ActiveCfg = Debug|x86
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.ActiveCfg = Release|x86
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.Build.0 = Release|x86
-		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.ActiveCfg = Release|x64
-		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.Build.0 = Release|x64
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.ActiveCfg = Release|Any CPU
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.Build.0 = Release|Any CPU
 		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{11B2B8CF-48A7-4A68-A1F4-40FA01EBDA55}.Release|Win32.ActiveCfg = Release|Any CPU
@@ -112,6 +116,17 @@ Global
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|Win32.Build.0 = Release|Any CPU
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.ActiveCfg = Release|Any CPU
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.Build.0 = Release|Any CPU
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|Win32.ActiveCfg = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.ActiveCfg = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.Build.0 = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Release|Win32.ActiveCfg = Release|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|Win32.ActiveCfg = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|x64.ActiveCfg = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|x64.Build.0 = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
