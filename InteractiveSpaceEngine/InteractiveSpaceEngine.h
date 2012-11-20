@@ -73,6 +73,7 @@ public:
 	inline FingerEventsGenerator* getFingerEventsGenerator() { return fingerEventsGenerator; }
 	inline VideoRecorder* getVideoRecorder() { return videoRecorder; }
 	inline TuioExporter* getTuioExporter() { return tuioExporter; }
+	inline DocumentRecognizer* getDocumentRecognizer() { return docRecognizer; }
 
 	inline long long getFrameCount() 
 	{
