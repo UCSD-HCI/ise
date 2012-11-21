@@ -20,7 +20,7 @@ namespace InteractiveSpace.EngineController
     public partial class LLAHWindow : Window
     {
         private bool isCropDragging;
-        private Point cropCorner1, cropCorner2;
+        private Point roiCorner1, roiCorner2;
 
         private MainWindow mainWindow;
 
@@ -53,9 +53,9 @@ namespace InteractiveSpace.EngineController
 
         private void videoImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (llahCropButton.IsChecked == true)
+            if (llahRoiBtn.IsChecked == true)
             {
-                cropCorner1 = e.GetPosition(webcamImage);
+                roiCorner1 = e.GetPosition(webcamImage);
                 isCropDragging = true;
                 webcamImage.CaptureMouse();
             }
@@ -65,15 +65,17 @@ namespace InteractiveSpace.EngineController
         {
             if (isCropDragging)
             {
-                cropCorner2 = e.GetPosition(webcamImage);
+                roiCorner2 = e.GetPosition(webcamImage);
 
-                cropCorner2.X = Math.Max(0, Math.Min(webcamImage.Width, cropCorner2.X));
-                cropCorner2.Y = Math.Max(0, Math.Min(webcamImage.Height, cropCorner2.Y));
+                roiCorner2.X = Math.Max(0, Math.Min(webcamImage.Width, roiCorner2.X));
+                roiCorner2.Y = Math.Max(0, Math.Min(webcamImage.Height, roiCorner2.Y));
 
-                Canvas.SetLeft(llahCropRect, Math.Min(cropCorner1.X, cropCorner2.X));
-                Canvas.SetTop(llahCropRect, Math.Min(cropCorner1.Y, cropCorner2.Y));
-                llahCropRect.Width = Math.Abs(cropCorner1.X - cropCorner2.X);
-                llahCropRect.Height = Math.Abs(cropCorner1.Y - cropCorner2.Y);
+                Canvas.SetLeft(LLAHRoi, Math.Min(roiCorner1.X, roiCorner2.X));
+                Canvas.SetTop(LLAHRoi, Math.Min(roiCorner1.Y, roiCorner2.Y));
+                LLAHRoi.Width = Math.Abs(roiCorner1.X - roiCorner2.X);
+                LLAHRoi.Height = Math.Abs(roiCorner1.Y - roiCorner2.Y);
+                updateDimensionLabel();
+                
             }
         }
 
@@ -82,26 +84,34 @@ namespace InteractiveSpace.EngineController
             isCropDragging = false;
             webcamImage.ReleaseMouseCapture();
 
-            int left = (int)Canvas.GetLeft(llahCropRect);
-            int top = (int)Canvas.GetTop(llahCropRect);
-            int width = (int)(llahCropRect.Width);
-            int height = (int)(llahCropRect.Height);
+            int left = (int)Canvas.GetLeft(LLAHRoi);
+            int top = (int)Canvas.GetTop(LLAHRoi);
+            int width = (int)(LLAHRoi.Width);
+            int height = (int)(LLAHRoi.Height);
 
             unsafe
             {
-                statusLabel.Content = CommandDllWrapper.getLLAHInfo(left, top, width, height);
+                statusLabel.Content = CommandDllWrapper.setLLAHRoi(left, top, width, height);
             }
 
-            llahCropButton.IsChecked = false;
+            llahRoiBtn.IsChecked = false;
         }
-        private void llahCropButton_Checked(object sender, RoutedEventArgs e)
+        private void setROIButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (llahCropButton.IsChecked == true)
+            if (llahRoiBtn.IsChecked == true)
             {
-                llahCropRect.Width = 0;
-                llahCropRect.Height = 0;
+                LLAHRoi.Width = 0;
+                LLAHRoi.Height = 0;
+                LLAHDimensionTbx.Text = "";
                 isCropDragging = false;
             }
+        }
+
+        private void updateDimensionLabel()
+        {
+            Canvas.SetLeft(LLAHDimensionTbx,  Canvas.GetLeft(LLAHRoi) + 2);
+            Canvas.SetTop(LLAHDimensionTbx,  Canvas.GetTop(LLAHRoi) + 2);
+            LLAHDimensionTbx.Text = Canvas.GetLeft(LLAHRoi) + ", " + Canvas.GetTop(LLAHRoi) + ", " + LLAHRoi.Width + ", " + LLAHRoi.Height;
         }
 
     }

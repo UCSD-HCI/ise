@@ -9,10 +9,11 @@
         </Grid.RowDefinitions>     
         <Canvas Width="1920" Height="1080" Grid.Row="0" Name="canvas">
             <Image Name="webcamImage" Canvas.Left="0" Canvas.Top="0" Width="1920" Height="1080" MouseDown="videoImage_MouseDown" MouseMove="videoImage_MouseMove" MouseUp="videoImage_MouseUp"/>
-            <Rectangle Name="llahCropRect" Canvas.Left="0" Canvas.Top="0" Width="640" Height="480" Stroke="Orange" StrokeThickness="2" IsHitTestVisible="False"/>
+            <Rectangle Name="LLAHRoi" Canvas.Left="0" Canvas.Top="0" Width="640" Height="480" Stroke="Orange" StrokeThickness="2" IsHitTestVisible="False"/>
+            <TextBlock Name="LLAHDimensionTbx" Background="#FFFFFFC7"></TextBlock>
         </Canvas>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20,20,0,0">
-            <ToggleButton Name="llahCropButton" Visibility="Visible"  Checked="llahCropButton_Checked">LLAH Crop</ToggleButton>
+            <ToggleButton Name="llahRoiBtn" Visibility="Visible"  Checked="setROIButton_Checked">LLAH Crop</ToggleButton>
             <Label Name="statusLabel"/>
         </StackPanel>
     </Grid>
