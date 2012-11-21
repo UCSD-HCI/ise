@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <boost/timer.hpp>
+#include "opencv2/imgproc/imgproc_c.h"
 
 
 #ifdef _DEBUG
@@ -15,24 +16,34 @@
 #endif
 
 using namespace std;
+#define MAX_PATH_LEN 1024
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) : ipf(ipf)
 {
 	 // Load database
-	cropRect.x = 0;
-	cropRect.y = 0;
-	cropRect.width = 640;
-	cropRect.height = 480;
+	imageROI.x = 0;
+	imageROI.y = 0;
+	imageROI.width = 320;
+	imageROI.height = 240;	
 	db = LlahDocLoadDb( "c:\\temp\\llah\\database" );
 	DEBUG("LLAH DB Loaded");
+	enableCaptureWindow = 1;
+	if (enableCaptureWindow == 1)
+	{
+		cvNamedWindow( "Capture", CV_WINDOW_AUTOSIZE );
+	}
 }
 
 
 DocumentRecognizer::~DocumentRecognizer(void)
 {
-		// Release database
-	//LlahDocReleaseDb( db );
+	// Release database
+	LlahDocReleaseDb( db );
 	DEBUG("LLAH DB Released");
+	if (enableCaptureWindow == 1)
+	{
+		cvDestroyWindow("Capture");
+	}
 }
 
 
@@ -55,20 +66,29 @@ void DocumentRecognizer::refresh()
 	
 	//Crop image
 	IplImage* croppedImage;
-	cropImage((IplImage*)webcamPtr.getObj(), &croppedImage);
+	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 2);
+	if (enableCaptureWindow == 1)
+	{
+		cvShowImage("Capture", croppedImage);
+	}
 
 	// Retrieve
 	{
 		boost::timer t;
 		t.restart();
-		votes = LlahDocRetrieveIplImage(croppedImage, db, result, MAX_PATH_LEN );
+		if ((croppedImage != NULL)  &&
+			(croppedImage->height > 0) &&
+			(croppedImage->width > 0))
+		{
+			votes = LlahDocRetrieveIplImage(croppedImage, db, result, MAX_PATH_LEN );
+		}
 		numSecs += t.elapsed();
 		numTimerResults ++;
 		//sprintf(msg, "Seconds per result : %g", (double)numSecs/numTimerResults);
 		//DEBUG( msg );
 	}
 	// Display retrieval result
-	if (votes > 5)
+	if (votes > 1)
 	{
 		sprintf(msg, "%s : %d", result, votes);		
 		DEBUG( msg );
@@ -77,36 +97,59 @@ void DocumentRecognizer::refresh()
 
 }
 
-void DocumentRecognizer::setCrop(int left, int top, int width, int height)
+void DocumentRecognizer::setROI(int left, int top, int width, int height)
 {
 	char msg[2048];
-	cropRect.x = left;
-	cropRect.y = top;
-	cropRect.width = width;
-	cropRect.height = height;
-	sprintf(msg, "Top left (%d,%d) width %d height %d", left, top, width, height);	
-		DEBUG( msg );
+	if ((width > 0) && (height > 0))
+	{
+		imageROI.x = left;
+		imageROI.y = top;
+		imageROI.width = width;
+		imageROI.height = height;
+	}
 }
 
-void DocumentRecognizer::cropImage(IplImage* orig, IplImage** cropped)
-{	
-	char msg[2048];
-	if (!orig)
-	{
-		return;
+
+// Creates a new image copy that is of a desired size. The aspect ratio will
+// be kept constant if 'keepAspectRatio' is true, by cropping undesired parts
+// so that only pixels of the original image are shown, instead of adding
+// extra blank space.
+// Remember to free the new image later.
+IplImage* DocumentRecognizer::resizeImage(const IplImage *origImg, const CvRect region, double multiplier)
+	
+{
+	char msg[1024];
+	IplImage *outImg = 0;
+	int origWidth;
+	int origHeight;
+	int newWidth;
+	int newHeight; 
+	
+	bool keepAspectRatio = TRUE;
+	if (origImg) {
+		origWidth = origImg->width;
+		origHeight = origImg->height;
 	}
+	newWidth = multiplier * region.width;
+	newHeight = multiplier * region.height;
 
-	cvSetImageROI(orig, cropRect);
-	CvSize dstsize;
-	dstsize.width=cropRect.width;
-	dstsize.height=cropRect.height;	
-	//*cropped = cvCreateImage(cvGetSize(orig),
-	*cropped = cvCreateImage(dstsize,
-								   orig->depth,
-								   orig->nChannels);
+	//Select the ROI in original image
+	cvSetImageROI((IplImage*)origImg, region);
 
-	cvCopy(orig, *cropped, NULL);
-	cvResetImageROI(orig);
-	orig = cvCloneImage(*cropped);
+	//sprintf(msg, "%d %d %d %d => %d %d", region.x, region.y, region.width, region.height, newWidth, newHeight);
+	//DEBUG( msg );
+	
+	//Create new image with resized size
+	outImg = cvCreateImage(cvSize(newWidth, newHeight), 
+									origImg->depth,
+									origImg->nChannels);
+	//Resize image
+	cvResize((const CvArr*)origImg, (CvArr*)outImg, CV_INTER_LINEAR);
+	CvRect temp = cvGetImageROI(outImg);
+
+	//Reset image roi
+	cvResetImageROI((IplImage*)origImg);
+
+	return outImg;
 }
 

@@ -115,14 +115,15 @@ DLL_EXPORT void setTabletopRectifiedEnabled(int isEnabled)
 	InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->setTabletopRectifiedEnabled(isEnabled > 0);
 }
 
+
 DLL_EXPORT void setWebcamEnabled(int isEnabled)
 {
 	InteractiveSpaceEngine::sharedEngine()->getWebcamReader()->setEnabled(isEnabled > 0);
 }
 
-DLL_EXPORT int getLLAHInfo(int left, int top, int width, int height)
+DLL_EXPORT int setLLAHRoi(int left, int top, int width, int height)
 {
-	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->setCrop(left, top, width, height);
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->setROI(left, top, width, height);
 	return 47;
 }
 

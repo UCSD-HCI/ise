@@ -80,7 +80,6 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         public static extern unsafe void setWebcamEnabled(int isEnabled);
 
 		[DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-		public static extern unsafe int getLLAHInfo(int left, int top, int right, int bottom);
-
+        public static extern unsafe int setLLAHRoi(int left, int top, int width, int height);
     }
 }
