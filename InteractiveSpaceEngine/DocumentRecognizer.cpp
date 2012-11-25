@@ -27,7 +27,7 @@ DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) : ipf(ipf)
 	imageROI.height = 240;	
 	db = LlahDocLoadDb( "c:\\temp\\llah\\database" );
 	DEBUG("LLAH DB Loaded");
-	enableCaptureWindow = 1;
+	enableCaptureWindow = 0;
 	if (enableCaptureWindow == 1)
 	{
 		cvNamedWindow( "Capture", CV_WINDOW_AUTOSIZE );

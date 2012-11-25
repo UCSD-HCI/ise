@@ -7,7 +7,6 @@ WebcamReader::WebcamReader() : ipf(NULL), enabled(true)
 {
 	capture = cvCaptureFromCAM(CV_CAP_ANY);
 
-<<<<<<< HEAD
 	//assert(capture);
 	if (!capture)
 	{
