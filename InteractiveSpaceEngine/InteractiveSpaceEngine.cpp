@@ -141,7 +141,7 @@ void InteractiveSpaceEngine::operator() ()
 
 		kinectSensor->refresh();
 		webcamReader->refresh();
-		docRecognizer->refresh();
+		//docRecognizer->refresh();
 
 		if (calibrator->isCalibrating())
 		{
