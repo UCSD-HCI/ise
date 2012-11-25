@@ -15,7 +15,7 @@
         
         <my:ZoomableVideoUserControl x:Name="rgbVideo" Grid.Row="0" Grid.Column="0" MouseMove="video_MouseMove" MouseLeave="video_MouseLeave" MouseDown="video_MouseDown"/>
         <my:ZoomableVideoUserControl x:Name="depthVideo" Grid.Row="0" Grid.Column="1" MouseMove="video_MouseMove" MouseLeave="video_MouseLeave" MouseUp="depthVideo_MouseUp" MouseDown="video_MouseDown"/>
-        <my:ZoomableVideoUserControl x:Name="motionVideo" Grid.Row="1" Grid.Column="0"/>
+        <my:ZoomableVideoUserControl x:Name="webcamVideo" Grid.Row="1" Grid.Column="0"/>
         
         <Grid Grid.Row="1" Grid.Column="1" Margin="30,30,0,0">
             <Grid.RowDefinitions>

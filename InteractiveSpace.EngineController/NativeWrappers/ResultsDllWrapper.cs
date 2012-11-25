@@ -29,6 +29,9 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         public static extern unsafe ReadLockedWrapperPtr lockCalibrationDepthImage();
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
+        public static extern unsafe ReadLockedWrapperPtr lockCalibrationWebcamImage();
+
+        [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe ReadLockedWrapperPtr lockFingerEvents(int* fingerNum, long* frame);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]

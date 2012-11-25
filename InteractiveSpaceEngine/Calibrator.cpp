@@ -9,18 +9,26 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 {
 	rgbImg = kinectSensor->createBlankRGBImage();
 	grayImg = cvCreateImage(cvSize(ipf->getImageProductWidth(RGBSourceProduct), ipf->getImageProductHeight(RGBSourceProduct)),
-		IPL_DEPTH_8U, 1);
+		IPL_DEPTH_8U, 1);	
 	depthImg = cvCreateImage(cvSize(ipf->getImageProductWidth(DebugDepthHistogramedProduct), ipf->getImageProductHeight(DebugDepthHistogramedProduct)),
+		IPL_DEPTH_8U, 1);
+	webcamImg = cvCreateImage(cvSize(ipf->getImageProductWidth(WebcamSourceProduct), ipf->getImageProductHeight(WebcamSourceProduct)),
+		IPL_DEPTH_8U, 3);
+	grayWebcamImg = cvCreateImage(cvSize(ipf->getImageProductWidth(WebcamSourceProduct), ipf->getImageProductHeight(WebcamSourceProduct)),
 		IPL_DEPTH_8U, 1);
 
 	rgbSurfHomography = cvCreateMat(3, 3, CV_64FC1);
 	depthSurfHomography = cvCreateMat(3, 3, CV_64FC1);
 	rgbSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
 	depthSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
+	webcamSurfHomography = cvCreateMat(3, 3, CV_64FC1);
+	webcamSurfHomographyInversed = cvCreateMat(3, 3, CV_64FC1);
+
 	if (load())
 	{
 		cvInvert(rgbSurfHomography, rgbSurfHomographyInversed);
 		cvInvert(depthSurfHomography, depthSurfHomographyInversed);
+		cvInvert(webcamSurfHomography, webcamSurfHomographyInversed);
 		state = AllCalibrated;
 	}
 
@@ -40,6 +48,13 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 
 	homoTransSrc = cvCreateMat(1, cornersCount, CV_32FC2);
 	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);
+
+	homoWebEstiSrc = cvCreateMat(cornersCount, 2, CV_32FC1);
+	homoWebEstiDst = cvCreateMat(cornersCount, 2, CV_32FC1);
+
+	homoWebTransSrc = cvCreateMat(1, cornersCount, CV_32FC2);
+	homoWebTransDst = cvCreateMat(1, cornersCount, CV_32FC2);
+
 }
 
 Calibrator::~Calibrator()
@@ -47,11 +62,15 @@ Calibrator::~Calibrator()
 	cvReleaseImage(&rgbImg);
 	cvReleaseImage(&depthImg);
 	cvReleaseImage(&grayImg);
+	cvReleaseImage(&webcamImg);
+	cvReleaseImage(&grayWebcamImg);
 
 	cvReleaseMat(&rgbSurfHomography);
 	cvReleaseMat(&depthSurfHomography);
 	cvReleaseMat(&rgbSurfHomographyInversed);
 	cvReleaseMat(&depthSurfHomographyInversed);
+	cvReleaseMat(&webcamSurfHomography);
+	cvReleaseMat(&webcamSurfHomographyInversed);
 
 	if (chessboardCorners != NULL)
 	{
@@ -173,7 +192,7 @@ void Calibrator::detectRGBChessboard(RGBCalibrationFinishedCallback onRGBChessbo
 	}
 	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);*/
 
-	chessboardCapturedFrame = 0;
+	rgbCapturedFrames = 0;
 
 	state = DetectingRGBChessboard;
 }
@@ -185,16 +204,16 @@ void Calibrator::stopCalibration()
 
 void Calibrator::refresh()
 {
-	if (state != CalibratorNotInit && state != CalibratorStopped && state != RGBCalibrated)
+	if (state != CalibratorNotInit && state != CalibratorStopped && state != AllCalibrated)
 	{
 		{
 			WriteLock wLock(rgbImgMutex);
 			ReadLockedIplImagePtr rgbInIpf = ipf->lockImageProduct(RGBSourceProduct);
-			ReadLockedIplImagePtr depthInIpf = ipf->lockImageProduct(DepthSourceProduct);
 			cvCopyImage(rgbInIpf, rgbImg);
-
+			
 			if (state == DetectingRGBChessboard)
 			{
+				//Find RGB Chessboard
 				cvCvtColor(rgbInIpf, grayImg, CV_RGB2GRAY);
 
 				int cornerCount;
@@ -205,13 +224,13 @@ void Calibrator::refresh()
 				{
 					for (int i = 0; i < cornerCount; i++)
 					{
-						averageChessboardCorners[i].x = (averageChessboardCorners[i].x * chessboardCapturedFrame + chessboardCorners[i].x) / (chessboardCapturedFrame + 1);
-						averageChessboardCorners[i].y = (averageChessboardCorners[i].y * chessboardCapturedFrame + chessboardCorners[i].y) / (chessboardCapturedFrame + 1);
+						averageChessboardCorners[i].x = (averageChessboardCorners[i].x * rgbCapturedFrames + chessboardCorners[i].x) / (rgbCapturedFrames + 1);
+						averageChessboardCorners[i].y = (averageChessboardCorners[i].y * rgbCapturedFrames + chessboardCorners[i].y) / (rgbCapturedFrames + 1);
 					}
 					cvDrawChessboardCorners(rgbImg, cvSize(chessboardCols - 1, chessboardRows - 1), averageChessboardCorners, cornerCount, result);
-					chessboardCapturedFrame++;
+					rgbCapturedFrames++;
 
-					if (chessboardCapturedFrame >= CHESSBOARD_CAPTURE_FRAMES)
+					if (rgbCapturedFrames >= CHESSBOARD_CAPTURE_FRAMES)
 					{
 						//finished, find homography
 						convertCvPointsToCvMat(averageChessboardCorners, homoEstiDst, cornerCount);
@@ -238,9 +257,68 @@ void Calibrator::refresh()
 					cvDrawChessboardCorners(rgbImg, cvSize(chessboardCols - 1, chessboardRows - 1), chessboardCorners, cornerCount, result);
 				}
 			}
+			else if (state == RGBCalibrated)
+			{
+				//Once done with RGB, switch to webcam
+				state = DetectingWebcamChessboard;
+				webcamCapturedFrames = 0;
+				
+			}
+			else if (state == DetectingWebcamChessboard)
+			{
+				WriteLock wLock(webcamImgMutex);
+				ReadLockedIplImagePtr webcamInIpf = ipf->lockImageProduct(WebcamSourceProduct);
+				cvCopyImage(webcamInIpf, webcamImg);
 
+				//Find RGB Chessboard
+				cvCvtColor(webcamInIpf, grayWebcamImg, CV_RGB2GRAY);
+
+				int cornerCount;
+				// chessboardCorners and cornerCount are outputs of cvFindChessboardCorners
+				int result = cvFindChessboardCorners(grayWebcamImg, cvSize(chessboardCols - 1, chessboardRows - 1), chessboardCorners, &cornerCount);
+
+				//find chessboard, calculate average
+				if (result != 0 && cornerCount == (chessboardCols - 1) * (chessboardRows - 1))
+				{
+					//Calculates average
+					for (int i = 0; i < cornerCount; i++)
+					{
+						averageChessboardCorners[i].x = (averageChessboardCorners[i].x * webcamCapturedFrames + chessboardCorners[i].x) / (webcamCapturedFrames + 1);
+						averageChessboardCorners[i].y = (averageChessboardCorners[i].y * webcamCapturedFrames + chessboardCorners[i].y) / (webcamCapturedFrames + 1);
+					}
+
+					//Draws corners onto webcamImg
+					cvDrawChessboardCorners(webcamImg, cvSize(chessboardCols - 1, chessboardRows - 1), averageChessboardCorners, cornerCount, result);
+					webcamCapturedFrames++;
+
+					if (webcamCapturedFrames >= CHESSBOARD_CAPTURE_FRAMES)
+					{
+						//finished, find homography
+						convertCvPointsToCvMat(averageChessboardCorners, homoWebEstiDst, cornerCount);
+						convertFloatPoint3DToCvMat(chessboardRefCorners, homoWebEstiSrc, cornerCount);
+						
+						cvFindHomography(homoWebEstiSrc, homoWebEstiDst, webcamSurfHomography);
+						cvInvert(webcamSurfHomography, webcamSurfHomographyInversed);
+
+						/*Sending back the points - not sure why.
+						if (onRGBChessboardDetectedCallback != NULL)
+						{
+							convertCvPointsToCvArr(averageChessboardCorners, homoWebTransSrc, cornerCount);
+							cvPerspectiveTransform(homoWebTransSrc, homoWebTransDst, rgbSurfHomographyInversed);
+							convertCvArrToFloatPoint3D(homoWebTransDst, chessboardCheckPoints, cornerCount);
+							convertCvPointsToFloatPoint3D(averageChessboardCorners, chessboardDepthRefCorners, cornerCount);
+
+							onRGBChessboardDetectedCallback(chessboardCheckPoints, cornerCount, chessboardDepthRefCorners, cornerCount);
+						}
+						*/
+
+						state = WebcamCalibrated;
+					}
+				}
+				webcamInIpf.release();
+			}
 			rgbInIpf.release();
-			depthInIpf.release();
+
 		}
 	}
 
@@ -410,17 +488,21 @@ void Calibrator::save() const
 {
 	cvSave("rgbSurfHomography.xml", rgbSurfHomography);
 	cvSave("depthSurfHomography.xml", depthSurfHomography);
+	cvSave("webcamSurfHomography.xml", webcamSurfHomography);
 }
 
 bool Calibrator::load()
 {
-	if (!fileExists("depthSurfHomography.xml") || !fileExists("rgbSurfHomography.xml"))
+	if (!fileExists("depthSurfHomography.xml") || 
+		!fileExists("rgbSurfHomography.xml")   ||
+		!fileExists("webcamSurfHomography.xml"))
 	{
 		return false;
 	}
 	
 	rgbSurfHomography = (CvMat*)cvLoad("rgbSurfHomography.xml");
 	depthSurfHomography = (CvMat*)cvLoad("depthSurfHomography.xml");
+	webcamSurfHomography = (CvMat*)cvLoad("webcamSurfHomography.xml");
 	return true;
 }
 

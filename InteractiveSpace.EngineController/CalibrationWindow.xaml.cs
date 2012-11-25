@@ -30,7 +30,7 @@ namespace InteractiveSpace.EngineController
         private const double CALIBRATION_POINT_STROKE = 5;
         private const double TEST_POINT_RADIUS = 5;
 
-        private WriteableBitmap rgbSource, depthSource;
+        private WriteableBitmap rgbSource, depthSource, webcamSource;
         //private BackgroundWorker refreshWorker;
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
         private ViscaCommandDelegate onPanTiltFinishedDelegate;
@@ -41,6 +41,7 @@ namespace InteractiveSpace.EngineController
         //public ProjectorFeedbackWindow ProjectorFeedbackWindow { get; set; }
 
         int rgbWidth, rgbHeight, depthWidth, depthHeight;
+        int webcamHeight, webcamWidth;
 
         private List<Ellipse> depthRefEllipses;
         private Ellipse draggingDepthRefPoint = null;
@@ -76,10 +77,14 @@ namespace InteractiveSpace.EngineController
                 rgbHeight = CommandDllWrapper.getRGBHeight();
                 depthWidth = CommandDllWrapper.getDepthWidth();
                 depthHeight = CommandDllWrapper.getDepthHeight();
+                webcamHeight = CommandDllWrapper.getWebcamHeight();
+                webcamWidth = CommandDllWrapper.getWebcamWidth();
             }
 
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
+            webcamSource = new WriteableBitmap(webcamWidth, webcamHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
+        
 
             /*refreshWorker = new BackgroundWorker();
             refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
@@ -155,6 +160,16 @@ namespace InteractiveSpace.EngineController
                     ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     depthVideo.ImageSource = depthSource;
                 }
+
+                if (webcamSource != null)
+                {
+                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationWebcamImage();
+                    webcamSource.Lock();
+                    webcamSource.WritePixels(new Int32Rect(0, 0, webcamWidth, webcamHeight), ptr.IntPtr, webcamWidth * webcamHeight * 3, webcamWidth * 3);
+                    webcamSource.Unlock();
+                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                    webcamVideo.ImageSource = webcamSource;
+                }
             }, null);
         }
 
@@ -187,8 +202,9 @@ namespace InteractiveSpace.EngineController
 
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {
+            /*
             projectorFeedbackWindow.DrawCheckpoints(checkPoints, checkPointNum);
-
+            */
             //draw depth ref corners
             Dispatcher.BeginInvoke((Action)delegate()
             {
