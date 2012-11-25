@@ -52,6 +52,15 @@ DLL_EXPORT ReadLockedWrapperPtr lockCalibrationDepthImage()
 	return res;
 }
 
+DLL_EXPORT ReadLockedWrapperPtr lockCalibrationWebcamImage()
+{
+	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->lockWebcamImage();
+	ReadLockedWrapperPtr res;
+	res.obj = srcPtr->imageData;
+	res.readLock = srcPtr.getReadLock();
+	return res;
+}
+
 DLL_EXPORT ReadLockedWrapperPtr lockFingerEvents(int* fingerNum, long long* frame)
 {
 	ReadLockedPtr<FingerEvent*> fingerEventsPtr = InteractiveSpaceEngine::sharedEngine()->getFingerEventsGenerator()->lockEvents(fingerNum, frame);

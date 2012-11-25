@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InteractiveSpaceEngine", "InteractiveSpaceEngine\InteractiveSpaceEngine.vcxproj", "{F7E00155-BE6C-4A99-AF50-19E319F997A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.EngineController", "InteractiveSpace.EngineController\InteractiveSpace.EngineController.csproj", "{4B152F4F-97AB-443B-BF9C-A5B1347B580D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6} = {F7E00155-BE6C-4A99-AF50-19E319F997A6}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.SDK", "InteractiveSpace.SDK\InteractiveSpace.SDK.csproj", "{35BC03D0-5325-460C-AC49-144D0A6FFEF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocSenseApp", "DocSenseApp\DocSenseApp.csproj", "{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.DocTrackApp", "InteractiveSpace.DocTrackApp\InteractiveSpace.DocTrackApp.csproj", "{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Debug|Win32.ActiveCfg = Debug|x64
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Debug|x64.ActiveCfg = Debug|x64
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Debug|x64.Build.0 = Debug|x64
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Release|Win32.ActiveCfg = Release|Win32
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Release|Win32.Build.0 = Release|Win32
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Release|x64.ActiveCfg = Release|x64
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6}.Release|x64.Build.0 = Release|x64
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|Win32.ActiveCfg = Debug|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|Win32.Build.0 = Debug|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|x64.ActiveCfg = Debug|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|Win32.ActiveCfg = Release|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|Win32.Build.0 = Release|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|x64.ActiveCfg = Release|x64
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|x64.Build.0 = Release|x64
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|Win32.ActiveCfg = Debug|x86
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.ActiveCfg = Debug|x86
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.ActiveCfg = Release|x86
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.Build.0 = Release|x86
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.ActiveCfg = Release|Any CPU
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|x64.Build.0 = Release|Any CPU
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|Win32.ActiveCfg = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.ActiveCfg = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Debug|x64.Build.0 = Debug|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Release|Win32.ActiveCfg = Release|x64
+		{E32BDAFF-BEA6-4D73-8563-8874BDAE48DC}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|Win32.ActiveCfg = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|x64.ActiveCfg = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Debug|x64.Build.0 = Debug|x64
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DBD25C9-3390-4761-9AE9-4936AD7CB69F}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

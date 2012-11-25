@@ -15,8 +15,10 @@ typedef enum
 	CalibratorNotInit,
 	CalibratorStarted, 
 	DetectingRGBChessboard,
+	DetectingWebcamChessboard,
 	RGBCalibrated,	//showing static image for depth calibration
 	DepthCalibrated,
+	WebcamCalibrated,
 	AllCalibrated,	//all work completed, but still showing calibration image
 	CalibratorStopped //calibrator stopped with all calibrated data
 } CalibratorState;
@@ -28,7 +30,8 @@ typedef enum
 	RGB2D,
 	Depth2D,
 	Depth3D,
-	Motion2D
+	Motion2D,
+	Webcan2D
 } CalibratedCoordinateSystem;
 
 class Calibrator
@@ -41,26 +44,32 @@ private:
 	IplImage* rgbImg;
 	IplImage* grayImg;
 	IplImage* depthImg;
+	IplImage* webcamImg;
+	IplImage* grayWebcamImg;
 
-	Mutex rgbImgMutex, depthImgMutex;
+	Mutex rgbImgMutex, depthImgMutex, webcamImgMutex;
 
 	//chessboard data
 	RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback;
 	int chessboardRows, chessboardCols;
 	CvPoint2D32f* chessboardCorners;
 	CvPoint2D32f* averageChessboardCorners;
-	int chessboardCapturedFrame;
+	int rgbCapturedFrames;
+	int webcamCapturedFrames;
 	FloatPoint3D* chessboardRefCorners;
 	FloatPoint3D* chessboardCheckPoints;
 	FloatPoint3D* chessboardDepthRefCorners;	//draw these corners on depth image and let the user refine them
 
 	CvMat *homoEstiSrc, *homoEstiDst, *homoTransSrc, *homoTransDst;
+	CvMat *homoWebEstiSrc, *homoWebEstiDst, *homoWebTransSrc, *homoWebTransDst;
 
 	//calibration results
 	CvMat* rgbSurfHomography;
 	CvMat* rgbSurfHomographyInversed;
 	CvMat* depthSurfHomography;
 	CvMat* depthSurfHomographyInversed;
+	CvMat* webcamSurfHomography;
+	CvMat* webcamSurfHomographyInversed;
 
 	void convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count) const;	//for findHomography
 	void convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count) const;	//for findHomography
@@ -100,6 +109,11 @@ public:
 	inline ReadLockedIplImagePtr lockDepthImage()
 	{
 		return ReadLockedIplImagePtr(*depthImg, depthImgMutex);
+	}
+
+	inline ReadLockedIplImagePtr lockWebcamImage()
+	{
+		return ReadLockedIplImagePtr(*webcamImg, webcamImgMutex);
 	}
 
 	inline const CvMat* getRgbSurfHomographyInversed() const
