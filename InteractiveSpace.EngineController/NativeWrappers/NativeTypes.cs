@@ -75,7 +75,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 	    RGB2D,
 	    Depth2D,
 	    Depth3D,
-	    Motion2D
+	    Motion2D,
+        Webcam2D
     };
 
     /// <summary>
@@ -261,6 +262,7 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
     public unsafe delegate void ViscaCommandDelegate(bool isCommandCompleted, IntPtr callbackState);
     public unsafe delegate void RGBCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
+    public unsafe delegate void WebcamCalibrationFinishedDelegate(FloatPoint3D* checkPoints, int checkPointNum);
 
     /// <summary>
     /// <remarks>HandTracker.h, HandEventCallback</remarks>

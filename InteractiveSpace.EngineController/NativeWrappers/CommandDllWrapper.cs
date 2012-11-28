@@ -44,7 +44,7 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         public static extern unsafe void systemCalibrationStop();
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe void systemCalibrationDetectChessboardCorner(IntPtr onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols);
+        public static extern unsafe void systemCalibrationDetectChessboardCorner(IntPtr onRGBFinishedCallback, IntPtr onWebcamFinishedCallback, FloatPoint3D* refCorners, int rows, int cols);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount);
