@@ -128,9 +128,12 @@ void Calibrator::startCalibration()
 	state = CalibratorStarted;
 }
 
-void Calibrator::detectRGBChessboard(RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols)
+void Calibrator::detectChessboards(RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback, 
+	WebcamCalibrationFinishedCallback onWebcamChessboardDetectedCallback,
+	FloatPoint3D* refCorners, int rows, int cols)
 {
 	this->onRGBChessboardDetectedCallback = onRGBChessboardDetectedCallback;
+	this->onWebcamChessboardDetectedCallback = onWebcamChessboardDetectedCallback;
 	
 	this->chessboardRows = rows;
 	this->chessboardCols = cols;
@@ -290,6 +293,7 @@ void Calibrator::refresh()
 					//Draws corners onto webcamImg
 					cvDrawChessboardCorners(webcamImg, cvSize(chessboardCols - 1, chessboardRows - 1), averageChessboardCorners, cornerCount, result);
 					webcamCapturedFrames++;
+					
 
 					if (webcamCapturedFrames >= CHESSBOARD_CAPTURE_FRAMES)
 					{
@@ -299,18 +303,17 @@ void Calibrator::refresh()
 						
 						cvFindHomography(homoWebEstiSrc, homoWebEstiDst, webcamSurfHomography);
 						cvInvert(webcamSurfHomography, webcamSurfHomographyInversed);
-
-						/*Sending back the points - not sure why.
-						if (onRGBChessboardDetectedCallback != NULL)
+						
+						if (onWebcamChessboardDetectedCallback != NULL)
 						{
 							convertCvPointsToCvArr(averageChessboardCorners, homoWebTransSrc, cornerCount);
 							cvPerspectiveTransform(homoWebTransSrc, homoWebTransDst, rgbSurfHomographyInversed);
 							convertCvArrToFloatPoint3D(homoWebTransDst, chessboardCheckPoints, cornerCount);
 							convertCvPointsToFloatPoint3D(averageChessboardCorners, chessboardDepthRefCorners, cornerCount);
 
-							onRGBChessboardDetectedCallback(chessboardCheckPoints, cornerCount, chessboardDepthRefCorners, cornerCount);
+							onWebcamChessboardDetectedCallback(chessboardCheckPoints, cornerCount);
 						}
-						*/
+						
 
 						state = WebcamCalibrated;
 					}
@@ -377,6 +380,10 @@ void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dst
 			homo = depthSurfHomographyInversed;
 			break;
 
+		case Webcam2D:
+			homo = webcamSurfHomographyInversed;
+			break;
+
 		default:
 			assert(0);	//not implemented
 			break;
@@ -401,6 +408,10 @@ void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dst
 
 		case Depth2D:
 			homo = depthSurfHomography;
+			break;
+
+		case Webcam2D:
+			homo = webcamSurfHomography;
 			break;
 
 		default:

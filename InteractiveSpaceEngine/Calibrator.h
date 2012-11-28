@@ -31,7 +31,7 @@ typedef enum
 	Depth2D,
 	Depth3D,
 	Motion2D,
-	Webcan2D
+	Webcam2D
 } CalibratedCoordinateSystem;
 
 class Calibrator
@@ -51,6 +51,7 @@ private:
 
 	//chessboard data
 	RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback;
+	WebcamCalibrationFinishedCallback onWebcamChessboardDetectedCallback;
 	int chessboardRows, chessboardCols;
 	CvPoint2D32f* chessboardCorners;
 	CvPoint2D32f* averageChessboardCorners;
@@ -89,7 +90,7 @@ public:
 	void startCalibration();
 	void stopCalibration();
 
-	void detectRGBChessboard(RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols);
+	void detectChessboards(RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback, WebcamCalibrationFinishedCallback onWebcamChessboardDetectedCallback, FloatPoint3D* refCorners, int rows, int cols);
 	void calibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount);
 
 	void refresh();

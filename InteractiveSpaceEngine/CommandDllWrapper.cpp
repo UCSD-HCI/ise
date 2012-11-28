@@ -58,9 +58,9 @@ DLL_EXPORT void systemCalibrationStop()
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->stopCalibration();
 }
 
-DLL_EXPORT void systemCalibrationDetectChessboardCorner(void* onFinishedCallback, FloatPoint3D* refCorners, int rows, int cols)
+DLL_EXPORT void systemCalibrationDetectChessboardCorner(void* onRGBFinishedCallback, void* onWebcamFinishedCallback, FloatPoint3D* refCorners, int rows, int cols)
 {
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->detectRGBChessboard((RGBCalibrationFinishedCallback)onFinishedCallback, refCorners, rows, cols);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->detectChessboards((RGBCalibrationFinishedCallback)onRGBFinishedCallback, (WebcamCalibrationFinishedCallback)onWebcamFinishedCallback, refCorners, rows, cols);
 }
 
 DLL_EXPORT void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount)

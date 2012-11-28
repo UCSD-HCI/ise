@@ -33,9 +33,12 @@ namespace InteractiveSpace.EngineController
         private WriteableBitmap rgbSource, depthSource, webcamSource;
         //private BackgroundWorker refreshWorker;
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
+        private WebcamCalibrationFinishedDelegate onWebcamChessboardDetectedDelegate;
         private ViscaCommandDelegate onPanTiltFinishedDelegate;
 
         private bool isAllCalibrated = false;
+        private bool isRGBCalibrated = false;
+        private bool isWebcamCalibrated = false;
         private ProjectorFeedbackWindow projectorFeedbackWindow;
 
         //public ProjectorFeedbackWindow ProjectorFeedbackWindow { get; set; }
@@ -50,7 +53,7 @@ namespace InteractiveSpace.EngineController
         private FloatPoint3D[] refCorners;
         private FloatPoint3D? testPointInTableSurface = null;
 
-        private Ellipse testPointRGB = null, testPointDepth = null, testPointTable = null;
+        private Ellipse testPointWebcam = null, testPointRGB = null, testPointDepth = null, testPointTable = null;
 
         private MainWindow mainWindow;
 
@@ -97,16 +100,19 @@ namespace InteractiveSpace.EngineController
             projectorFeedbackWindow.HitTestLayer.MouseDown += new MouseButtonEventHandler(HitTestLayer_MouseDown);
 
             refCorners = projectorFeedbackWindow.ShowChessboard();
+            rgbCalibrationLabel.Content = "RGB Calibration Started";
             CommandDllWrapper.systemCalibrationStart();
             unsafe
             {
                 onRGBChessboardDetectedDelegate = new RGBCalibrationFinishedDelegate(onRGBChessboardDetected);
+                onWebcamChessboardDetectedDelegate = new WebcamCalibrationFinishedDelegate(onWebcamChessboardDetected);
                 onPanTiltFinishedDelegate = new ViscaCommandDelegate(panTiltCallback);
 
-                IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(onRGBChessboardDetectedDelegate);
+                IntPtr RGBCallbackPtr = Marshal.GetFunctionPointerForDelegate(onRGBChessboardDetectedDelegate);
+                IntPtr webcamCallbackPtr = Marshal.GetFunctionPointerForDelegate(onWebcamChessboardDetectedDelegate);
                 fixed (FloatPoint3D* refCornersPtr = refCorners)
                 {
-                    CommandDllWrapper.systemCalibrationDetectChessboardCorner(callbackPtr, refCornersPtr, ProjectorFeedbackWindow.CHESSBOARD_ROWS, ProjectorFeedbackWindow.CHESSBOARD_COLS);
+                    CommandDllWrapper.systemCalibrationDetectChessboardCorner(RGBCallbackPtr, webcamCallbackPtr, refCornersPtr, ProjectorFeedbackWindow.CHESSBOARD_ROWS, ProjectorFeedbackWindow.CHESSBOARD_COLS);
                 }
             }
         }
@@ -202,12 +208,14 @@ namespace InteractiveSpace.EngineController
 
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {
+
             /*
             projectorFeedbackWindow.DrawCheckpoints(checkPoints, checkPointNum);
             */
             //draw depth ref corners
             Dispatcher.BeginInvoke((Action)delegate()
             {
+                setRGBCalibrationDone(true);
                 depthRefEllipses = new List<Ellipse>();
                 for (int i = 0; i < depthRefPointNum; i++)
                 {
@@ -232,6 +240,14 @@ namespace InteractiveSpace.EngineController
                 calibrateDepthLoadButton.IsEnabled = true;
             }, null);
         }
+
+        unsafe void onWebcamChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum)
+        {
+            Dispatcher.BeginInvoke((Action)delegate()
+            {
+                setWebcamCalibrationDone(true);
+            }, null);
+        }        
 
         void depthRefPoint_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -337,6 +353,21 @@ namespace InteractiveSpace.EngineController
             }
         }
 
+        private void setRGBCalibrationDone(bool calibDone)
+        {
+            if (calibDone)
+            {
+                rgbCalibrationLabel.Content = "RGB Calibration completed.";
+                webcamCalibrationLabel.Content = "Webcam Calibration started.";
+            }
+        }
+        private void setWebcamCalibrationDone(bool calibDone)
+        {
+            if (calibDone)
+            {                
+                webcamCalibrationLabel.Content = "Webcam Calibration completed.";
+            }
+        }
 
         private void refreshTestPoint()
         {
@@ -379,13 +410,26 @@ namespace InteractiveSpace.EngineController
                 projectorFeedbackWindow.globalCanvas.Children.Add(testPointTable);
             }
 
+            if (testPointWebcam == null)
+            {
+                testPointWebcam = new Ellipse
+                {
+                    Fill = Brushes.Red,
+                    Opacity = 0.8,
+                    Width = TEST_POINT_RADIUS * 2,
+                    Height = TEST_POINT_RADIUS * 2,
+                    Visibility = Visibility.Hidden,
+                };
+                webcamVideo.UiCanvas.Children.Add(testPointWebcam);
+            }
             if (testPointInTableSurface.HasValue)
             {
-                FloatPoint3D rgbPos, depthPos;
+                FloatPoint3D rgbPos, depthPos, webcamPos;
                 unsafe
                 {
                     rgbPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.RGB2D);
                     depthPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.Depth2D);
+                    webcamPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.Webcam2D);
                 }
 
                 Canvas.SetLeft(testPointTable, testPointInTableSurface.Value.x - TEST_POINT_RADIUS);
@@ -397,19 +441,25 @@ namespace InteractiveSpace.EngineController
                 Canvas.SetLeft(testPointDepth, depthPos.x - TEST_POINT_RADIUS);
                 Canvas.SetTop(testPointDepth, depthPos.y - TEST_POINT_RADIUS);
 
+                Canvas.SetLeft(testPointWebcam, webcamPos.x - TEST_POINT_RADIUS);
+                Canvas.SetTop(testPointWebcam, webcamPos.y - TEST_POINT_RADIUS);
+
                 testPointTable.Visibility = Visibility.Visible;
                 testPointRGB.Visibility = Visibility.Visible;
                 testPointDepth.Visibility = Visibility.Visible;
+                testPointWebcam.Visibility = Visibility.Visible;
 
                 realCoordLabel.Content = testPointInTableSurface.ToString();
                 rgbCoordLabel.Content = rgbPos.ToString();
                 depthCoordLabel.Content = depthPos.ToString();
+                webcamCoordLabel.Content = webcamPos.ToString();
             }
             else
             {
                 testPointTable.Visibility = Visibility.Hidden;
                 testPointRGB.Visibility = Visibility.Hidden;
                 testPointDepth.Visibility = Visibility.Hidden;
+                testPointWebcam.Visibility = Visibility.Hidden;
             }
         }
 

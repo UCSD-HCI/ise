@@ -17,18 +17,25 @@
         <my:ZoomableVideoUserControl x:Name="depthVideo" Grid.Row="0" Grid.Column="1" MouseMove="video_MouseMove" MouseLeave="video_MouseLeave" MouseUp="depthVideo_MouseUp" MouseDown="video_MouseDown"/>
         <my:ZoomableVideoUserControl x:Name="webcamVideo" Grid.Row="1" Grid.Column="0"/>
         
-        <Grid Grid.Row="1" Grid.Column="1" Margin="30,30,0,0">
+        <Grid Grid.Row="1" Grid.Column="1" Margin="18,18,12,12">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Grid.Row="0">
+                <Label Name="rgbCalibrationLabel" Content=""/>
+                <Label Name="webcamCalibrationLabel" Content=""/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
                 <Button Name="calibrateDepthButton" VerticalAlignment="Center" Click="calibrateDepthButton_Click" IsEnabled="False" Margin="10">Calibrate Depth Camera</Button>
                 <Button Name="calibrateDepthSaveButton" Margin="10" Click="calibrateDepthSaveButton_Click" IsEnabled="False">Save</Button>
                 <Button Name="calibrateDepthLoadButton" Margin="10" Click="calibrateDepthLoadButton_Click" IsEnabled="False">Load</Button>
             </StackPanel>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -44,6 +51,8 @@
                 <Label Grid.Column="1" Grid.Row="1" Name="rgbCoordLabel"/>
                 <Label Grid.Column="0" Grid.Row="2">Depth:</Label>
                 <Label Grid.Column="1" Grid.Row="2" Name="depthCoordLabel"/>
+                <Label Grid.Column="0" Grid.Row="3">Webcam:</Label>
+                <Label Grid.Column="1" Grid.Row="3" Name="webcamCoordLabel"/>
             </Grid>
         </Grid>
     </Grid>
