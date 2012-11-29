@@ -6,7 +6,7 @@
         Title="MainWindow" Height="1120" Width="1678" Closing="Window_Closing">
     <Grid Name="mainGrid">
         <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="Black"/>
-        <Image Name="grabButton" Source="Images/objreg.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,440,228" Width="80" Stretch="Uniform" mt:MultitouchScreen.NewContact="grabButton_NewContact" mt:MultitouchScreen.ContactRemoved="grabButton_ContactRemoved">
+        <Image Name="grabButton" Source="Images/objreg.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="440,0,0,0" Width="80" Stretch="Uniform" mt:MultitouchScreen.NewContact="grabButton_NewContact" mt:MultitouchScreen.ContactRemoved="grabButton_ContactRemoved">
             <Image.Effect>
                 <DropShadowEffect BlurRadius="50" Color="White" Direction="0" ShadowDepth="0" Opacity="0"/>
             </Image.Effect>
@@ -18,6 +18,6 @@
             </space:SpaceImageButton.Effect>
         </space:SpaceImageButton>
         -->
-        <Rectangle Name="registerAreaRect" Width="400" Height="513" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stroke="Gray" StrokeThickness="5" StrokeDashCap="Square" StrokeDashArray="2,3"/>
+        <Rectangle Name="registerAreaRect" Width="486" Height="625" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="Gray" StrokeThickness="5" StrokeDashCap="Square" StrokeDashArray="2,3"/>
     </Grid>
 </mt:Window>

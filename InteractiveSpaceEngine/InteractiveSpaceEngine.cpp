@@ -141,7 +141,7 @@ void InteractiveSpaceEngine::operator() ()
 
 		kinectSensor->refresh();
 		webcamReader->refresh();
-		//docRecognizer->refresh();
+		
 
 		if (calibrator->isCalibrating())
 		{
@@ -167,6 +167,7 @@ void InteractiveSpaceEngine::operator() ()
 				fingerSelector->refresh();
 				fingerEventsGenerator->refresh(newFrameCount); 
 				handTracker->refresh();
+				docRecognizer->refresh();
 
 				ipf->updateRectifiedTabletop(calibrator);
 

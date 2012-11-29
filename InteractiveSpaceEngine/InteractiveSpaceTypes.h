@@ -66,5 +66,6 @@ typedef void (*Callback)();
 typedef void (*ViscaCommandCallback)(bool isCommandCompleted, void* state);
 typedef void (*RGBCalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefCorners, int depthRefCornerNum);
 typedef void (*WebcamCalibrationFinishedCallback) (FloatPoint3D* checkPoints, int checkPointNum);
+typedef void (*NewDocumentDetectedCallback) (char[] documentTag);
 
 #endif

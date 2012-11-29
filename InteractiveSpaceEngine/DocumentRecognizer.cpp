@@ -49,6 +49,8 @@ DocumentRecognizer::~DocumentRecognizer(void)
 
 void DocumentRecognizer::refresh()
 {
+	static int throttle = 0;
+	int throttleDivider = 4;
 	char result[MAX_PATH_LEN];	// retrieval result (file name of registered image)
 	char msg[MAX_PATH_LEN*2];
 	int key;	// votes of retrieval result
@@ -60,7 +62,9 @@ void DocumentRecognizer::refresh()
 	static double numSecs = 0;
 	
 	if ( db == NULL ) return;
-	
+	if ( (throttle % throttleDivider) != 0)
+		return;
+
 	// Get image	
 	ReadLockedIplImagePtr webcamPtr = ipf->lockImageProduct(WebcamSourceProduct);
 	
