@@ -50,7 +50,7 @@ namespace InteractiveSpace.DocTrackApp
         {
             spaceProvider.Close();
         }
-
+        /*
         private void grabButton_FingerDown(object sender, FingerEventArgs e)
         {
             (grabButton.Effect as DropShadowEffect).Opacity = 1.0;
@@ -72,6 +72,6 @@ namespace InteractiveSpace.DocTrackApp
             (grabButton.Effect as DropShadowEffect).Opacity = 0;
             e.Contact.ReleaseCapture();
         }
-
+        */
     }
 }

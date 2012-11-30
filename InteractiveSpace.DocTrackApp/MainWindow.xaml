@@ -5,12 +5,14 @@
         xmlns:space="clr-namespace:InteractiveSpace.SDK.GUI;assembly=InteractiveSpace.SDK"
         Title="MainWindow" Height="1120" Width="1678" Closing="Window_Closing">
     <Grid Name="mainGrid">
-        <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="Black"/>
+        <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="Gray"/>
+        <!--
         <Image Name="grabButton" Source="Images/objreg.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="440,0,0,0" Width="80" Stretch="Uniform" mt:MultitouchScreen.NewContact="grabButton_NewContact" mt:MultitouchScreen.ContactRemoved="grabButton_ContactRemoved">
             <Image.Effect>
                 <DropShadowEffect BlurRadius="50" Color="White" Direction="0" ShadowDepth="0" Opacity="0"/>
             </Image.Effect>
         </Image>
+        -->
         <!--
         <space:SpaceImageButton Name="grabButton" ImageSource="Images/objreg.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,440,228" Width="80" ImageStretch="Uniform" FingerDown="grabButton_FingerDown" FingerUp="grabButton_FingerUp">
             <space:SpaceImageButton.Effect>
