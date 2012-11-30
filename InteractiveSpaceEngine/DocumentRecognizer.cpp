@@ -1,10 +1,13 @@
 #include "DocumentRecognizer.h"
 #include <stdio.h>
-#include "DebugUtils.h"
 #include <sstream>
 #include <string>
+
+#include "DebugUtils.h"
 #include <boost/timer.hpp>
 #include "opencv2/imgproc/imgproc_c.h"
+
+using std::string;
 
 
 #ifdef _DEBUG
@@ -18,20 +21,30 @@
 using namespace std;
 #define MAX_PATH_LEN 1024
 
-DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) : ipf(ipf)
+DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
+	: ipf(ipf), VOTING_THRESHOLD(2), DETECT_BLANK_THRESHOLD(50)
 {
-	 // Load database
-	imageROI.x = 0;
-	imageROI.y = 0;
-	imageROI.width = 320;
+	// Setup image ROI
+	imageROI.x = 660;
+	imageROI.y = 600;
+	imageROI.width = 300;
 	imageROI.height = 240;	
+
+	//Load LLAH Database
 	db = LlahDocLoadDb( "c:\\temp\\llah\\database" );
+
+	//Enable some debug features
 	DEBUG("LLAH DB Loaded");
-	enableCaptureWindow = 0;
+	enableCaptureWindow = 1;
 	if (enableCaptureWindow == 1)
 	{
 		cvNamedWindow( "Capture", CV_WINDOW_AUTOSIZE );
+		cvNamedWindow( "HistCapture", CV_WINDOW_AUTOSIZE );
 	}
+
+	//Initialize list of documents
+	
+
 }
 
 
@@ -70,21 +83,32 @@ void DocumentRecognizer::refresh()
 	
 	//Crop image
 	IplImage* croppedImage;
-	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 2);
+	//TODO Safer to copy image than break const to set the ROI
+	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 3);
+
 	if (enableCaptureWindow == 1)
 	{
-		cvShowImage("Capture", croppedImage);
+		//cvShowImage("Capture", croppedImage);
 	}
 
 	// Retrieve
+	//LLAH unhappy if image is blank!! We check for blank image
+	if (!checkBlankImage(croppedImage, imageROI))
 	{
 		boost::timer t;
 		t.restart();
 		if ((croppedImage != NULL)  &&
 			(croppedImage->height > 0) &&
 			(croppedImage->width > 0))
-		{
-			votes = LlahDocRetrieveIplImage(croppedImage, db, result, MAX_PATH_LEN );
+		{			
+			try {
+				votes = LlahDocRetrieveIplImage(croppedImage, db, result, MAX_PATH_LEN );
+			}
+			catch (std::exception const & ex)
+			{
+				DEBUG("Caught unexpected exception from LLAH. Possible blank image delivered to LLAH");
+			}
+			
 		}
 		numSecs += t.elapsed();
 		numTimerResults ++;
@@ -92,8 +116,9 @@ void DocumentRecognizer::refresh()
 		//DEBUG( msg );
 	}
 	// Display retrieval result
-	if (votes > 1)
+	if (votes >= VOTING_THRESHOLD)
 	{
+		foundDocument(std::string(result));
 		sprintf(msg, "%s : %d", result, votes);		
 		DEBUG( msg );
 	}
@@ -157,3 +182,81 @@ IplImage* DocumentRecognizer::resizeImage(const IplImage *origImg, const CvRect 
 	return outImg;
 }
 
+bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRect region)
+{
+	//Create gray image
+	IplImage* grayImg = cvCreateImage(cvSize(sourceImage->width, sourceImage->height), 8, 1);	
+	cvCvtColor(sourceImage, grayImg, CV_BGR2GRAY);
+	cvShowImage("Capture", grayImg);
+
+	//Create binarized image
+	IplImage* planes[] = {grayImg};
+	IplImage* im_bw = cvCreateImage(cvGetSize(grayImg),IPL_DEPTH_8U,1);
+	cvThreshold(grayImg, im_bw, 128, 255, CV_THRESH_BINARY);
+
+	//Count number of black pixels
+	int totalPixels = grayImg->width * grayImg->height;
+	int blackPixels = totalPixels - cvCountNonZero(im_bw);
+
+	cvShowImage("HistCapture", im_bw);
+	
+	cvReleaseImage(&grayImg);
+	cvReleaseImage(&im_bw);
+
+	//If fewer black pixels than threshold
+	if (blackPixels < DETECT_BLANK_THRESHOLD)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+
+IplImage* DocumentRecognizer:: drawHistogram(CvHistogram *hist, float scaleX, float scaleY)
+{
+	    float histMax = 0;
+    cvGetMinMaxHistValue(hist, 0, &histMax, 0, 0);
+	    IplImage* imgHist = cvCreateImage(cvSize(256*scaleX, 64*scaleY), 8 ,1);
+    cvZero(imgHist);
+    for(int i=0;i<255;i++)
+    {
+        float histValue = cvQueryHistValue_1D(hist, i);
+        float nextValue = cvQueryHistValue_1D(hist, i+1);
+ 
+        CvPoint pt1 = cvPoint(i*scaleX, 64*scaleY);
+        CvPoint pt2 = cvPoint(i*scaleX+scaleX, 64*scaleY);
+        CvPoint pt3 = cvPoint(i*scaleX+scaleX, (64-nextValue*64/histMax)*scaleY);
+        CvPoint pt4 = cvPoint(i*scaleX, (64-histValue*64/histMax)*scaleY);
+ 
+        int numPts = 5;
+        CvPoint pts[] = {pt1, pt2, pt3, pt4, pt1};
+ 
+        cvFillConvexPoly(imgHist, pts, numPts, cvScalar(255));
+		    return imgHist;
+	}
+    
+}
+void DocumentRecognizer::foundDocument(std::string docName)
+{
+	std::vector<std::string>::iterator it;
+	int knownDoc = 0;
+	for (it = currentDocuments.begin() ; it != currentDocuments.end(); ++it)
+	{
+		if (docName.compare(*it) == 0)
+		{
+			knownDoc = 1;
+		}
+	}
+	if (knownDoc == 0)
+	{
+		currentDocuments.push_back(docName);
+		
+		
+	}
+
+
+}
