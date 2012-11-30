@@ -18,20 +18,25 @@ public:
 private:
 	const int VOTING_THRESHOLD;
 	const int DETECT_BLANK_THRESHOLD;
+	const int DOC_COUNTDOWN_THRESHOLD;
 	ImageProcessingFactory* ipf;
 	strLlahDocDb *db;
 	CvRect imageROI;
 	char* databasePath;
 	int enableCaptureWindow;
+	char currentDocument[256];
+	bool haveCurrentDocument;
+	int currentDocCountdown;
 	std::vector<std::string> currentDocuments;
+	
 
 	//NewDocumentCallback onNewDocumentRecognized;
 
-
+	bool detectDocument(char* detectedDocName);
 	IplImage* cropImage(const IplImage *img, const CvRect roi);
 	IplImage* resizeImage(const IplImage *origImg, const CvRect roi, double multiplier);
 	bool checkBlankImage(const IplImage *origImg, const CvRect region);
 	IplImage* drawHistogram(CvHistogram *hist, float scaleX=1, float scaleY=1);
-	void foundDocument(std::string docName);
+	void foundDocument(char* docName);
 };
 

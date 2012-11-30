@@ -22,7 +22,9 @@ using namespace std;
 #define MAX_PATH_LEN 1024
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
-	: ipf(ipf), VOTING_THRESHOLD(2), DETECT_BLANK_THRESHOLD(50)
+	: ipf(ipf), VOTING_THRESHOLD(2), DETECT_BLANK_THRESHOLD(50),
+	  DOC_COUNTDOWN_THRESHOLD(50),
+	  haveCurrentDocument(false)
 {
 	// Setup image ROI
 	imageROI.x = 660;
@@ -64,21 +66,71 @@ void DocumentRecognizer::refresh()
 {
 	static int throttle = 0;
 	int throttleDivider = 4;
-	char result[MAX_PATH_LEN];	// retrieval result (file name of registered image)
-	char msg[MAX_PATH_LEN*2];
-	int key;	// votes of retrieval result
-	int votes = 0;
-	CvCapture *capture=0;
-	CvSize img_size;
-	IplImage *img_cap=NULL, *src=NULL;
-	static int numTimerResults = 0;
-	static double numSecs = 0;
+
+		char msg[MAX_PATH_LEN*2];
+
+	//Detect document
+	char docName[MAX_PATH_LEN];	// retrieval result (file name of registered image)
 	
+	//Return if no database has been initialized
 	if ( db == NULL ) return;
+
+	//Return if throttling 
 	if ( (throttle % throttleDivider) != 0)
 		return;
 
-	// Get image	
+	if (detectDocument(docName))
+	{
+		currentDocCountdown = DOC_COUNTDOWN_THRESHOLD;
+
+		//Check if document replaces old document
+		if (haveCurrentDocument)
+		{
+			if (strcmp(currentDocument, docName) != 0)
+			{
+				//call documentremovedhandler
+				sprintf(msg, "removed %s", currentDocument);		
+				DEBUG(msg);
+				//call documentfoundhandler
+				sprintf(msg, "added %s",  docName);
+				DEBUG(msg);
+				strcpy(currentDocument, docName);
+			}
+		}
+		else //No previous document
+		{
+			//call documentfoundhandler
+				sprintf(msg, "added %s",  docName);
+				DEBUG(msg);
+				strcpy(currentDocument, docName);
+				haveCurrentDocument = true;
+		}
+	}
+	else
+	{
+		if (haveCurrentDocument && (currentDocCountdown-- <= 0))
+		{
+			//call documentremovedhandler
+			sprintf(msg, "removed %s",  currentDocument);
+			DEBUG(msg);
+			haveCurrentDocument = false;
+		}
+	}
+
+
+
+}
+
+bool DocumentRecognizer::detectDocument(char* detectedDocName)
+{
+	int votes = 0;				// confidence of retrieved result
+
+	//Debug variables
+	char msg[MAX_PATH_LEN*2];
+	static int numTimerResults = 0;
+	static double numSecs = 0;
+
+	//Get image	
 	ReadLockedIplImagePtr webcamPtr = ipf->lockImageProduct(WebcamSourceProduct);
 	
 	//Crop image
@@ -86,12 +138,7 @@ void DocumentRecognizer::refresh()
 	//TODO Safer to copy image than break const to set the ROI
 	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 3);
 
-	if (enableCaptureWindow == 1)
-	{
-		//cvShowImage("Capture", croppedImage);
-	}
-
-	// Retrieve
+	//Request LLAH detection 
 	//LLAH unhappy if image is blank!! We check for blank image
 	if (!checkBlankImage(croppedImage, imageROI))
 	{
@@ -102,7 +149,7 @@ void DocumentRecognizer::refresh()
 			(croppedImage->width > 0))
 		{			
 			try {
-				votes = LlahDocRetrieveIplImage(croppedImage, db, result, MAX_PATH_LEN );
+				votes = LlahDocRetrieveIplImage(croppedImage, db, detectedDocName, MAX_PATH_LEN );
 			}
 			catch (std::exception const & ex)
 			{
@@ -112,20 +159,22 @@ void DocumentRecognizer::refresh()
 		}
 		numSecs += t.elapsed();
 		numTimerResults ++;
-		//sprintf(msg, "Seconds per result : %g", (double)numSecs/numTimerResults);
-		//DEBUG( msg );
-	}
-	// Display retrieval result
-	if (votes >= VOTING_THRESHOLD)
-	{
-		foundDocument(std::string(result));
-		sprintf(msg, "%s : %d", result, votes);		
-		DEBUG( msg );
 	}
 	cvReleaseImage(&croppedImage);
 
-}
+	// Display retrieval result
+	if (votes >= VOTING_THRESHOLD)
+	{
+		sprintf(msg, "%s : %d", detectedDocName, votes);		
+		DEBUG( msg );
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 
+}
 void DocumentRecognizer::setROI(int left, int top, int width, int height)
 {
 	char msg[2048];
@@ -240,23 +289,8 @@ IplImage* DocumentRecognizer:: drawHistogram(CvHistogram *hist, float scaleX, fl
 	}
     
 }
-void DocumentRecognizer::foundDocument(std::string docName)
+void DocumentRecognizer::foundDocument(char* docName)
 {
-	std::vector<std::string>::iterator it;
-	int knownDoc = 0;
-	for (it = currentDocuments.begin() ; it != currentDocuments.end(); ++it)
-	{
-		if (docName.compare(*it) == 0)
-		{
-			knownDoc = 1;
-		}
-	}
-	if (knownDoc == 0)
-	{
-		currentDocuments.push_back(docName);
-		
-		
-	}
-
-
+	
 }
+
