@@ -1,0 +1,32 @@
+﻿<Window x:Class="InteractiveSpace.EngineController.EverspaceGUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Everspaces" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="380" d:DesignWidth="307" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
+    <StackPanel Name="PagePanel" Orientation="Vertical">
+
+        <GroupBox Name="WorkspaceGbx" Header="Workspace" Margin="10,5,10,5">
+            <StackPanel Orientation="Vertical">
+                <Canvas Name="WorkspaceCanvas" Background="Transparent" HorizontalAlignment="Stretch" Height="100" AllowDrop="True" DragEnter="WorkspaceCanvas_DragEnter" Drop="WorkspaceCanvas_Drop">
+                </Canvas>
+                <Button Name="Load1Button" Content="Load1" Click="Load1Button_Click" />
+                <Button Name="Load2Button" Content="Load2" Click="Load2Button_Click" />
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Name="DocumentRecognitionGbx" Header="Document Recognition" Margin="10,5,10,5">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="RecogBoxButton" Content="Set Recognition Box" Margin="0,5,5,5" Click="RecogBoxButton_Click" />
+                </StackPanel>
+                <Label Content="Document Content Threshold Slider"/>
+                <Slider Name="DocContentThresSlider" Minimum="0" Maximum="255" 
+                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="0.01" LargeChange="5" />
+                <Label Content="SomethingElse Slider"/>
+                <Slider Name="SomethingElseSlider" Minimum="0" Maximum="255" 
+                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="0.01" LargeChange="5" />
+            </StackPanel>
+        </GroupBox>
+        <TextBlock Name="StatusLog"></TextBlock>
+
+    </StackPanel>
+</Window>

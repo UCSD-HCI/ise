@@ -81,5 +81,9 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
 		[DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe int setLLAHRoi(int left, int top, int width, int height);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void registerDocumentCallbacks(IntPtr onDocumentAddedCallback, IntPtr onDocumentRemovedCallback);
+
     }
 }

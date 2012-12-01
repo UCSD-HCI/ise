@@ -19,13 +19,17 @@ using std::string;
 #endif
 
 using namespace std;
-#define MAX_PATH_LEN 1024
+#define MAX_PATH_LEN 256
+#define DBG_MSG_LEN  1024
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
 	: ipf(ipf), VOTING_THRESHOLD(2), DETECT_BLANK_THRESHOLD(50),
-	  DOC_COUNTDOWN_THRESHOLD(50),
+	  DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), 
 	  haveCurrentDocument(false)
 {
+	char msg[DBG_MSG_LEN];
+	strcpy(databasePath, "C:\\InteractiveSpaceEngineData\\Databases\\LLAH\\database");
+
 	// Setup image ROI
 	imageROI.x = 660;
 	imageROI.y = 600;
@@ -33,8 +37,15 @@ DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf)
 	imageROI.height = 240;	
 
 	//Load LLAH Database
-	db = LlahDocLoadDb( "c:\\temp\\llah\\database" );
-
+	try
+	{
+		db = LlahDocLoadDb( databasePath );
+	}
+	catch (std::exception const & ex)
+	{
+		sprintf(msg, "Caught unexpected exception from LLAH. Possibly no database at %s", databasePath );
+		DEBUG(msg);
+	}
 	//Enable some debug features
 	DEBUG("LLAH DB Loaded");
 	enableCaptureWindow = 1;
@@ -93,6 +104,8 @@ void DocumentRecognizer::refresh()
 				DEBUG(msg);
 				//call documentfoundhandler
 				sprintf(msg, "added %s",  docName);
+				if (onDocumentAdded != NULL)
+					onDocumentAdded(docName);
 				DEBUG(msg);
 				strcpy(currentDocument, docName);
 			}
@@ -175,6 +188,13 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 	}
 
 }
+
+void DocumentRecognizer::registerCallbacks(DocumentAddedCallback onDocAdd)
+{
+	this->onDocumentAdded = onDocAdd;
+	DEBUG("Callback registered with DocumentRecognizer");
+}
+
 void DocumentRecognizer::setROI(int left, int top, int width, int height)
 {
 	char msg[2048];

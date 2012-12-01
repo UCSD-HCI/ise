@@ -269,4 +269,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     /// </summary>
     /// <param name="e"></param>
     public unsafe delegate void HandEventCallback(HandEvent e);
+
+    //Document Recognition
+    public unsafe delegate void DocumentAddedDelegate(IntPtr documentName);
+    public unsafe delegate void DocumentRemovedDelegate(IntPtr documentName);
 }
