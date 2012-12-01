@@ -135,10 +135,13 @@
     <Compile Include="CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EverspaceGUI.xaml.cs">
+      <DependentUpon>EverspaceGUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FrameCapture.cs" />
     <Compile Include="IntColorConverter.cs" />
-    <Compile Include="LLAHWindow.xaml.cs">
-      <DependentUpon>LLAHWindow.xaml</DependentUpon>
+    <Compile Include="SpaceMan\LLAHCropWindow.xaml.cs">
+      <DependentUpon>LLAHCropWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultiTouchVistaController.cs" />
     <Compile Include="NativeWrappers\CommandDllWrapper.cs" />
@@ -152,6 +155,12 @@
     <Compile Include="VideoWindow.xaml.cs">
       <DependentUpon>VideoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpaceMan\WorkItem.cs" />
+    <Compile Include="SpaceMan\WorkItemWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>WorkItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpaceMan\WorkSurface.cs" />
     <Compile Include="ZoomableVideoUserControl.xaml.cs">
       <DependentUpon>ZoomableVideoUserControl.xaml</DependentUpon>
     </Compile>
@@ -159,7 +168,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LLAHWindow.xaml">
+    <Page Include="EverspaceGUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpaceMan\LLAHCropWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +191,10 @@
     <Page Include="VideoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpaceMan\WorkItemWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ZoomableVideoUserControl.xaml">
       <SubType>Designer</SubType>

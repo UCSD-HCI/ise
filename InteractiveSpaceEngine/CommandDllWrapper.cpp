@@ -121,9 +121,14 @@ DLL_EXPORT void setWebcamEnabled(int isEnabled)
 	InteractiveSpaceEngine::sharedEngine()->getWebcamReader()->setEnabled(isEnabled > 0);
 }
 
-DLL_EXPORT int setLLAHRoi(int left, int top, int width, int height)
+DLL_EXPORT void setLLAHRoi(int left, int top, int width, int height)
 {
-	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->setROI(left, top, width, height);
-	return 47;
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->setROI(left, top, width, height);	
 }
+
+DLL_EXPORT void registerDocumentCallbacks(void* onDocumentAddedCallback, void* onDocumentRemovedCallback)
+{
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->registerCallbacks((DocumentAddedCallback)onDocumentAddedCallback);
+}
+
 

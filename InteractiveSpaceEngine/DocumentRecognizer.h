@@ -13,6 +13,7 @@ public:
 	~DocumentRecognizer(void);
 	void refresh();
 	void setROI(int left, int top, int width, int height);
+	void registerCallbacks(DocumentAddedCallback onDocAdd);
 
 
 private:
@@ -22,7 +23,7 @@ private:
 	ImageProcessingFactory* ipf;
 	strLlahDocDb *db;
 	CvRect imageROI;
-	char* databasePath;
+	char databasePath[256];
 	int enableCaptureWindow;
 	char currentDocument[256];
 	bool haveCurrentDocument;
@@ -30,7 +31,7 @@ private:
 	std::vector<std::string> currentDocuments;
 	
 
-	//NewDocumentCallback onNewDocumentRecognized;
+	DocumentAddedCallback onDocumentAdded;
 
 	bool detectDocument(char* detectedDocName);
 	IplImage* cropImage(const IplImage *img, const CvRect roi);

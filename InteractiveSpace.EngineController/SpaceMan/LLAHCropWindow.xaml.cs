@@ -11,23 +11,25 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using InteractiveSpace.EngineController.NativeWrappers;
+using InteractiveSpace.EngineController;
 
 namespace InteractiveSpace.EngineController
 {
     /// <summary>
     /// Interaction logic for LLAHWindow.xaml
     /// </summary>
-    public partial class LLAHWindow : Window
+    public partial class LLAHCropWindow : Window
     {
         private bool isCropDragging;
         private Point roiCorner1, roiCorner2;
 
         private MainWindow mainWindow;
 
-        public LLAHWindow()
+        public LLAHCropWindow()
         {
             InitializeComponent();
         }
+
         public MainWindow MainWindow
         {
             get { return mainWindow; }
@@ -37,6 +39,7 @@ namespace InteractiveSpace.EngineController
                 mainWindow.EngineUpdate += new EventHandler(mainWindow_EngineUpdate);
             }
         }
+
         void mainWindow_EngineUpdate(object sender, EventArgs e)
         {
             Dispatcher.BeginInvoke((Action)delegate

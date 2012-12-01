@@ -1,0 +1,8 @@
+﻿<Window x:Class="InteractiveSpace.EngineController.WorkItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WorkItemWindow" Height="300" Width="300" WindowStyle="None" SizeToContent="WidthAndHeight" MouseDown="Window_MouseDown" Activated="Window_Activated" Deactivated="Window_Deactivated">
+    <StackPanel Name="ContentStackPanel">
+        
+    </StackPanel>
+</Window>

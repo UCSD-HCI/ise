@@ -366,11 +366,12 @@ namespace InteractiveSpace.EngineController
             CommandDllWrapper.setWebcamEnabled(webcamCheckBox.IsChecked.Value ? 1 : 0);
 		}
 		
-        private void LLAHButton_Click(object sender, RoutedEventArgs e)
+        private void EverspaceButton_Click(object sender, RoutedEventArgs e)
         {
-            LLAHWindow llahWin = new LLAHWindow();
-            llahWin.MainWindow = this;            
-            llahWin.Show();
+            InteractiveSpace.EngineController.EverspaceGUI everspaceGUI = new InteractiveSpace.EngineController.EverspaceGUI();
+            everspaceGUI.MainWindow = this;
+            everspaceGUI.Show();
+
         }
 
 

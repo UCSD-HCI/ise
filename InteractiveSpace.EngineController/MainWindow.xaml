@@ -28,7 +28,7 @@
                 <Button Name="captureButton" Margin="5" Click="captureButton_Click">Frame Capture</Button>
                 <Button Name="recordButton" Margin="5" Click="recordButton_Click">Video Record</Button>
                 <Button Name="systemCalibrateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="systemCalibrateButton_Click">Calibrate</Button>
-                <Button Name="LLAHButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="LLAHButton_Click">LLAH</Button>
+                <Button Name="EverspaceButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="EverspaceButton_Click">Everspace</Button>
             </StackPanel>
         </GroupBox>
         <!--<GroupBox Header="Options"></GroupBox>-->
