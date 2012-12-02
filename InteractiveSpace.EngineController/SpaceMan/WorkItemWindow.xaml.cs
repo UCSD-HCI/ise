@@ -21,7 +21,8 @@ namespace InteractiveSpace.EngineController
         public enum Type
         {
             Image,
-            Note
+            Note,
+            Text
         }
         public WorkItemWindow()
         {
@@ -45,6 +46,10 @@ namespace InteractiveSpace.EngineController
             {
                 SetContent(Type.Note, ((NoteItem)wi).Contents);
             }
+            else if (wi is TxtItem)
+            {
+                SetContent(Type.Text, ((TxtItem)wi).Filename);
+            }
         }
         //Maybe we shouldn't have a local type - workitem and workitemwindow are pretty coupled.
         public void SetContent(Type type, String value)
@@ -57,6 +62,11 @@ namespace InteractiveSpace.EngineController
             else if (type == Type.Note)
             {
                 TextBox content = CreateNoteContent(value);
+                ContentStackPanel.Children.Add(content);
+            }
+            else if (type == Type.Note)
+            {
+                TextBox content = CreateTextContent(value);
                 ContentStackPanel.Children.Add(content);
             }
         }
@@ -99,6 +109,29 @@ namespace InteractiveSpace.EngineController
             myText.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             return myText;
         }
+
+        private TextBox CreateTextContent(string filename)
+        {
+            string myString;
+            try
+            {
+                System.IO.StreamReader myFile =
+                    new System.IO.StreamReader(filename);
+                myString = myFile.ReadToEnd();
+                myFile.Close();
+            }
+            catch (System.IO.IOException ex)
+            {
+                throw new ArgumentException("File Not Found Exception", filename);
+            }
+            TextBox myText = new TextBox();
+            myText.Text = myString;
+            myText.MinHeight = 150;
+            myText.MinWidth = 300;
+            myText.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            return myText;
+        }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)

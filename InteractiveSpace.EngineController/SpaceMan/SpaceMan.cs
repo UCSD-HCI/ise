@@ -97,7 +97,21 @@ namespace InteractiveSpace.EngineController
             {
             }
         }
-       
+
+        public void AddToWorkspace(string filename)
+        {
+            string ext = System.IO.Path.GetExtension(filename).ToLower();
+            if ((ext.CompareTo(".jpg") == 0) ||
+                (ext.CompareTo(".png") == 0) ||
+                (ext.CompareTo(".gif") == 0))
+            {
+                currentSpace.AddItem(new ImageItem(filename));
+            }
+            else if (ext.CompareTo(".txt") == 0)
+            {
+                currentSpace.AddItem(new TxtItem(filename));
+            }
+        }
         public void SaveXML()
         {
             XmlDocument myDoc = new XmlDocument();

@@ -14,6 +14,7 @@ using InteractiveSpace.EngineController;
 using InteractiveSpace.EngineController.NativeWrappers;
 using System.Runtime.InteropServices;
 
+
 namespace InteractiveSpace.EngineController
 {
     /// <summary>
@@ -48,6 +49,7 @@ namespace InteractiveSpace.EngineController
         {
             spaceManager.BootstrapWorkspaces();
             RegisterDelegatesWithDocumentRecognition();
+            ToastMessage("Loading");
             
         }
 
@@ -139,11 +141,7 @@ namespace InteractiveSpace.EngineController
             int numFiles = 0;
             foreach (string fileName in FileList)
             {
-                if (System.IO.Path.GetExtension(fileName).ToLower().CompareTo(".jpg") == 0)
-                {
-                    //currentWorkspace.AddItem(new ImageItem(fileName));
-                }
-
+                spaceManager.AddToWorkspace(fileName);
             }
             //WorkspaceCanvas.Text += numFiles + " files added!\n";
 
@@ -155,5 +153,13 @@ namespace InteractiveSpace.EngineController
             llahWin.MainWindow = mainWindow;
             llahWin.Show();
         }
+
+        private void ToastMessage(string msg)
+        {
+            ToastWindow toastWin = new ToastWindow(msg);
+            toastWin.Top = 500;
+            toastWin.Left = 2300;
+            toastWin.Show();
+        }     
     }
 }
