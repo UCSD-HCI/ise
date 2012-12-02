@@ -10,8 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Xml;
-using System.IO;
 using InteractiveSpace.EngineController;
 using InteractiveSpace.EngineController.NativeWrappers;
 using System.Runtime.InteropServices;
@@ -24,12 +22,7 @@ namespace InteractiveSpace.EngineController
     public partial class EverspaceGUI : Window
     {
         //SpaceMan
-        string workWindowDirectory;
-        LinkedList<WorkSpace> mySpaces;
-        WorkSpace myWs1;
-        WorkSpace myWs2;
-        WorkSpace currentWorkspace;
-
+        private SpaceMan spaceManager = SpaceMan.Instance;
         private MainWindow mainWindow;
         private DocumentAddedDelegate onDocumentAddedDelegate;
         private DocumentRemovedDelegate onDocumentRemovedDelegate;
@@ -49,59 +42,11 @@ namespace InteractiveSpace.EngineController
         }
 
         #region SpaceMan
-        private void BootstrapWorkspaces()
-        {
-            //Create two test worksurfaces
-            workWindowDirectory = System.IO.Path.Combine(@"C:\InteractiveSpaceEngineData\Databases", "WorkItems");
 
-            myWs1 = new WorkSpace(0, 0, 1680, 1050);
-            myWs2 = new WorkSpace(0, 0, 1680, 1050);
-
-            WorkItem myWi1 = new ImageItem(System.IO.Path.Combine(workWindowDirectory, "finger.jpg"));
-            WorkItem myWi2 = new ImageItem(System.IO.Path.Combine(workWindowDirectory, "xray1.jpg"));
-            WorkItem myWi3 = new ImageItem(System.IO.Path.Combine(workWindowDirectory, "blood1.jpg"));
-            WorkItem myWi4 = new ImageItem(System.IO.Path.Combine(workWindowDirectory, "xray2.jpg"));
-            WorkItem myWi5 = new ImageItem(System.IO.Path.Combine(workWindowDirectory, "ekg1.jpg"));
-
-            myWs1.AddItem(myWi1, 5, 5);
-            myWs1.AddItem(myWi2, 100, 5);
-            myWs1.AddItem(myWi3, 200, 5);
-
-            myWs2.AddItem(myWi4, 500, 200);
-            myWs2.AddItem(myWi5, 500, 5);
-        }
-        private void SaveXML()
-        {
-            XmlDocument myDoc = new XmlDocument();
-            XmlElement contents = myWs1.SerializeToXML(myDoc);
-            myDoc.AppendChild(contents);
-            try
-            {
-                FileStream fileStream =
-                  new FileStream("WorkSurfaces.xml", FileMode.Create);
-                XmlTextWriter textWriter =
-                  new XmlTextWriter(fileStream, Encoding.UTF8);
-                textWriter.Formatting = Formatting.Indented;
-                myDoc.Save(textWriter);
-                fileStream.Close();
-
-            }
-            catch (System.IO.DirectoryNotFoundException ex)
-            {
-                System.ArgumentException argEx = new System.ArgumentException("XMLFile path is not valid", "WorkSurfaces.xml", ex);
-                throw argEx;
-            }
-            catch (System.Exception ex)
-            {
-                System.ArgumentException argEx = new System.ArgumentException("XML File write failed", "WorkSurfaces.xml", ex);
-                throw argEx;
-            }
-        }
         #endregion
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
-            BootstrapWorkspaces();
+            spaceManager.BootstrapWorkspaces();
             RegisterDelegatesWithDocumentRecognition();
             
         }
@@ -122,31 +67,39 @@ namespace InteractiveSpace.EngineController
 
         unsafe void OnDocumentAdded(IntPtr documentName)
         {
+            WorkSpace newWs = null;
             //findworkspace with that document trigger
             string docName = Marshal.PtrToStringAnsi(documentName);
-            System.Diagnostics.Trace.WriteLine("Found Document " + docName);
+            System.Diagnostics.Trace.WriteLine("Added Document " + docName);
+            
+            Dispatcher.BeginInvoke((Action)delegate()
+            {
+                spaceManager.onDocumentTriggered(docName);
+
+            }, null);
         }
 
         unsafe void OnDocumentRemoved(IntPtr documentName)
         {
             //findworkspace with that document trigger
-            System.Diagnostics.Trace.WriteLine("test");
+            string docName = Marshal.PtrToStringAnsi(documentName);
+            System.Diagnostics.Trace.WriteLine("Removed Document " + docName);
 
+            Dispatcher.BeginInvoke((Action)delegate()
+            {
+                spaceManager.onDocumentRemoved(docName);
+
+            }, null);
         }
+
         private void Load1Button_Click(object sender, RoutedEventArgs e)
         {
-            if ((currentWorkspace != null) && (currentWorkspace != myWs1))
-                currentWorkspace.Unload();
-            myWs1.Load();
-            currentWorkspace = myWs1;
+
         }
 
         private void Load2Button_Click(object sender, RoutedEventArgs e)
         {
-            if ((currentWorkspace != null) && (currentWorkspace != myWs2))
-                currentWorkspace.Unload();
-            myWs2.Load();
-            currentWorkspace = myWs2;
+
 
         }
 
@@ -188,7 +141,7 @@ namespace InteractiveSpace.EngineController
             {
                 if (System.IO.Path.GetExtension(fileName).ToLower().CompareTo(".jpg") == 0)
                 {
-                    currentWorkspace.AddItem(new ImageItem(fileName));
+                    //currentWorkspace.AddItem(new ImageItem(fileName));
                 }
 
             }
