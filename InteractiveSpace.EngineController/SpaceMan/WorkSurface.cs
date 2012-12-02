@@ -19,9 +19,9 @@ namespace InteractiveSpace.EngineController
         {
             windows = new LinkedList<WorkWindow>();
         }
-        public WorkSpace(int x, int y, int width, int height)
+        public WorkSpace(Area area)
         {
-            area = new Area(x, y, width, height);
+            this.area = area;
             windows = new LinkedList<WorkWindow>();
         }
         public void AddItem(WorkItem wi)
@@ -116,43 +116,6 @@ namespace InteractiveSpace.EngineController
                 data = d;
                 window = w;
             }
-        }
-
-        public struct Area
-        {
-            int x;
-            int y;
-            int width;
-            int height;
-
-            public Area(int x, int y, int width, int height)
-            {
-                this.x = x;
-                this.y = y;
-                this.width = width;
-                this.height = height;
-            }
-            public int X
-            {
-                get { return x; }
-                set { x = value; }
-            }
-            public int Y
-            {
-                get { return y; }
-                set { y = value; }
-            }
-            public int Width
-            {
-                get { return width; }
-                set { width = value; }
-            }
-            public int Height
-            {
-                get { return height; }
-                set { height = value; }
-            }
-
         }
 
     }

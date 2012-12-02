@@ -128,7 +128,7 @@ DLL_EXPORT void setLLAHRoi(int left, int top, int width, int height)
 
 DLL_EXPORT void registerDocumentCallbacks(void* onDocumentAddedCallback, void* onDocumentRemovedCallback)
 {
-	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->registerCallbacks((DocumentAddedCallback)onDocumentAddedCallback);
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->registerCallbacks((DocumentChangeCallback)onDocumentAddedCallback, (DocumentChangeCallback)onDocumentRemovedCallback);
 }
 
 

@@ -23,8 +23,8 @@ using namespace std;
 #define DBG_MSG_LEN  1024
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
-	: ipf(ipf), VOTING_THRESHOLD(2), DETECT_BLANK_THRESHOLD(50),
-	  DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), 
+	: ipf(ipf), VOTING_THRESHOLD(3), DETECT_BLANK_THRESHOLD(50),
+	DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), onDocumentRemoved(NULL),
 	  haveCurrentDocument(false)
 {
 	char msg[DBG_MSG_LEN];
@@ -100,23 +100,23 @@ void DocumentRecognizer::refresh()
 			if (strcmp(currentDocument, docName) != 0)
 			{
 				//call documentremovedhandler
-				sprintf(msg, "removed %s", currentDocument);		
-				DEBUG(msg);
+				if (onDocumentRemoved != NULL)
+					onDocumentRemoved(currentDocument);
+
 				//call documentfoundhandler
-				sprintf(msg, "added %s",  docName);
 				if (onDocumentAdded != NULL)
 					onDocumentAdded(docName);
-				DEBUG(msg);
+
 				strcpy(currentDocument, docName);
 			}
 		}
 		else //No previous document
 		{
 			//call documentfoundhandler
-				sprintf(msg, "added %s",  docName);
-				DEBUG(msg);
-				strcpy(currentDocument, docName);
-				haveCurrentDocument = true;
+			if (onDocumentAdded != NULL)
+				onDocumentAdded(docName);
+			strcpy(currentDocument, docName);
+			haveCurrentDocument = true;
 		}
 	}
 	else
@@ -124,8 +124,8 @@ void DocumentRecognizer::refresh()
 		if (haveCurrentDocument && (currentDocCountdown-- <= 0))
 		{
 			//call documentremovedhandler
-			sprintf(msg, "removed %s",  currentDocument);
-			DEBUG(msg);
+			if (onDocumentRemoved != NULL)
+				onDocumentRemoved(currentDocument);
 			haveCurrentDocument = false;
 		}
 	}
@@ -149,7 +149,7 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 	//Crop image
 	IplImage* croppedImage;
 	//TODO Safer to copy image than break const to set the ROI
-	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 3);
+	croppedImage = resizeImage(webcamPtr.getObj(), imageROI, 4);
 
 	//Request LLAH detection 
 	//LLAH unhappy if image is blank!! We check for blank image
@@ -178,8 +178,8 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 	// Display retrieval result
 	if (votes >= VOTING_THRESHOLD)
 	{
-		sprintf(msg, "%s : %d", detectedDocName, votes);		
-		DEBUG( msg );
+//		sprintf(msg, "%s : %d", detectedDocName, votes);		
+//		DEBUG( msg );
 		return true;
 	}
 	else
@@ -189,10 +189,11 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 
 }
 
-void DocumentRecognizer::registerCallbacks(DocumentAddedCallback onDocAdd)
+void DocumentRecognizer::registerCallbacks(DocumentChangeCallback onDocAdd, DocumentChangeCallback onDocRemove)
 {
 	this->onDocumentAdded = onDocAdd;
-	DEBUG("Callback registered with DocumentRecognizer");
+	this->onDocumentRemoved = onDocRemove;
+	DEBUG("Callbacks registered with DocumentRecognizer");
 }
 
 void DocumentRecognizer::setROI(int left, int top, int width, int height)
