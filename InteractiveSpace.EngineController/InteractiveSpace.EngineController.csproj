@@ -152,6 +152,9 @@
     </Compile>
     <Compile Include="SharedMemoryExporter.cs" />
     <Compile Include="SpaceMan\SpaceMan.cs" />
+    <Compile Include="SpaceMan\ToastWindow.xaml.cs">
+      <DependentUpon>ToastWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VideoSources.cs" />
     <Compile Include="VideoWindow.xaml.cs">
       <DependentUpon>VideoWindow.xaml</DependentUpon>
@@ -186,6 +189,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ProjectorFeedbackWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpaceMan\ToastWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

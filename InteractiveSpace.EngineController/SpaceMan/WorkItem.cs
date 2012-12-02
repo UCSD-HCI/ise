@@ -56,7 +56,29 @@ namespace InteractiveSpace.EngineController
             xmlEl.AppendChild(childEl);
             return xmlEl;
         }            
+    }
 
+    class TxtItem : WorkItem
+    {
+        private string filename;
+
+        public string Filename
+        {
+            get { return filename; }
+            set { filename = value; }
+        }
+        public TxtItem(string name)
+        {
+            filename = name;
+        }
+        public override XmlElement SerializeToXML(XmlDocument doc)
+        {
+            XmlElement xmlEl = doc.CreateElement("TxtItem");
+            XmlElement childEl = doc.CreateElement("Filename");
+            childEl.InnerText = this.filename;
+            xmlEl.AppendChild(childEl);
+            return xmlEl;
+        }
     }
 
     class NoteItem : WorkItem
