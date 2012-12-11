@@ -64,6 +64,8 @@ namespace InteractiveSpace.EngineController
 
             isSlidersValueLoaded = true;
 
+            
+
             //projectorFeedbackWindow = new ProjectorFeedbackWindow();
 
             multiTouchVistaController = new MultiTouchVistaController();

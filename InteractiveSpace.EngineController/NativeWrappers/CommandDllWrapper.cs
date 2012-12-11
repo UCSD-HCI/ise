@@ -87,5 +87,8 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void regenerateLLAHDB();
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void setDocumentRecognizerParameters(int binarizeThreshold, int votesThreshold);
     }
 }

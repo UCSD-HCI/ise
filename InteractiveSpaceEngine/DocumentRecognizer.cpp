@@ -23,7 +23,7 @@ using namespace std;
 #define DBG_MSG_LEN  1024
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
-	: ipf(ipf), VOTING_THRESHOLD(3), DETECT_BLANK_THRESHOLD(50),
+	: ipf(ipf), votingThreshold(3), binarizeThreshold(50), DETECT_BLACKPIX_THRESHOLD(50),
 	DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), onDocumentRemoved(NULL), regeneratingDB(false),
 	  haveCurrentDocument(false)
 {
@@ -64,7 +64,6 @@ DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf)
 	
 
 }
-
 
 DocumentRecognizer::~DocumentRecognizer(void)
 {
@@ -181,7 +180,7 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 	cvReleaseImage(&croppedImage);
 
 	// Display retrieval result
-	if (votes >= VOTING_THRESHOLD)
+	if (votes >= votingThreshold)
 	{
 //		sprintf(msg, "%s : %d", detectedDocName, votes);		
 //		DEBUG( msg );
@@ -253,6 +252,12 @@ void DocumentRecognizer::setROI(int left, int top, int width, int height)
 	}
 }
 
+void DocumentRecognizer::setParameters(int bt, int vt)
+{
+	votingThreshold = vt;
+	binarizeThreshold = bt;
+}
+
 
 // Creates a new image copy that is of a desired size. The aspect ratio will
 // be kept constant if 'keepAspectRatio' is true, by cropping undesired parts
@@ -307,8 +312,10 @@ bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRe
 	//Create binarized image
 	IplImage* planes[] = {grayImg};
 	IplImage* im_bw = cvCreateImage(cvGetSize(grayImg),IPL_DEPTH_8U,1);
-	cvThreshold(grayImg, im_bw, 128, 255, CV_THRESH_BINARY);
-
+	cvThreshold(grayImg, im_bw, binarizeThreshold, 255, CV_THRESH_BINARY);
+	char msg[256];
+	sprintf(msg, "Binarize threshold %d", binarizeThreshold);
+		DEBUG(msg);
 	//Count number of black pixels
 	int totalPixels = grayImg->width * grayImg->height;
 	int blackPixels = totalPixels - cvCountNonZero(im_bw);
@@ -319,7 +326,7 @@ bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRe
 	cvReleaseImage(&im_bw);
 
 	//If fewer black pixels than threshold
-	if (blackPixels < DETECT_BLANK_THRESHOLD)
+	if (blackPixels < DETECT_BLACKPIX_THRESHOLD)
 	{
 		return true;
 	}

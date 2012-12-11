@@ -48,6 +48,15 @@ namespace InteractiveSpace.EngineController
         #endregion
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            var settings = Properties.Settings.Default;
+
+            DocBinarizeThreshSlider.Value = settings.DocRecognizerBinarizeThreshold;
+            //TODO why is this always reading 0 when it is set to 3 in Settings?
+            //DocVotesThreshSlider.Value = settings.DocRecognizerVotesThreshold;
+            DocVotesThreshSlider.Value = 3;
+            NativeWrappers.CommandDllWrapper.setDocumentRecognizerParameters(settings.DocRecognizerBinarizeThreshold, settings.DocRecognizerVotesThreshold);
+
+
             spaceManager.BootstrapWorkspaces();
             RegisterDelegatesWithDocumentRecognition();
             SpaceMan.ToastMessageDelegate toastMessageDel = new SpaceMan.ToastMessageDelegate(ToastMessage);
@@ -114,7 +123,11 @@ namespace InteractiveSpace.EngineController
 
         private void docRecognition_valueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            Properties.Settings.Default.DocRecognizerBinarizeThreshold = (int)DocBinarizeThreshSlider.Value;
+            Properties.Settings.Default.DocRecognizerVotesThreshold = (int)DocVotesThreshSlider.Value;
+            Properties.Settings.Default.Save();
 
+            NativeWrappers.CommandDllWrapper.setDocumentRecognizerParameters((int)DocBinarizeThreshSlider.Value, (int)DocVotesThreshSlider.Value);
         }
 
         void onWorkspaceInfoChanged(LinkedList<Area> windows)
