@@ -135,8 +135,8 @@
     <Compile Include="CalibrationWindow.xaml.cs">
       <DependentUpon>CalibrationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EverspaceGUI.xaml.cs">
-      <DependentUpon>EverspaceGUI.xaml</DependentUpon>
+    <Compile Include="InteractiveSpacesGUI.xaml.cs">
+      <DependentUpon>InteractiveSpacesGUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="FrameCapture.cs" />
     <Compile Include="IntColorConverter.cs" />
@@ -172,7 +172,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EverspaceGUI.xaml">
+    <Page Include="InteractiveSpacesGUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

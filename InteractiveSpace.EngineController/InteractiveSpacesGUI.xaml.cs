@@ -20,15 +20,16 @@ namespace InteractiveSpace.EngineController
     /// <summary>
     /// Interaction logic for Everspaces.xaml
     /// </summary>
-    public partial class EverspaceGUI : Window
+    public partial class InteractiveSpacesGUI : Window
     {
         //SpaceMan
         private SpaceMan spaceManager = SpaceMan.Instance;
         private MainWindow mainWindow;
         private DocumentAddedDelegate onDocumentAddedDelegate;
         private DocumentRemovedDelegate onDocumentRemovedDelegate;
+        private string currentDocumentTrigger;
 
-        public EverspaceGUI()
+        public InteractiveSpacesGUI()
         {
             InitializeComponent();
         }
@@ -49,7 +50,13 @@ namespace InteractiveSpace.EngineController
         {
             spaceManager.BootstrapWorkspaces();
             RegisterDelegatesWithDocumentRecognition();
-            ToastMessage("Loading");
+            SpaceMan.ToastMessageDelegate toastMessageDel = new SpaceMan.ToastMessageDelegate(ToastMessage);
+            spaceManager.setToastMessageCallback(toastMessageDel);
+            SpaceMan.WorkspaceInformationDelegate workspaceInfoDel = new SpaceMan.WorkspaceInformationDelegate(onWorkspaceInfoChanged);
+            spaceManager.setWorkspaceInfoCallback(onWorkspaceInfoChanged);
+            WorkspaceCanvas.Height = (WorkspaceCanvas.ActualWidth / spaceManager.WorkspaceArea.Width) * spaceManager.WorkspaceArea.Height - 20;
+
+            ToastMessage("InteractiveSpaces");
             
         }
 
@@ -73,7 +80,7 @@ namespace InteractiveSpace.EngineController
             //findworkspace with that document trigger
             string docName = Marshal.PtrToStringAnsi(documentName);
             System.Diagnostics.Trace.WriteLine("Added Document " + docName);
-            
+            currentDocumentTrigger = docName;
             Dispatcher.BeginInvoke((Action)delegate()
             {
                 spaceManager.onDocumentTriggered(docName);
@@ -86,7 +93,7 @@ namespace InteractiveSpace.EngineController
             //findworkspace with that document trigger
             string docName = Marshal.PtrToStringAnsi(documentName);
             System.Diagnostics.Trace.WriteLine("Removed Document " + docName);
-
+            currentDocumentTrigger = null;
             Dispatcher.BeginInvoke((Action)delegate()
             {
                 spaceManager.onDocumentRemoved(docName);
@@ -108,6 +115,37 @@ namespace InteractiveSpace.EngineController
         private void docRecognition_valueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
+        }
+
+        void onWorkspaceInfoChanged(LinkedList<Area> windows)
+        {
+            Area workspaceArea = new Area(1920, 0, 1600, 1200);
+            double scale = (double)WorkspaceCanvas.ActualWidth / workspaceArea.Width;
+            WorkspaceCanvas.Children.Clear();
+            foreach (Area a in windows)
+            {
+                Rectangle newWin = new Rectangle
+                {
+                    Stroke = Brushes.LightBlue,
+                    StrokeThickness = 2
+                };
+                newWin.Width = (a.Width * scale);
+                newWin.Height = (a.Height * scale);
+                Canvas.SetLeft(newWin, (a.X - workspaceArea.X) * scale);
+                Canvas.SetTop(newWin, a.Y * scale);
+                WorkspaceCanvas.Children.Add(newWin);
+            }
+
+        }
+
+        Point mapLocationFromCanvasToDesktop(Point locOnCanvas)
+        {
+            Area workspaceArea = new Area(1920, 0, 1600, 1200);
+            double scale = (double)WorkspaceCanvas.ActualWidth / workspaceArea.Width;
+            Point locOnDesktop = new Point();
+            locOnDesktop.X = (locOnCanvas.X / scale) + workspaceArea.X;
+            locOnDesktop.Y = (locOnCanvas.Y / scale);
+            return locOnDesktop;
         }
 
         // Form load event or a similar place
@@ -134,14 +172,16 @@ namespace InteractiveSpace.EngineController
         // Occurs when the user releases the mouse over the drop target 
         void WorkspaceCanvas_Drop(object sender, DragEventArgs e)
         {
+            
             // Extract the data from the DataObject-Container into a string list
             string[] FileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            Point location = mapLocationFromCanvasToDesktop(e.GetPosition(WorkspaceCanvas));
 
             // Do something with the data...
             int numFiles = 0;
             foreach (string fileName in FileList)
             {
-                spaceManager.AddToWorkspace(fileName);
+                spaceManager.AddToWorkspace(fileName, location);
             }
             //WorkspaceCanvas.Text += numFiles + " files added!\n";
 
@@ -154,12 +194,17 @@ namespace InteractiveSpace.EngineController
             llahWin.Show();
         }
 
-        private void ToastMessage(string msg)
+        public static void ToastMessage(string msg)
         {
             ToastWindow toastWin = new ToastWindow(msg);
             toastWin.Top = 500;
             toastWin.Left = 2300;
             toastWin.Show();
+        }
+
+        private void RecogRegenerateDBButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandDllWrapper.regenerateLLAHDB();
         }     
     }
 }

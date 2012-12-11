@@ -368,9 +368,9 @@ namespace InteractiveSpace.EngineController
 		
         private void EverspaceButton_Click(object sender, RoutedEventArgs e)
         {
-            InteractiveSpace.EngineController.EverspaceGUI everspaceGUI = new InteractiveSpace.EngineController.EverspaceGUI();
-            everspaceGUI.MainWindow = this;
-            everspaceGUI.Show();
+            InteractiveSpace.EngineController.InteractiveSpacesGUI ispaceGUI = new InteractiveSpace.EngineController.InteractiveSpacesGUI();
+            ispaceGUI.MainWindow = this;
+            ispaceGUI.Show();
 
         }
 

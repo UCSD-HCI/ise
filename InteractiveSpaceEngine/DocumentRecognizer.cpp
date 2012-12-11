@@ -24,17 +24,22 @@ using namespace std;
 
 DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf) 
 	: ipf(ipf), VOTING_THRESHOLD(3), DETECT_BLANK_THRESHOLD(50),
-	DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), onDocumentRemoved(NULL),
+	DOC_COUNTDOWN_THRESHOLD(50), onDocumentAdded(NULL), onDocumentRemoved(NULL), regeneratingDB(false),
 	  haveCurrentDocument(false)
 {
 	char msg[DBG_MSG_LEN];
-	strcpy(databasePath, "C:\\InteractiveSpaceEngineData\\Databases\\LLAH\\database");
+	char databasePath[MAX_PATH_LEN];
+
+	strcpy(databaseTopPath, "C:\\InteractiveSpaceEngineData\\Databases\\LLAH");
+	strcpy(databasePath, databaseTopPath);
+	strcat(databasePath, "\\database");
+	
 
 	// Setup image ROI
-	imageROI.x = 660;
-	imageROI.y = 600;
+	imageROI.x = 700;
+	imageROI.y = 500;
 	imageROI.width = 300;
-	imageROI.height = 240;	
+	imageROI.height = 300;	
 
 	//Load LLAH Database
 	try
@@ -84,7 +89,7 @@ void DocumentRecognizer::refresh()
 	char docName[MAX_PATH_LEN];	// retrieval result (file name of registered image)
 	
 	//Return if no database has been initialized
-	if ( db == NULL ) return;
+	if (( db == NULL ) || (regeneratingDB)) return;
 
 	//Return if throttling 
 	if ( (throttle % throttleDivider) != 0)
@@ -189,11 +194,51 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 
 }
 
+void DocumentRecognizer::regenerateDB()
+{
+	
+	int n = 7;	// parameter n
+	int m = 6;	// parameter m
+	int d = 10;	// level of quantization
+	char databasePath[MAX_PATH_LEN];
+	char imagesPath[MAX_PATH_LEN];
+
+	strcpy(databasePath, databaseTopPath);
+	strcat(databasePath, "\\database");
+
+	strcpy(imagesPath, databaseTopPath);
+	strcat(imagesPath, "\\images");
+
+	char msg[1048];
+	sprintf(msg, "regen @ %s", databasePath);
+	DEBUG(msg);
+
+	char imageSuffix[MAX_PATH_LEN] = "jpg";	// suffix of the images
+	regeneratingDB = true;
+	try 
+	{
+		LlahDocReleaseDb(db);
+		LlahDocConstructDb( n, m, d, imagesPath, imageSuffix, databasePath );
+		
+		db = LlahDocLoadDb( databasePath );
+	}
+	catch (std::exception const & ex)
+	{
+		sprintf(msg, "Caught unexpected exception from LLAH. Possibly missing paths at %s and %s", databasePath, imagesPath );
+		DEBUG(msg);
+	}
+	regeneratingDB = false;
+			
+
+}
 void DocumentRecognizer::registerCallbacks(DocumentChangeCallback onDocAdd, DocumentChangeCallback onDocRemove)
 {
 	this->onDocumentAdded = onDocAdd;
 	this->onDocumentRemoved = onDocRemove;
 	DEBUG("Callbacks registered with DocumentRecognizer");
+	//Forget current document to retrigger callback
+	haveCurrentDocument = false;
+	strcpy(currentDocument, "");
 }
 
 void DocumentRecognizer::setROI(int left, int top, int width, int height)

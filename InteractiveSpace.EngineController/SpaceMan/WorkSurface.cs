@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Xml;
+using System.Diagnostics;
 
 namespace InteractiveSpace.EngineController
 {
@@ -57,9 +58,20 @@ namespace InteractiveSpace.EngineController
         {
             foreach (WorkWindow wi in windows)
             {
+                Trace.WriteLine("Loading window at (" + wi.window.Left + "," + wi.window.Top + ")");
                 wi.window.Show();
             }
             isVisible = true;
+        }
+
+        public LinkedList<Area> GetAllWindowAreas()
+        {
+            LinkedList<Area> windowAreas = new LinkedList<Area>();
+            foreach (WorkWindow wi in windows)
+            {
+                windowAreas.AddLast(new Area((int)wi.window.Left, (int)wi.window.Top, (int)wi.window.Width, (int)wi.window.Height));
+            }
+            return windowAreas;
         }
 
         public void Unload()

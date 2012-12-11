@@ -85,5 +85,7 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void registerDocumentCallbacks(IntPtr onDocumentAddedCallback, IntPtr onDocumentRemovedCallback);
 
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void regenerateLLAHDB();
     }
 }

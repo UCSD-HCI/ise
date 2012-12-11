@@ -5,7 +5,7 @@
         xmlns:space="clr-namespace:InteractiveSpace.SDK.GUI;assembly=InteractiveSpace.SDK"
         Title="MainWindow" Height="1120" Width="1678" Closing="Window_Closing">
     <Grid Name="mainGrid">
-        <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="Gray"/>
+        <space:TrackingVizLayer x:Name="vizLayer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsFingerVisible="True" Background="#FFC7C2C2"/>
         <!--
         <Image Name="grabButton" Source="Images/objreg.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="440,0,0,0" Width="80" Stretch="Uniform" mt:MultitouchScreen.NewContact="grabButton_NewContact" mt:MultitouchScreen.ContactRemoved="grabButton_ContactRemoved">
             <Image.Effect>
