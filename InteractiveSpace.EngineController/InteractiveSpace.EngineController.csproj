@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="FrameCapture.cs" />
     <Compile Include="IntColorConverter.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="SpaceMan\LLAHCropWindow.xaml.cs">
       <DependentUpon>LLAHCropWindow.xaml</DependentUpon>
     </Compile>

@@ -17,12 +17,18 @@
                     <Button Name="RecogBoxButton" Content="Set Recognition Box" Margin="0,5,5,5" Click="RecogBoxButton_Click" />
                     <Button Name="RecogRegenerateDBButton" Content="Regenerate DB" Margin="0,5,5,5" Click="RecogRegenerateDBButton_Click" />
                 </StackPanel>
-                <Label Content="Document Content Threshold "/>
-                <Slider Name="DocContentThresSlider" Minimum="0" Maximum="255" 
-                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="0.01" LargeChange="5" />
-                <Label Content="Removal Detection Countdown "/>
-                <Slider Name="SomethingElseSlider" Minimum="0" Maximum="255" 
-                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="0.01" LargeChange="5" />
+                <Label Content="Document Binarize Threshold "/>
+                <DockPanel>
+                    <Label Width="30" HorizontalAlignment="Right" Content="{Binding Path=Value, ElementName=DocBinarizeThreshSlider}" DockPanel.Dock="Right"></Label>
+                    <Slider Name="DocBinarizeThreshSlider" Minimum="0" Maximum="150" 
+                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="1" LargeChange="5" />
+                </DockPanel>
+                <Label Content="Document Votes Threshold "/>
+                <DockPanel>
+                    <Label Width="30" HorizontalAlignment="Right" Content="{Binding Path=Value, ElementName=DocVotesThreshSlider}" DockPanel.Dock="Right"></Label>
+                    <Slider Name="DocVotesThreshSlider" Minimum="0" Maximum="100" 
+                        HorizontalAlignment="Stretch" Orientation="Horizontal" ValueChanged="docRecognition_valueChanged" SmallChange="1" LargeChange="5" />
+                </DockPanel>
             </StackPanel>
         </GroupBox>
         <TextBlock Name="StatusLog"></TextBlock>

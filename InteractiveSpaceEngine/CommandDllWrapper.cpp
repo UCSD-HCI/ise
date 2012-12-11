@@ -136,3 +136,8 @@ DLL_EXPORT void regenerateLLAHDB()
 	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->regenerateDB();
 }
 
+DLL_EXPORT void setDocumentRecognizerParameters(int binarizeThreshold, int votesThreshold)
+{
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->setParameters(binarizeThreshold, votesThreshold);
+}
+

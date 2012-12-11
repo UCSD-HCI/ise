@@ -15,11 +15,13 @@ public:
 	void setROI(int left, int top, int width, int height);
 	void registerCallbacks(DocumentChangeCallback onDocAdd, DocumentChangeCallback onDocRemove);
 	void regenerateDB();
+	void setParameters(int binarizeThreshold, int votesThreshold);
 
 
 private:
-	const int VOTING_THRESHOLD;
-	const int DETECT_BLANK_THRESHOLD;
+	 int votingThreshold;
+	 int binarizeThreshold;
+	const int DETECT_BLACKPIX_THRESHOLD;
 	const int DOC_COUNTDOWN_THRESHOLD;
 	bool regeneratingDB;
 	ImageProcessingFactory* ipf;
