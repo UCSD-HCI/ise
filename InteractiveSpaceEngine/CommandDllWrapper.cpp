@@ -131,4 +131,8 @@ DLL_EXPORT void registerDocumentCallbacks(void* onDocumentAddedCallback, void* o
 	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->registerCallbacks((DocumentChangeCallback)onDocumentAddedCallback, (DocumentChangeCallback)onDocumentRemovedCallback);
 }
 
+DLL_EXPORT void regenerateLLAHDB()
+{
+	InteractiveSpaceEngine::sharedEngine()->getDocumentRecognizer()->regenerateDB();
+}
 

@@ -14,16 +14,18 @@ public:
 	void refresh();
 	void setROI(int left, int top, int width, int height);
 	void registerCallbacks(DocumentChangeCallback onDocAdd, DocumentChangeCallback onDocRemove);
+	void regenerateDB();
 
 
 private:
 	const int VOTING_THRESHOLD;
 	const int DETECT_BLANK_THRESHOLD;
 	const int DOC_COUNTDOWN_THRESHOLD;
+	bool regeneratingDB;
 	ImageProcessingFactory* ipf;
 	strLlahDocDb *db;
 	CvRect imageROI;
-	char databasePath[256];
+	char databaseTopPath[1024];
 	int enableCaptureWindow;
 	char currentDocument[256];
 	bool haveCurrentDocument;
@@ -35,6 +37,7 @@ private:
 	DocumentChangeCallback onDocumentRemoved;
 
 	bool detectDocument(char* detectedDocName);
+	
 	IplImage* cropImage(const IplImage *img, const CvRect roi);
 	IplImage* resizeImage(const IplImage *origImg, const CvRect roi, double multiplier);
 	bool checkBlankImage(const IplImage *origImg, const CvRect region);

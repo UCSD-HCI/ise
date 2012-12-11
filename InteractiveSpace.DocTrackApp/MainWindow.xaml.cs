@@ -41,8 +41,8 @@ namespace InteractiveSpace.DocTrackApp
 
             //Uncomment these lines to draw fingers on the projected screen
             
-            spaceProvider.CreateFingerTracker();
-            vizLayer.SpaceProvider = spaceProvider;
+            //spaceProvider.CreateFingerTracker();
+            //vizLayer.SpaceProvider = spaceProvider;
             
         }
 
