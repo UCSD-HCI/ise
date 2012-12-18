@@ -165,7 +165,7 @@
       <SubType>Code</SubType>
       <DependentUpon>WorkItemWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpaceMan\WorkSurface.cs" />
+    <Compile Include="SpaceMan\WorkSpace.cs" />
     <Compile Include="ZoomableVideoUserControl.xaml.cs">
       <DependentUpon>ZoomableVideoUserControl.xaml</DependentUpon>
     </Compile>
