@@ -53,14 +53,14 @@ DocumentRecognizer::DocumentRecognizer(ImageProcessingFactory* ipf)
 	}
 	//Enable some debug features
 	DEBUG("LLAH DB Loaded");
-	enableCaptureWindow = 1;
+
+	enableCaptureWindow = 0;
 	if (enableCaptureWindow == 1)
 	{
 		cvNamedWindow( "Capture", CV_WINDOW_AUTOSIZE );
 		cvNamedWindow( "HistCapture", CV_WINDOW_AUTOSIZE );
 	}
 
-	//Initialize list of documents
 	
 
 }
@@ -76,7 +76,7 @@ DocumentRecognizer::~DocumentRecognizer(void)
 	}
 }
 
-
+//Check document area and change state as needed
 void DocumentRecognizer::refresh()
 {
 	static int throttle = 0;
@@ -138,6 +138,7 @@ void DocumentRecognizer::refresh()
 
 }
 
+//Detect document and return document name
 bool DocumentRecognizer::detectDocument(char* detectedDocName)
 {
 	int votes = 0;				// confidence of retrieved result
@@ -179,11 +180,9 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 	}
 	cvReleaseImage(&croppedImage);
 
-	// Display retrieval result
+	//Return true if enough votes received.
 	if (votes >= votingThreshold)
 	{
-//		sprintf(msg, "%s : %d", detectedDocName, votes);		
-//		DEBUG( msg );
 		return true;
 	}
 	else
@@ -193,6 +192,7 @@ bool DocumentRecognizer::detectDocument(char* detectedDocName)
 
 }
 
+//Regenerate the LLAH database. Needs to be done when new documents are added
 void DocumentRecognizer::regenerateDB()
 {
 	
@@ -209,8 +209,6 @@ void DocumentRecognizer::regenerateDB()
 	strcat(imagesPath, "\\images");
 
 	char msg[1048];
-	sprintf(msg, "regen @ %s", databasePath);
-	DEBUG(msg);
 
 	char imageSuffix[MAX_PATH_LEN] = "jpg";	// suffix of the images
 	regeneratingDB = true;
@@ -230,16 +228,19 @@ void DocumentRecognizer::regenerateDB()
 			
 
 }
+
+//Register callback for document add and remove (exported function)
 void DocumentRecognizer::registerCallbacks(DocumentChangeCallback onDocAdd, DocumentChangeCallback onDocRemove)
 {
 	this->onDocumentAdded = onDocAdd;
 	this->onDocumentRemoved = onDocRemove;
-	DEBUG("Callbacks registered with DocumentRecognizer");
+
 	//Forget current document to retrigger callback
 	haveCurrentDocument = false;
 	strcpy(currentDocument, "");
 }
 
+//Set region of interest (ROI) for llah (exported function)
 void DocumentRecognizer::setROI(int left, int top, int width, int height)
 {
 	char msg[2048];
@@ -252,6 +253,7 @@ void DocumentRecognizer::setROI(int left, int top, int width, int height)
 	}
 }
 
+//Set some parameters for document recognizer (exported function)
 void DocumentRecognizer::setParameters(int bt, int vt)
 {
 	votingThreshold = vt;
@@ -259,10 +261,7 @@ void DocumentRecognizer::setParameters(int bt, int vt)
 }
 
 
-// Creates a new image copy that is of a desired size. The aspect ratio will
-// be kept constant if 'keepAspectRatio' is true, by cropping undesired parts
-// so that only pixels of the original image are shown, instead of adding
-// extra blank space.
+// Creates a resized version of image to improve detection by LLAH
 // Remember to free the new image later.
 IplImage* DocumentRecognizer::resizeImage(const IplImage *origImg, const CvRect region, double multiplier)
 	
@@ -285,9 +284,6 @@ IplImage* DocumentRecognizer::resizeImage(const IplImage *origImg, const CvRect 
 	//Select the ROI in original image
 	cvSetImageROI((IplImage*)origImg, region);
 
-	//sprintf(msg, "%d %d %d %d => %d %d", region.x, region.y, region.width, region.height, newWidth, newHeight);
-	//DEBUG( msg );
-	
 	//Create new image with resized size
 	outImg = cvCreateImage(cvSize(newWidth, newHeight), 
 									origImg->depth,
@@ -302,6 +298,8 @@ IplImage* DocumentRecognizer::resizeImage(const IplImage *origImg, const CvRect 
 	return outImg;
 }
 
+//Binarizes image and return true if any black pixels are visible.
+//Used to avoid sending blank image to LLAH library
 bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRect region)
 {
 	//Create gray image
@@ -314,13 +312,14 @@ bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRe
 	IplImage* im_bw = cvCreateImage(cvGetSize(grayImg),IPL_DEPTH_8U,1);
 	cvThreshold(grayImg, im_bw, binarizeThreshold, 255, CV_THRESH_BINARY);
 	char msg[256];
-	sprintf(msg, "Binarize threshold %d", binarizeThreshold);
-		DEBUG(msg);
 	//Count number of black pixels
 	int totalPixels = grayImg->width * grayImg->height;
 	int blackPixels = totalPixels - cvCountNonZero(im_bw);
 
-	cvShowImage("HistCapture", im_bw);
+	if (enableCaptureWindow == 1)
+	{
+		cvShowImage("HistCapture", im_bw);
+	}
 	
 	cvReleaseImage(&grayImg);
 	cvReleaseImage(&im_bw);
@@ -337,12 +336,12 @@ bool DocumentRecognizer::checkBlankImage(const IplImage *sourceImage, const CvRe
 
 }
 
-
+//Not used - can be used to debug if image is being captured
 IplImage* DocumentRecognizer:: drawHistogram(CvHistogram *hist, float scaleX, float scaleY)
 {
-	    float histMax = 0;
+	float histMax = 0;
     cvGetMinMaxHistValue(hist, 0, &histMax, 0, 0);
-	    IplImage* imgHist = cvCreateImage(cvSize(256*scaleX, 64*scaleY), 8 ,1);
+	IplImage* imgHist = cvCreateImage(cvSize(256*scaleX, 64*scaleY), 8 ,1);
     cvZero(imgHist);
     for(int i=0;i<255;i++)
     {
@@ -362,8 +361,5 @@ IplImage* DocumentRecognizer:: drawHistogram(CvHistogram *hist, float scaleX, fl
 	}
     
 }
-void DocumentRecognizer::foundDocument(char* docName)
-{
-	
-}
+
 

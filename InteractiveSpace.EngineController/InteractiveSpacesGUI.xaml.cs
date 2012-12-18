@@ -60,9 +60,9 @@ namespace InteractiveSpace.EngineController
             spaceManager.BootstrapWorkspaces();
             RegisterDelegatesWithDocumentRecognition();
             SpaceMan.ToastMessageDelegate toastMessageDel = new SpaceMan.ToastMessageDelegate(ToastMessage);
-            spaceManager.setToastMessageCallback(toastMessageDel);
+            spaceManager.SetToastMessageCallback(toastMessageDel);
             SpaceMan.WorkspaceInformationDelegate workspaceInfoDel = new SpaceMan.WorkspaceInformationDelegate(onWorkspaceInfoChanged);
-            spaceManager.setWorkspaceInfoCallback(onWorkspaceInfoChanged);
+            spaceManager.SetWorkspaceInfoCallback(onWorkspaceInfoChanged);
             WorkspaceCanvas.Height = (WorkspaceCanvas.ActualWidth / spaceManager.WorkspaceArea.Width) * spaceManager.WorkspaceArea.Height - 20;
 
             ToastMessage("InteractiveSpaces");

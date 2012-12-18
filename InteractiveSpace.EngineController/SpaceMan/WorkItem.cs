@@ -8,6 +8,7 @@ namespace InteractiveSpace.EngineController
 {
     abstract public class WorkItem
     {
+        //Types of possible work item or content
         enum Type
         {
             Document,
@@ -16,21 +17,7 @@ namespace InteractiveSpace.EngineController
             Tool,
             Unknown
         }
-
-        protected WorkItemWindow window;
-
-        public void Display()
-        {
-            if (window != null)
-                window.Show();
-            
-        }
-        //void move();
-        public void Close()
-        {
-            if (window != null)
-                window.Hide();
-        }
+        //Function to serialize to xml
         abstract public XmlElement SerializeToXML(XmlDocument doc);
 
     }
