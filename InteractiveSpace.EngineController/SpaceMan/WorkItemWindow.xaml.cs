@@ -29,6 +29,7 @@ namespace InteractiveSpace.EngineController
             InitializeComponent();
         }
 
+        //Create window and load content
         public WorkItemWindow(Type type, String value)
         {
             InitializeComponent();
@@ -51,6 +52,7 @@ namespace InteractiveSpace.EngineController
                 SetContent(Type.Text, ((TxtItem)wi).Filename);
             }
         }
+
         //Maybe we shouldn't have a local type - workitem and workitemwindow are pretty coupled.
         public void SetContent(Type type, String value)
         {

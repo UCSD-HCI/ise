@@ -10,9 +10,9 @@ namespace InteractiveSpace.EngineController
 {
     public class WorkSpace
     {
-        //List Objects        
+        //List of all content windows in current workspace
         LinkedList<WorkWindow> windows;
-        string documentTrigger = "";
+        
         Boolean isVisible = false;
         Area area;
 
@@ -20,11 +20,14 @@ namespace InteractiveSpace.EngineController
         {
             windows = new LinkedList<WorkWindow>();
         }
+
         public WorkSpace(Area area)
         {
             this.area = area;
             windows = new LinkedList<WorkWindow>();
         }
+
+        //Add new workitem to current workspace
         public void AddItem(WorkItem wi)
         {
             WorkItemWindow newWindow = new WorkItemWindow(wi);
@@ -50,10 +53,13 @@ namespace InteractiveSpace.EngineController
                 newWindow.Show();
 
         }
+        
+        //TODO find item and remove
         public void RemoveItem()
         {
         }
 
+        //Load workspace by loading each content item
         public void Load()
         {
             foreach (WorkWindow wi in windows)
@@ -64,6 +70,8 @@ namespace InteractiveSpace.EngineController
             isVisible = true;
         }
 
+        //Get linked list of all window areas, can be use to calculate new window location or 
+        //returned for visualization of content
         public LinkedList<Area> GetAllWindowAreas()
         {
             LinkedList<Area> windowAreas = new LinkedList<Area>();
@@ -74,6 +82,7 @@ namespace InteractiveSpace.EngineController
             return windowAreas;
         }
 
+        //Unload workspace
         public void Unload()
         {
             foreach (WorkWindow wi in windows)
@@ -83,6 +92,7 @@ namespace InteractiveSpace.EngineController
             isVisible = false;
         }
 
+        //Serialize workspace to XML
         public XmlElement SerializeToXML(XmlDocument doc)
         {          
             //Create Root
@@ -116,9 +126,7 @@ namespace InteractiveSpace.EngineController
             return root;
 
         }
-        public void LoadFromFile()
-        {
-        }
+
         public struct WorkWindow
         {
             public WorkItem data;           //Virtual work item
