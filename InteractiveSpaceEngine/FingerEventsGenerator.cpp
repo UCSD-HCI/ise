@@ -14,7 +14,8 @@ void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPo
 
 	FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(position);
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&pointProj, &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
-	
+	events[eventNum].positionTable2D.z = position.z;	
+
 	eventNum++;
 }
 
@@ -27,6 +28,7 @@ void FingerEventsGenerator::addEvent(FingerEventType type, const Finger& finger)
 
 	FloatPoint3D pointProj = finger.positionInKinectProj;
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
+	events[eventNum].positionTable2D.z = finger.positionInRealWorld.z;
 
 	eventNum++;
 }
