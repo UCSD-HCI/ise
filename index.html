@@ -1,74 +1,196 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Interactive Space Engine : " />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Interactive Space Engine by UCSD-HCI</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Interactive Space Engine</title>
   </head>
-
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/UCSD-HCI/ise">View on GitHub</a>
+      <header>
+        <h1>Interactive Space Engine</h1>
+        <p></p>
+      </header>
 
-          <h1 id="project_title">Interactive Space Engine</h1>
-          <h2 id="project_tagline"></h2>
+      <div id="banner">
+        <span id="logo"></span>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/UCSD-HCI/ise/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/UCSD-HCI/ise/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+        <a href="https://github.com/UCSD-HCI/ise" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/UCSD-HCI/ise/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/UCSD-HCI/ise/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>Interactive Space</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Interactive Space is a framework for prototyping multitouch physical desktop interaction. It is highly portable, easy to learn and to use and supports multitouch and gestural interaction on and above the desktop.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p>Interactive Space uses a Kinect and a projector to make any physical tabletop into an interactive surface. The framework provides an SDK to create interactive prototypes using C# and WPF. It also allows developers to exploit any GUI framework that supports the TUIO protocol. </p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h2>Screenshots</h2>
 
-<h3>Designer Templates</h3>
+<h2>Getting Started</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<h3>Hardware Configuration</h3>
 
-<h3>Rather Drive Stick?</h3>
+<p>To use the system you'll need the following hardwares:</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<ul>
+<li>A <a href="http://www.microsoft.com/en-us/kinectforwindows/">Kinect for Windows</a>
+</li>
+<li>A projector (short-throw preferred)</li>
+<li>Equipments for mounting the Kinect and the projector together. Try DIY!</li>
+<li>A computer running Windows (x64 preferred)</li>
+</ul><h3>Software Prerequisites</h3>
 
-<h3>Authors and Contributors</h3>
+<p>You need to have the following installed:</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<ul>
+<li>Visual Studio 2010 with .Net Framework 4.0</li>
+<li><a href="http://www.microsoft.com/en-us/kinectforwindows/develop/developer-downloads.aspx">Kinect for Windows SDK</a></li>
+<li>
+<a href="http://www.microsoft.com/en-us/kinectforwindows/develop/developer-downloads.aspx">Kinect for Windows Developer Toolkit</a> (Optional) </li>
+</ul><h3>Your First Interactive Space App</h3>
 
-<h3>Support or Contact</h3>
+<ol>
+<li>Install the project template.
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<ol>
+<li>Download the latest InteractiveSpaceApp template for Visual Studio. <a href="http://ucsd-hci.github.com/ise/#download">Download Link</a>
+</li>
+<li>Move the InteractiveSpaceTemplate_(ver).zip to <br><code>%HOMEPATH%\Documents\Visual Studio 2010\Templates</code>. <br>
+(Change to your own case if you changed the default folder settings in VS) <br>
+DO NOT extract the zip file! </li>
+</ol>
+</li>
+<li>Create and build your first app.
+
+<ol>
+<li>In Visual Studio, create a new "InteractiveSpaceApp" project. </li>
+<li>Build. If compiling errors happen, go to Trouble Shooting.</li>
+</ol>
+</li>
+<li>Adjust the projector and Kinect.
+
+<ol>
+<li>Connect the projector and Kinect. </li>
+<li>Use the projector as a <strong>secondary</strong> screen. Do not use it as your primary screen, nor mirror mode. Set the resolution of the projector to <strong>1600x1200</strong>. (Sorry, it's hard-coded right now…)</li>
+<li>Run the app you just built. Wait until the control panel window appears. (Runtime error? Go to Trouble Shooting. )</li>
+<li>Click "RGB" button to see the Kinect image. Adjust the position of your projector and Kinect to make sure that the whole projected screen falls within the Kinect view. </li>
+</ol>
+</li>
+<li>Calibration 
+
+<ol>
+<li>Click "Calibrate". Wait until chessboard is detected in the left video. </li>
+<li>Drag yellow marks to the chessboard corners in the right video. Use your fingers to indicate the corner. </li>
+<li>Click "Calibrate Depth Camera". The result will be saved so you don't need to do this every time. </li>
+</ol>
+</li>
+<li>Crop noise area
+
+<ol>
+<li>Open either "Depth" or "OmniTouch" video.</li>
+<li>Click "OmniTouch Crop".</li>
+<li>Drag your mouse to select noise-free area. </li>
+</ol>
+</li>
+<li>Enjoy your first app by touching the sample buttons, you should see color changes. (Nothing happened? Go to Trouble Shooting )</li>
+</ol><p>Still confusing? These slides used in a class might help: <a href="http://ucsd-hci.github.com/ise/files/CSE118.pdf">Introduction to Interactive Space SDK</a></p>
+
+<h3>Trouble Shooting</h3>
+
+<ul>
+<li>No "InteractiveSpaceApp" in "New Project" of VS
+
+<ul>
+<li>In VS, check Tools -&gt; Options -&gt; Projects and Solutions -&gt; General -&gt; User project templates location. Put InteractiveSpaceTemplate_(ver).zip there.</li>
+<li>Do not extract the zip file.</li>
+</ul>
+</li>
+<li>Cannot find/load InteractiveSpaceEngine.dll
+
+<ul>
+<li>If you're running 32-bit Windows, change the solution platform to "Win32".</li>
+<li>Make sure InteractiveSpaceEngine.dll, opencv_*.dll and tbb.dll exist in the lib folder of your selected platform, and they're copied into the build target folder (e.g. bin/x64/Debug). (If files are missing, go to Contact…)</li>
+</ul>
+</li>
+<li>Assertion failed in KinectSensor.cpp on start up
+
+<ul>
+<li>Make sure your Kinect is working. You can run a demo app from the Kinect for Windows Developer Toolkit to test your Kinect connection.</li>
+</ul>
+</li>
+<li>Cannot detect chessboard when calibrating
+
+<ul>
+<li>Remove staff on your table before the calibration; adjust your room light to have higher contract for the projected screen; make sure the whole chessboard is within the Kinect view.</li>
+</ul>
+</li>
+<li>False positive fingers in the center
+
+<ul>
+<li>Your Kinect is too closed to the table surface. </li>
+</ul>
+</li>
+<li>Nothing happened when touching the sample buttons
+
+<ul>
+<li>Make sure the Multi-touch input service is running in a separate console window (should be automatically start) and it outputs <code>TUIO Contacts: Secondary screen found at {X=…,Y=…,Width=1600,Height=1200}</code>
+</li>
+<li>Uncomment two lines in MainWindow.xaml.cs to draw fingers on the projected screen (see comments in that cs file).</li>
+</ul>
+</li>
+</ul><h2>Build the Engine</h2>
+
+<p>Please refer to this wiki page: <a href="https://github.com/UCSD-HCI/ise/wiki/Build-the-Interactive-Space-Engine">Build the Interactive Space Engine</a>.</p>
+
+<h2>Contact</h2>
+
+<p>You can contact the developers via Google Group <a href="https://groups.google.com/forum/?fromgroups#!forum/ise-discuss">Interactive Space Engine Discussion</a>. </p>
+
+<h2>Contributing</h2>
+
+<p>Feel free to fork this project and send a pull request. We're more than happy to accept contributions.</p>
+
+<h2>License</h2>
+
+<p>(TBD)</p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Interactive Space Engine maintained by <a href="https://github.com/UCSD-HCI">UCSD-HCI</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/UCSD-HCI">UCSD-HCI</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
-
-    
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-38541720-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
 
   </body>
 </html>
