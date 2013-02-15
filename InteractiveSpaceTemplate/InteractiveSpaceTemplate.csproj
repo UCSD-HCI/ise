@@ -223,7 +223,6 @@
     <None Include="libx64\System.ComponentModel.Composition.dll" />
     <None Include="libx64\System.ComponentModel.Composition.pdb" />
     <None Include="libx64\System.ComponentModel.Composition.xml" />
-    <None Include="libx64\thresholdSurfaceMap.xml" />
     <None Include="libx86\AddIns\MultipleMice\MultipleMice.dll" />
     <None Include="libx86\AddIns\MultipleMice\MultipleMice.pdb" />
     <None Include="libx86\AddIns\TuioProvider\TUIO.dll" />
