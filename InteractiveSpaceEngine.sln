@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InteractiveSpaceEngine", "InteractiveSpaceEngine\InteractiveSpaceEngine.vcxproj", "{F7E00155-BE6C-4A99-AF50-19E319F997A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.EngineController", "InteractiveSpace.EngineController\InteractiveSpace.EngineController.csproj", "{4B152F4F-97AB-443B-BF9C-A5B1347B580D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F7E00155-BE6C-4A99-AF50-19E319F997A6} = {F7E00155-BE6C-4A99-AF50-19E319F997A6}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractiveSpace.SDK", "InteractiveSpace.SDK\InteractiveSpace.SDK.csproj", "{35BC03D0-5325-460C-AC49-144D0A6FFEF1}"
 EndProject
