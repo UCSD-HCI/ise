@@ -4,7 +4,7 @@ Interactive Space is a framework for prototyping multitouch physical desktop int
 
 Interactive Space uses a Kinect and a projector to make any physical tabletop into an interactive surface. The framework provides an SDK to create interactive prototypes using C# and WPF. It also allows developers to exploit any GUI framework that supports the TUIO protocol. 
 
-[Screenshots](file://localhost/Users/Wander/Documents/Program/Projects/Kinect/InteractiveSpaceEngine.page/index.html#screenshots)
+[Screenshots](http://ucsd-hci.github.com/ise/#screenshots)
 
 ## Getting Started
 
