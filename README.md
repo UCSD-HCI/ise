@@ -80,7 +80,7 @@ You can contact the developers via Google Group [Interactive Space Engine Discus
 ## Contributing
 Feel free to fork this project and send a pull request. We're more than happy to accept contributions.
 
-## License
+## Copyright and License
 
 Copyright DCog-HCI Laboratary - University of California San Diego
 
