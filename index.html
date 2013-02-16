@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="javascripts/main.js"></script>
+    <script src="javascripts/galleria-1.2.9.min.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -45,6 +46,66 @@
 <p>Interactive Space uses a Kinect and a projector to make any physical tabletop into an interactive surface. The framework provides an SDK to create interactive prototypes using C# and WPF. It also allows developers to exploit any GUI framework that supports the TUIO protocol. </p>
 
 <h2>Screenshots</h2>
+
+<div id="galleria">
+        	<a href="images/screenshot1.jpg">
+                <img 
+                    src="images/screenshot1.jpg",
+                    data-title="Interactive Space Configuration"
+                    data-description="The mobile system is composed of a short-throw projector and a Kinect mounted on top of it. The system is placed on a tripod to ease portability and installation."
+                    data-link="images/screenshot1.jpg"
+                >
+            </a>
+        	<a href="images/screenshot2.jpg">
+                <img 
+                    src="images/screenshot2.jpg",
+                    data-link="images/screenshot2.jpg"
+                >
+            </a>
+			<a href="images/screenshot0.jpg">
+                <img 
+                    src="images/screenshot0.jpg",
+                    data-title="Control Center"
+                    data-description="Control the state, adjust parameters and visualize detection results."
+                    data-link="images/screenshot0.jpg"
+                >
+            </a>            
+        	<a href="images/screenshot3.jpg">
+                <img 
+                    src="images/screenshot3.jpg",
+                    data-title="Getting Started App"
+                    data-description="The project template contains a sample app with two buttons that are responsive to finger touches."
+                    data-link="images/screenshot3.jpg"
+                >
+            </a>
+        	<a href="images/screenshot4.jpg">
+                <img 
+                    src="images/screenshot4.jpg",
+                    data-title="Hand Wheel"
+                    data-description="A widget for activating functionalities using gestures above the table. When the Interactive Space application detects an open-hand gesture, it displays a projected menu. Moving the hand in one of the four directions (front, back, left, right) selects one of the available tools."
+                    data-link="images/screenshot4.jpg"
+                >
+            </a>
+        	<a href="images/screenshot5.jpg">
+                <img 
+                    src="images/screenshot5.jpg",
+                    data-title="Risk Space"
+                    data-description="Use case: a hybrid game of world domination. Inspired from the board game Risk."
+                    data-link="images/screenshot5.jpg"
+                >
+            </a>
+        </div>
+        
+<script>
+
+    // Load the classic theme
+    Galleria.loadTheme('javascripts/galleria.classic.min.js');
+
+    // Initialize Galleria
+    Galleria.run('#galleria');
+
+</script>
+
 
 <h2>Getting Started</h2>
 
