@@ -3,9 +3,11 @@
 Interactive Space is a framework for prototyping multitouch physical desktop interaction. It is highly portable, easy to learn and to use and supports multitouch and gestural interaction on and above the desktop.
 
 Interactive Space uses a Kinect and a projector to make any physical tabletop into an interactive surface. The framework provides an SDK to create interactive prototypes using C# and WPF. It also allows developers to exploit any GUI framework that supports the TUIO protocol. 
-## Screenshots
-
-## Getting Started
+
+[Screenshots](file://localhost/Users/Wander/Documents/Program/Projects/Kinect/InteractiveSpaceEngine.page/index.html#screenshots)
+
+## Getting Started
+
 
 ### Hardware Configuration
 
@@ -65,7 +67,9 @@ Still confusing? These slides used in a class might help: [Introduction to Inter
   * Your Kinect is too closed to the table surface. 
 * Nothing happened when touching the sample buttons
   * Make sure the Multi-touch input service is running in a separate console window (should be automatically start) and it outputs `TUIO Contacts: Secondary screen found at {X=…,Y=…,Width=1600,Height=1200}`
-  * Uncomment two lines in MainWindow.xaml.cs to draw fingers on the projected screen (see comments in that cs file).
+  * Uncomment two lines in MainWindow.xaml.cs to draw fingers on the projected screen (see comments in that cs file).
+
+
 ## Build the Engine
 
 Please refer to this wiki page: [Build the Interactive Space Engine](https://github.com/UCSD-HCI/ise/wiki/Build-the-Interactive-Space-Engine).
@@ -76,6 +80,8 @@ You can contact the developers via Google Group [Interactive Space Engine Discus
 ## Contributing
 Feel free to fork this project and send a pull request. We're more than happy to accept contributions.
 
-## License
+## License
+
+
 (TBD)
 
