@@ -116,7 +116,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Kinect10.lib;opencv_core231.lib;opencv_calib3d231.lib;opencv_highgui231.lib;opencv_video231.lib;opencv_ml231.lib;opencv_legacy231.lib;opencv_imgproc231.lib;atlsd.lib;ws2_32.lib;winmm.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kinect10.lib;opencv_core244.lib;opencv_calib3d244.lib;opencv_highgui244.lib;opencv_video244.lib;opencv_ml244.lib;opencv_legacy244.lib;opencv_imgproc244.lib;atlsd.lib;ws2_32.lib;winmm.lib;msvcrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
     </Link>
