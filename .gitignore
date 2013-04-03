@@ -1,3 +1,6 @@
+#Temporarily disabled in CUDA branch. DO NOT MERGE THIS INTO MASTER!!!
+/InteractiveSpaceTemplate
+
 #Sensitive
 llahdoc_api+
 
