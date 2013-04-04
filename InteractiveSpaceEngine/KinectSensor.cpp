@@ -94,6 +94,61 @@ HRESULT KinectSensor::CreateFirstConnected()
         return E_FAIL;
     }
 
+	//test hack projective parameters [[[
+
+	double width = 640;
+	double height = 480;
+	
+	double tx = 0;
+	double ty = 0;
+
+	CvMat* a = cvCreateMat(100, 2, CV_64FC1);
+	CvMat* x = cvCreateMat(2, 1, CV_64FC1);
+	CvMat* b = cvCreateMat(100, 1, CV_64FC1);
+
+	for (int i = 0; i < 100; i++)
+	{
+		FloatPoint3D p;
+		p.x = (int)((rand() / (double)RAND_MAX) * (width - 1));
+		p.y = (int)((rand() / (double)RAND_MAX) * (height - 1));
+		p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;
+	
+		double xn = p.x / width - 0.5;
+		double yn = 0.5 - p.y / height;
+
+		if (abs(xn) < 0.25 || abs(yn) < 0.25)
+		{
+			i--;
+			continue;
+		}
+
+		FloatPoint3D rp = convertProjectiveToRealWorld(p);
+	
+		a->data.db[i * a->width] = p.z / 100.0;
+		a->data.db[i * a->width + 1] = 1;
+		b->data.db[i] = rp.z;
+
+		tx += rp.x / xn / p.z;
+		ty += rp.y / yn / p.z;
+	}
+
+	realWorldXToZ = (float)(tx / 100.0);
+	realWorldYToZ = (float)(ty / 100.0);
+
+	// z = depthA * depth + depthB, with R = 1.000 in MATLAB
+	cvSolve(a, b, x, CV_SVD);
+
+	DEBUG("realWorldXToZ=" << realWorldXToZ << ", realWorldYToZ=" << realWorldYToZ);
+	DEBUG("a=" << x->data.db[0] << ", b=" << x->data.db[1]);
+
+	depthA = x->data.db[0];
+	depthB = x->data.db[1];
+
+	cvReleaseMat(&a);
+	cvReleaseMat(&b);
+	cvReleaseMat(&x);
+	//]]]
+
     return hr;
 }
 
@@ -192,6 +247,31 @@ void KinectSensor::refresh()
 
 	DEBUG("(" << x1 << "," << y1 << "," << z1 << ") - (" << x2 << "," << y2 << "," << z2 << "): " << sqrt(distSq));
 	*/
+
+	//test hack projective parameters [[[
+	double width = 640;
+	double height = 480;
+	FloatPoint3D p;
+	p.x = (int)((rand() / (double)RAND_MAX) * (width - 1));
+	p.y = (int)((rand() / (double)RAND_MAX) * (height - 1));
+	p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;
+	
+	FloatPoint3D rp = convertProjectiveToRealWorld(p);
+
+	FloatPoint3D rpt;
+	rpt.x = (p.x / width - 0.5) * p.z * realWorldXToZ;
+	rpt.y = (0.5 - p.y / height) * p.z * realWorldYToZ;
+	rpt.z = p.z / 100.0 * depthA + depthB;
+
+	DEBUG("(" << p.x << "\t\t" << p.y << "\t\t" << p.z << ")");
+	DEBUG("(" << rp.x << "\t\t" << rp.y << "\t\t" << rp.z << ")");
+	DEBUG("(" << rpt.x << "\t\t" << rpt.y << "\t\t" << rpt.z << ")");
+	DEBUG("");
+	DEBUG("");
+
+	//DEBUG(rpt.z << "," << rp.z);
+
+	//]]]
 }
 
 IplImage* KinectSensor::createBlankRGBImage()
@@ -224,7 +304,7 @@ FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) c
 {
 	Vector4 vec = NuiTransformDepthImageToSkeleton((LONG)p.x, (LONG)p.y, (USHORT)p.z, NUI_IMAGE_RESOLUTION_640x480);
 
-	return FloatPoint3D(vec.x / vec.w * 100.0, vec.y / vec.w * 100.0, vec.z / vec.w * 100.0);
+	return FloatPoint3D(vec.x / vec.w * 100.0, vec.y / vec.w * 100.0, vec.z / vec.w * 100.0);	//cm
 }
 
 FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const

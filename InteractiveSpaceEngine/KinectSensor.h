@@ -1,6 +1,9 @@
 #ifndef KINECT_SENSOR_H
 #define KINECT_SENSOR_H
 
+//fix a weird issue that new version of NuiApi seems not to include windows.h
+#include <Windows.h>	
+
 #include "ThreadUtils.h"
 #include "ThreadWorker.h"
 #include "InteractiveSpaceTypes.h"
@@ -28,6 +31,8 @@ private:
 	IplImage* rawColorImg;
 
 	HRESULT CreateFirstConnected();
+
+	float realWorldXToZ, realWorldYToZ, depthA, depthB;	//test
 
 public:
 	KinectSensor();
