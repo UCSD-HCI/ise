@@ -11,8 +11,25 @@
 
 class ImageProcessingFactory;
 
+//To hack perspective/skeleton conversion
+typedef struct _KinectIntrinsicParameters
+{
+	float realWorldXToZ;
+	float realWorldYToZ;
+	float depthSlope;
+	float depthIntercept;
+} KinectIntrinsicParameters;
+
 class KinectSensor //: public ThreadWorker
 {
+public: //const
+	static const int KINECT_RGB_WIDTH = 640;
+	static const int KINECT_RGB_HEIGHT = 480;
+	static const int KINECT_DEPTH_WIDTH = 640;
+	static const int KINECT_DEPTH_HEIGHT = 480;
+	static const NUI_IMAGE_RESOLUTION KINECT_RGB_RES = NUI_IMAGE_RESOLUTION_640x480;
+	static const NUI_IMAGE_RESOLUTION KINECT_DEPTH_RES = NUI_IMAGE_RESOLUTION_640x480;
+
 private:
 	/*xn::Context context;
 	xn::DepthGenerator depthGen;
@@ -30,11 +47,13 @@ private:
 	ImageProcessingFactory* ipf;
 	IplImage* rawColorImg;
 
-	HRESULT CreateFirstConnected();
+	KinectIntrinsicParameters intrinsicParam;
 
-	float realWorldXToZ, realWorldYToZ, depthA, depthB;	//test
+	HRESULT CreateFirstConnected();
+	void estimateIntrinsicParameters();
 
 public:
+
 	KinectSensor();
 	virtual ~KinectSensor();
 
@@ -62,7 +81,13 @@ public:
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	FloatPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
 
+	
 	void refresh();
+
+	inline const KinectIntrinsicParameters& getIntrinsicParameters() const
+	{
+		return intrinsicParam;
+	}
 };
 
 #endif

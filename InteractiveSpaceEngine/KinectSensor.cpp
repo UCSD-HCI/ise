@@ -7,10 +7,12 @@
 KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1), nuiSensor(NULL), depthHandle(NULL)
 {
 
-	rawColorImg = cvCreateImage(cvSize(640, 480), IPL_DEPTH_8U, 4);	//TODO: constants
+	rawColorImg = cvCreateImage(cvSize(KINECT_RGB_WIDTH, KINECT_RGB_HEIGHT), IPL_DEPTH_8U, 4);	
 
 	HRESULT res = CreateFirstConnected();
 	assert(!FAILED(res));
+
+	estimateIntrinsicParameters();
 }
 
 KinectSensor::~KinectSensor()
@@ -70,7 +72,7 @@ HRESULT KinectSensor::CreateFirstConnected()
             // Open a depth image stream to receive depth frames
             hr = nuiSensor->NuiImageStreamOpen(
                 NUI_IMAGE_TYPE_DEPTH,
-                NUI_IMAGE_RESOLUTION_640x480,
+				KINECT_DEPTH_RES,
                 0,
                 2,
                 NULL, //m_hNextDepthFrameEvent,
@@ -78,7 +80,7 @@ HRESULT KinectSensor::CreateFirstConnected()
 
 			hr = nuiSensor->NuiImageStreamOpen(
 				NUI_IMAGE_TYPE_COLOR,
-                NUI_IMAGE_RESOLUTION_640x480,
+                KINECT_RGB_RES,
                 0,
                 2,
                 NULL, //m_hNextDepthFrameEvent,
@@ -94,10 +96,11 @@ HRESULT KinectSensor::CreateFirstConnected()
         return E_FAIL;
     }
 
-	//test hack projective parameters [[[
+    return hr;
+}
 
-	double width = 640;
-	double height = 480;
+void KinectSensor::estimateIntrinsicParameters()
+{
 	
 	double tx = 0;
 	double ty = 0;
@@ -109,12 +112,12 @@ HRESULT KinectSensor::CreateFirstConnected()
 	for (int i = 0; i < 100; i++)
 	{
 		FloatPoint3D p;
-		p.x = (int)((rand() / (double)RAND_MAX) * (width - 1));
-		p.y = (int)((rand() / (double)RAND_MAX) * (height - 1));
-		p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;
+		p.x = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_WIDTH - 1));
+		p.y = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_HEIGHT - 1));
+		p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;	//The documentation said in near mode the effective distance is 400 ~ 2600
 	
-		double xn = p.x / width - 0.5;
-		double yn = 0.5 - p.y / height;
+		double xn = p.x / KINECT_DEPTH_WIDTH - 0.5;
+		double yn = 0.5 - p.y / KINECT_DEPTH_HEIGHT;
 
 		if (abs(xn) < 0.25 || abs(yn) < 0.25)
 		{
@@ -132,24 +135,21 @@ HRESULT KinectSensor::CreateFirstConnected()
 		ty += rp.y / yn / p.z;
 	}
 
-	realWorldXToZ = (float)(tx / 100.0);
-	realWorldYToZ = (float)(ty / 100.0);
+	intrinsicParam.realWorldXToZ = (float)(tx / 100.0);
+	intrinsicParam.realWorldYToZ = (float)(ty / 100.0);
 
 	// z = depthA * depth + depthB, with R = 1.000 in MATLAB
 	cvSolve(a, b, x, CV_SVD);
 
-	DEBUG("realWorldXToZ=" << realWorldXToZ << ", realWorldYToZ=" << realWorldYToZ);
+	DEBUG("realWorldXToZ=" << intrinsicParam.realWorldXToZ << ", realWorldYToZ=" << intrinsicParam.realWorldYToZ);
 	DEBUG("a=" << x->data.db[0] << ", b=" << x->data.db[1]);
 
-	depthA = x->data.db[0];
-	depthB = x->data.db[1];
+	intrinsicParam.depthSlope = x->data.db[0];
+	intrinsicParam.depthIntercept = x->data.db[1];
 
 	cvReleaseMat(&a);
 	cvReleaseMat(&b);
 	cvReleaseMat(&x);
-	//]]]
-
-    return hr;
 }
 
 void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
@@ -249,39 +249,38 @@ void KinectSensor::refresh()
 	*/
 
 	//test hack projective parameters [[[
-	double width = 640;
-	double height = 480;
-	FloatPoint3D p;
-	p.x = (int)((rand() / (double)RAND_MAX) * (width - 1));
-	p.y = (int)((rand() / (double)RAND_MAX) * (height - 1));
+	
+	/*FloatPoint3D p;
+	p.x = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_WIDTH - 1));
+	p.y = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_HEIGHT - 1));
 	p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;
 	
 	FloatPoint3D rp = convertProjectiveToRealWorld(p);
 
 	FloatPoint3D rpt;
-	rpt.x = (p.x / width - 0.5) * p.z * realWorldXToZ;
-	rpt.y = (0.5 - p.y / height) * p.z * realWorldYToZ;
-	rpt.z = p.z / 100.0 * depthA + depthB;
+	rpt.x = (p.x / KINECT_DEPTH_WIDTH - 0.5) * p.z * intrinsicParam.realWorldXToZ;
+	rpt.y = (0.5 - p.y / KINECT_DEPTH_HEIGHT) * p.z * intrinsicParam.realWorldYToZ;
+	rpt.z = p.z / 100.0 * intrinsicParam.depthSlope + intrinsicParam.depthIntercept;
 
 	DEBUG("(" << p.x << "\t\t" << p.y << "\t\t" << p.z << ")");
 	DEBUG("(" << rp.x << "\t\t" << rp.y << "\t\t" << rp.z << ")");
 	DEBUG("(" << rpt.x << "\t\t" << rpt.y << "\t\t" << rpt.z << ")");
 	DEBUG("");
-	DEBUG("");
+	DEBUG("");*/
 
 	//DEBUG(rpt.z << "," << rp.z);
-
+	
 	//]]]
 }
 
 IplImage* KinectSensor::createBlankRGBImage()
 {
-	return cvCreateImage(cvSize(640, 480), IPL_DEPTH_8U, 3);	//TODO: no hardcoding
+	return cvCreateImage(cvSize(KINECT_RGB_WIDTH, KINECT_RGB_HEIGHT), IPL_DEPTH_8U, 3);	
 }
 
 IplImage* KinectSensor::createBlankDepthImage()
 {
-	return cvCreateImage(cvSize(640, 480), IPL_DEPTH_16U, 1);	//TODO: no hardcoding
+	return cvCreateImage(cvSize(KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT), IPL_DEPTH_16U, 1);	
 }
 
 float KinectSensor::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2) const
