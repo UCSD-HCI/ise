@@ -33,6 +33,25 @@ void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerW
 	this->clickFloodMaxGrad = clickFloodMaxGrad;
 }
 
+OmniTouchParameters OmniTouchFingerTracker::getParameters() const
+{
+	OmniTouchParameters r;
+	r.stripMaxBlankPixel = STRIP_MAX_BLANK_PIXEL;
+	r.fingerMinPixelLength = FINGER_MIN_PIXEL_LENGTH;
+	r.fingerToHandOffset = FINGER_TO_HAND_OFFSET;
+	r.clickFloodArea = CLICK_FLOOD_AREA;
+
+	r.fingerWidthMin = fingerWidthMin;
+	r.fingerWidthMax = fingerWidthMax;
+	r.fingerLengthMin = fingerLengthMin;
+	r.fingerLengthMax = fingerLengthMax;
+	r.fingerRisingThreshold = fingerRisingThreshold;
+	r.fingerFallingThreshold = fingerFallingThreshold;
+	r.clickFloodMaxGrad = clickFloodMaxGrad;
+
+	return r;
+}
+
 void OmniTouchFingerTracker::refresh()
 {
 	if (!enabled)

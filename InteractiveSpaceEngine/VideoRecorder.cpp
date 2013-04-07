@@ -1,5 +1,6 @@
 #include "VideoRecorder.h"
 #include "InteractiveSpaceEngine.h"
+#include "OmniTouchFingerTracker.h"
 #include <string>
 #include <cxcore.h>
 using namespace std;
@@ -40,6 +41,21 @@ void VideoRecorder::start(string filepath)
 	cvWriteReal(fs, "realWorldYToZ", kinectParams.realWorldYToZ);
 	cvWriteReal(fs, "depthSlope", kinectParams.depthSlope);
 	cvWriteReal(fs, "depthIntercept", kinectParams.depthIntercept);
+	cvEndWriteStruct(fs);
+
+	OmniTouchParameters omniParams = InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->getParameters();
+	cvStartWriteStruct(fs, "OmniTouchParameters", CV_NODE_MAP);
+	cvWriteInt(fs, "stripMaxBlankPixel", omniParams.stripMaxBlankPixel);
+	cvWriteInt(fs, "fingerMinPixelLength", omniParams.fingerMinPixelLength);
+	cvWriteInt(fs, "fingerToHandOffset", omniParams.fingerToHandOffset);
+	cvWriteInt(fs, "clickFloodArea", omniParams.clickFloodArea);
+	cvWriteReal(fs, "fingerWidthMin", omniParams.fingerWidthMin);
+	cvWriteReal(fs, "fingerWidthMax", omniParams.fingerWidthMax);
+	cvWriteReal(fs, "fingerLengthMin", omniParams.fingerLengthMin);
+	cvWriteReal(fs, "fingerLengthMax", omniParams.fingerLengthMax);
+	cvWriteReal(fs, "fingerRisingThreshold", omniParams.fingerRisingThreshold);
+	cvWriteReal(fs, "fingerFallingThreshold", omniParams.fingerFallingThreshold);
+	cvWriteReal(fs, "clickFloodMaxGrad", omniParams.clickFloodMaxGrad);
 	cvEndWriteStruct(fs);
 
 	cvReleaseFileStorage(&fs);

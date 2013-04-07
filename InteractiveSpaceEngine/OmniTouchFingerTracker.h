@@ -13,6 +13,23 @@
 #define CLICK_FLOOD_AREA 500
 //#define CLICK_FLOOD_MAX_GRAD 200
 
+//This struct is currently used for exporting parameters only
+typedef struct _OmniTouchParameters
+{
+	int stripMaxBlankPixel;
+	int fingerMinPixelLength;
+	int fingerToHandOffset;	//in millimeters
+	int clickFloodArea;
+
+	double fingerWidthMin;
+	double fingerWidthMax;
+	double fingerLengthMin;
+	double fingerLengthMax;
+	double fingerRisingThreshold;
+	double fingerFallingThreshold;
+	double clickFloodMaxGrad;
+} OmniTouchParameters;
+
 typedef enum
 {
 	StripSmooth,
@@ -71,6 +88,8 @@ public:
 	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
 	void setCropping(int left, int top, int right, int bottom);
 	void getCropping(int* left, int* top, int* right, int* bottom);
+
+	OmniTouchParameters getParameters() const;	//for export
 
 	inline const std::vector<OmniTouchFinger>& getFingers() const { return fingers; }
 
