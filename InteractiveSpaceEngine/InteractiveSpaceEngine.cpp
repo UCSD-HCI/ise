@@ -119,7 +119,7 @@ void InteractiveSpaceEngine::operator() ()
 	while(!isStopRequested)
 	{
 		boost::this_thread::interruption_point();
-		boost::this_thread::sleep(boost::posix_time::milliseconds(1000/60));	//TODO: set constant
+		//boost::this_thread::sleep(boost::posix_time::milliseconds(1000/60));	//TODO: set constant
 
 
 		kinectSensor->refresh();

@@ -3,8 +3,8 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <sstream>
 
-//FIXME: not work at all
 #define DEBUG( s )            \
 {                             \
    std::ostringstream os;    \

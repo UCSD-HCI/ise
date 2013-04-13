@@ -52,7 +52,7 @@ void ImageProcessingFactory::refreshDepthHistogramed()
 		byte* dstPtr = (byte*)(dst->imageData + y * dst->widthStep);
 		for (int x = 0; x < depthSrc->width; ++x, ++srcPtr, ++dstPtr)
 		{
-			*dstPtr = depthHistogram[*srcPtr];
+            *dstPtr = depthHistogram[*srcPtr];
 		}
 	}
 

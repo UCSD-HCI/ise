@@ -199,6 +199,5 @@
     <None Include="OpenNIConfig.xml">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\InteractiveSpace.SDK\InteractiveSpaceSDK.csproj" />
   </ItemGroup>
 </Project>

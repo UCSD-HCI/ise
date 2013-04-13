@@ -86,7 +86,8 @@ HRESULT KinectSensor::CreateFirstConnected()
                 NULL, //m_hNextDepthFrameEvent,
 				&rgbHandle);
 
-			nuiSensor->NuiImageStreamSetImageFrameFlags(depthHandle, NUI_IMAGE_STREAM_FLAG_ENABLE_NEAR_MODE);
+			nuiSensor->NuiImageStreamSetImageFrameFlags(depthHandle, NUI_IMAGE_STREAM_FLAG_ENABLE_NEAR_MODE
+                | NUI_IMAGE_STREAM_FLAG_DISTINCT_OVERFLOW_DEPTH_VALUES);
         }
     }
 
