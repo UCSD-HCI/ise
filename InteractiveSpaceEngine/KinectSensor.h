@@ -1,6 +1,8 @@
 #ifndef KINECT_SENSOR_H
 #define KINECT_SENSOR_H
 
+#include <Windows.h>
+
 #include "ThreadUtils.h"
 #include "ThreadWorker.h"
 #include "InteractiveSpaceTypes.h"
