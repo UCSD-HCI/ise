@@ -3,9 +3,9 @@
 
 #include <boost/thread.hpp>
 #include <boost/timer.hpp>
+#include "OmniTouchFingerTracker.h"
 #include "KinectSensor.h"
 #include "ImageProcessingFactory.h"
-#include "OmniTouchFingerTracker.h"
 #include "FingerSelector.h"
 #include "HandTracker.h"
 #include "Calibrator.h"

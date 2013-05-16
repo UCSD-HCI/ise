@@ -1,4 +1,5 @@
 #include "FingerSelector.h"
+#include <DataTypes.h>
 using namespace std;
 
 FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), thresholdTracker(thresholdTracker),
@@ -36,7 +37,7 @@ void FingerSelector::generateHandHints()
 {
 	vector<FingerToHandGuessSet> guessSets;
 
-	for (vector<OmniTouchFinger>::const_iterator it = omniTracker->getFingers().begin(); it != omniTracker->getFingers().end(); ++it)
+    for (vector<ise::Finger>::const_iterator it = omniTracker->getFingers().begin(); it != omniTracker->getFingers().end(); ++it)
 	{
 		FloatPoint3D fingerTipInReal = kinectSensor->convertProjectiveToRealWorld(FloatPoint3D(it->tipX, it->tipY, it->tipZ));
 		FloatPoint3D fingerEndInReal = kinectSensor->convertProjectiveToRealWorld(FloatPoint3D(it->endX, it->endY, it->endZ));

@@ -1,6 +1,5 @@
 #include "VideoRecorder.h"
 #include "InteractiveSpaceEngine.h"
-#include "OmniTouchFingerTracker.h"
 #include <string>
 #include <cxcore.h>
 using namespace std;
@@ -35,7 +34,7 @@ void VideoRecorder::start(string filepath)
 	string paramPath = filepath + ".yml";
 	CvFileStorage* fs = cvOpenFileStorage(paramPath.c_str(), 0, CV_STORAGE_WRITE);
 
-	const KinectIntrinsicParameters& kinectParams = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->getIntrinsicParameters();
+	const ise::KinectIntrinsicParameters& kinectParams = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->getIntrinsicParameters();
 	cvStartWriteStruct(fs, "KinectIntrinsicParameters", CV_NODE_MAP);
 	cvWriteReal(fs, "realWorldXToZ", kinectParams.realWorldXToZ);
 	cvWriteReal(fs, "realWorldYToZ", kinectParams.realWorldYToZ);
@@ -43,7 +42,7 @@ void VideoRecorder::start(string filepath)
 	cvWriteReal(fs, "depthIntercept", kinectParams.depthIntercept);
 	cvEndWriteStruct(fs);
 
-	OmniTouchParameters omniParams = InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->getParameters();
+	ise::OmniTouchParameters omniParams = InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->getParameters();
 	cvStartWriteStruct(fs, "OmniTouchParameters", CV_NODE_MAP);
 	cvWriteInt(fs, "stripMaxBlankPixel", omniParams.stripMaxBlankPixel);
 	cvWriteInt(fs, "fingerMinPixelLength", omniParams.fingerMinPixelLength);

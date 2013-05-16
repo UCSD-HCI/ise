@@ -235,6 +235,19 @@ void KinectSensor::refresh()
 	pTexture->UnlockRect(0);
 	nuiSensor->NuiImageStreamReleaseFrame(rgbHandle, &rgbFrame);
 
+    //compute depth to color coordinate frame
+    ReadLockedIplImagePtr depthPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
+    WriteLockedIplImagePtr coordPtr = ipf->lockWritableImageProduct(DepthToRGBCoordProduct);
+    hr = nuiSensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
+        NUI_IMAGE_RESOLUTION_640x480,
+        NUI_IMAGE_RESOLUTION_640x480,
+        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT,
+        (ushort*)(depthPtr->imageData),
+        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT * 2,
+        (long*)coordPtr->imageData
+    );
+    assert(SUCCEEDED(hr));
+
 	frameCount++;
 
 	//check distance

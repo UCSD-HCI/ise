@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuioProvider", "MultiTouchV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Multitouch.Framework.WPF", "MultiTouchVista\Framework\Multitouch.Framework.WPF\Multitouch.Framework.WPF.csproj", "{F3219531-A4B9-4B65-B7EA-27C43E98C21D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InteractiveSpaceCvLib", "externals\ise_cvcore\InteractiveSpaceCvLib\InteractiveSpaceCvLib.vcxproj", "{20DF62C7-B16A-4AA2-896B-9363AB5991C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -55,8 +57,8 @@ Global
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|Mixed Platforms.Build.0 = Debug|x64
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|Win32.ActiveCfg = Debug|x86
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|Win32.Build.0 = Debug|x86
-		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|x64.ActiveCfg = Debug|x86
-		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|x64.Build.0 = Debug|x86
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|x64.ActiveCfg = Debug|x64
+		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Debug|x64.Build.0 = Debug|x64
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|Mixed Platforms.ActiveCfg = Release|x64
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|Mixed Platforms.Build.0 = Release|x64
 		{4B152F4F-97AB-443B-BF9C-A5B1347B580D}.Release|Win32.ActiveCfg = Release|x86
@@ -66,8 +68,8 @@ Global
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|Mixed Platforms.Build.0 = Debug|x64
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|Win32.ActiveCfg = Debug|x86
-		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.ActiveCfg = Debug|x86
-		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.Build.0 = Debug|x86
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.ActiveCfg = Debug|x64
+		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Debug|x64.Build.0 = Debug|x64
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Mixed Platforms.ActiveCfg = Release|x64
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Mixed Platforms.Build.0 = Release|x64
 		{35BC03D0-5325-460C-AC49-144D0A6FFEF1}.Release|Win32.ActiveCfg = Release|x86
@@ -173,6 +175,18 @@ Global
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|Win32.Build.0 = Release|Any CPU
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.ActiveCfg = Release|Any CPU
 		{F3219531-A4B9-4B65-B7EA-27C43E98C21D}.Release|x64.Build.0 = Release|Any CPU
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|Win32.Build.0 = Debug|Win32
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|x64.ActiveCfg = Debug|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Debug|x64.Build.0 = Debug|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|Mixed Platforms.Build.0 = Release|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|Win32.ActiveCfg = Release|Win32
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|Win32.Build.0 = Release|Win32
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|x64.ActiveCfg = Release|x64
+		{20DF62C7-B16A-4AA2-896B-9363AB5991C5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

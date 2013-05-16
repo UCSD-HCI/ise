@@ -27,11 +27,13 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         RGBSourceProduct,
         DepthSourceProduct,	//this depth data is from the Kinect thread
         DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
+        DepthToRGBCoordProduct,
 
         DepthSobeledProduct,
 
         DebugDepthHistogramedProduct,
         DebugOmniOutputProduct,
+        DebugOmniTransposedOutputProduct,
 
         RectifiedTabletopProduct,
 

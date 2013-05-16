@@ -1,6 +1,6 @@
-#include "ImageProcessingFactory.h"
 #include "Calibrator.h"
 #include "InteractiveSpaceEngine.h"
+#include "ImageProcessingFactory.h"
 #include <stdio.h>
 
 ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) 
@@ -18,10 +18,13 @@ ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor)
 	CvSize rgbSize = cvSize(products[RGBSourceProduct]->width, products[RGBSourceProduct]->height);
 	CvSize depthSize = cvSize(products[DepthSourceProduct]->width, products[DepthSourceProduct]->height);
 
+    products[DepthToRGBCoordProduct] = cvCreateImage(depthSize, IPL_DEPTH_32S, 2);
+
 	products[DebugDepthHistogramedProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 1);
 
 	products[DepthSobeledProduct] = cvCreateImage(depthSize, IPL_DEPTH_32S, 1);
 	products[DebugOmniOutputProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 3);
+    products[DebugOmniTransposedOutputProduct] = cvCreateImage(depthSize, IPL_DEPTH_8U, 3);
 
 	products[RectifiedTabletopProduct] = kinectSensor->createBlankRGBImage();
 }

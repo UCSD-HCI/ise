@@ -5,7 +5,8 @@
 #include <string>
 #include <stdio.h>
 #include <highgui.h>
-#include "ImageProcessingFactory.h"
+
+class ImageProcessingFactory;
 
 class VideoRecorder
 {

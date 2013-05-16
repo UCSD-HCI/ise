@@ -24,11 +24,13 @@ typedef enum
 	RGBSourceProduct,
 	DepthSourceProduct,	//this depth data is from the Kinect thread
 	DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
-	
+	DepthToRGBCoordProduct,
+
 	DepthSobeledProduct,
 
 	DebugDepthHistogramedProduct,
 	DebugOmniOutputProduct,
+    DebugOmniTransposedOutputProduct,
 
 	RectifiedTabletopProduct,
 
@@ -68,6 +70,11 @@ public:
 		assert(products[type] != NULL);
 		return WriteLockedIplImagePtr(*products[type], productsMutex[type]);
 	}
+
+    inline IplImage* getImageProduct(ImageProductType type)
+    {
+        return products[type];
+    }
 
 	inline int getImageProductWidth(ImageProductType type)
 	{

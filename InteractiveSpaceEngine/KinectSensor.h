@@ -8,17 +8,9 @@
 #include "ThreadWorker.h"
 #include "InteractiveSpaceTypes.h"
 #include "NuiApi.h"
+#include <DataTypes.h>
 
 class ImageProcessingFactory;
-
-//To hack perspective/skeleton conversion
-typedef struct _KinectIntrinsicParameters
-{
-	float realWorldXToZ;
-	float realWorldYToZ;
-	float depthSlope;
-	float depthIntercept;
-} KinectIntrinsicParameters;
 
 class KinectSensor //: public ThreadWorker
 {
@@ -47,7 +39,7 @@ private:
 	ImageProcessingFactory* ipf;
 	IplImage* rawColorImg;
 
-	KinectIntrinsicParameters intrinsicParam;
+	ise::KinectIntrinsicParameters intrinsicParam;
 
 	HRESULT CreateFirstConnected();
 	void estimateIntrinsicParameters();
@@ -84,7 +76,7 @@ public:
 	
 	void refresh();
 
-	inline const KinectIntrinsicParameters& getIntrinsicParameters() const
+	inline const ise::KinectIntrinsicParameters& getIntrinsicParameters() const
 	{
 		return intrinsicParam;
 	}
