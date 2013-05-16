@@ -72,7 +72,13 @@ void OmniTouchFingerTracker::refresh()
 		return;
 	}   
 
-    detector->detect();
+    ise::FingerDetectionResults res = detector->detect();
+
+    fingers.clear();
+    for (int i = 0; i < res.fingerCount; i++)
+    {
+        fingers.push_back(res.fingers[i]);
+    }
 }
 
 void OmniTouchFingerTracker::setCropping(int left, int top, int right, int bottom)
