@@ -1,0 +1,3 @@
+[submodule "externals/ise_cvcore"]
+	path = externals/ise_cvcore
+	url = git@github.com:UCSD-HCI/ise_cvcore.git
