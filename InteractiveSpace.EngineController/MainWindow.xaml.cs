@@ -28,11 +28,10 @@ namespace InteractiveSpace.EngineController
         //private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private System.Threading.Timer fpsTimer;
-        private Action engineUpdateDelegate;
-        private Action engineStoppedDelegate;
         private bool isRecording;
         private SharedMemoryExporter smExporter;
         private MultiTouchVistaController multiTouchVistaController;
+        private volatile bool isSharedMemoryEnabled = false;
 
         public MainWindow()
         {
@@ -128,7 +127,10 @@ namespace InteractiveSpace.EngineController
 
         void engineUpdate(object sender, EventArgs e)
         {
-            smExporter.Update();
+            if (isSharedMemoryEnabled)
+            {
+                smExporter.Update();
+            }
         }
 
         private void rawVideoToggleButton_Click(object sender, RoutedEventArgs e)
@@ -332,6 +334,11 @@ namespace InteractiveSpace.EngineController
         private void rectifiedTabletopCheckBox_Click(object sender, RoutedEventArgs e)
         {
             CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
+        }
+
+        private void sharedMemoryCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            isSharedMemoryEnabled = (sharedMemoryCheckBox.IsChecked == null ? false : sharedMemoryCheckBox.IsChecked.Value);
         }
 
         
