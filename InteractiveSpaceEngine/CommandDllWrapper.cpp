@@ -9,12 +9,12 @@
 
 DLL_EXPORT void engineInit()
 {
-	InteractiveSpaceEngine::sharedEngine()->init();
+	InteractiveSpaceEngine::sharedEngineInit();
 }
 
 DLL_EXPORT void engineExit()
 {
-	InteractiveSpaceEngine::sharedEngine()->exit();
+	InteractiveSpaceEngine::sharedEngineDispose();
 }
 
 DLL_EXPORT void engineMainLoopUpdate()

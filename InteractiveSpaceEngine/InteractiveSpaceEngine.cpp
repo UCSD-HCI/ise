@@ -16,104 +16,37 @@
 
 #include <Windows.h>    //for timer
 
-InteractiveSpaceEngine InteractiveSpaceEngine::instance;
+std::unique_ptr<InteractiveSpaceEngine> InteractiveSpaceEngine::instance;
 
-InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1),  
-	fingerEventsGenerator(NULL), tuioExporter(NULL), 
-    fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL), fpsTimer(new Timer())
+InteractiveSpaceEngine::InteractiveSpaceEngine() : 
+	kinectSensor(new KinectSensor()),
+    ipf(new ImageProcessingFactory(kinectSensor.get())),
+    calibrator(new Calibrator(kinectSensor.get(), ipf.get())),
+    omniTracker(new OmniTouchFingerTracker(ipf.get(), kinectSensor.get())),
+    fingerSelector(new FingerSelector(omniTracker.get(), kinectSensor.get())),
+    fingerEventsGenerator(new FingerEventsGenerator(fingerSelector.get())),
+    handTracker(new HandTracker(fingerSelector.get(), kinectSensor.get())),
+    videoRecorder(new VideoRecorder(ipf.get())),
+    tuioExporter(new TuioExporter(fingerEventsGenerator.get())),
+
+    fpsTimer(new Timer()),
+
+    kinectSensorFrameCount(-1),  
+    fps(0), 
+    engineFrameCount(0), 
+    engineUpdateCallback(NULL)
 {
-}
-
-InteractiveSpaceEngine::~InteractiveSpaceEngine()
-{
-	exit();
-}
-
-void InteractiveSpaceEngine::exit()
-{
-	if (tuioExporter != NULL)
-	{
-		delete tuioExporter;
-		tuioExporter = NULL;
-	}
-
-	if (handTracker != NULL)
-	{
-		delete handTracker;
-		handTracker = NULL;
-	}
-
-	if (fingerEventsGenerator != NULL)
-	{
-		delete fingerEventsGenerator;
-		fingerEventsGenerator = NULL;
-	}
-
-	if (fingerSelector != NULL)
-	{
-		delete fingerSelector;
-		fingerSelector = NULL;
-	}
-
-	if (omniTracker != NULL)
-	{
-		delete omniTracker;
-		omniTracker = NULL;
-	}
-
-	if (videoRecorder != NULL)
-	{
-		delete videoRecorder;
-		videoRecorder = NULL;
-	}
-
-	if (calibrator != NULL)
-	{
-		delete calibrator;
-		calibrator = NULL;
-	}
-
-	if (ipf != NULL)
-	{
-		delete ipf;
-		ipf = NULL;
-	}
-
-	if (kinectSensor != NULL)
-	{
-		delete kinectSensor;
-		kinectSensor = NULL;
-	}
-}
-
-InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
-{
-	return &instance;
-}
-
-void InteractiveSpaceEngine::init()	//initilize
-{
-	kinectSensor = new KinectSensor();
-	ipf = new ImageProcessingFactory(kinectSensor);
-
-	kinectSensor->setImageProcessingFactory(ipf);
-	kinectSensorFrameCount = -1;
-
-	calibrator = new Calibrator(kinectSensor, ipf);
-
-	omniTracker = new OmniTouchFingerTracker(ipf, kinectSensor);
-	fingerSelector = new FingerSelector(omniTracker, kinectSensor);
-	fingerEventsGenerator = new FingerEventsGenerator(fingerSelector);
-
-	handTracker = new HandTracker(fingerSelector, /*kinectSensor->getHandsGenerator(), */kinectSensor);
-
-	videoRecorder = new VideoRecorder(ipf);
-
-	tuioExporter = new TuioExporter(fingerEventsGenerator);
+    kinectSensor->setImageProcessingFactory(ipf.get());
+    kinectSensorFrameCount = -1;
 
 	engineFrameCount = 0;
 	fpsCounter = 0;
     fpsTimer->reset();
+}
+
+InteractiveSpaceEngine::~InteractiveSpaceEngine()
+{
+
 }
 
 void InteractiveSpaceEngine::mainLoopUpdate()
@@ -141,7 +74,7 @@ void InteractiveSpaceEngine::mainLoopUpdate()
 			fingerEventsGenerator->refresh(newFrameCount); 
 			handTracker->refresh();
 
-			ipf->updateRectifiedTabletop(calibrator);
+            ipf->updateRectifiedTabletop(calibrator.get());
 
 			if (videoRecorder != NULL)
 			{
@@ -162,7 +95,7 @@ void InteractiveSpaceEngine::mainLoopUpdate()
 			double elapsed = fpsTimer->getElapsed();
 			if (elapsed > 1.0)
 			{
-				fps = fpsCounter / elapsed;
+				fps = fpsCounter / (float)elapsed;
                 fpsTimer->reset();
 				fpsCounter = 0;
 			}
