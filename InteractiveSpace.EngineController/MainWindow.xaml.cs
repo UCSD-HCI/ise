@@ -35,8 +35,6 @@ namespace InteractiveSpace.EngineController
         private SharedMemoryExporter smExporter;
         private MultiTouchVistaController multiTouchVistaController;
 
-        public event EventHandler EngineUpdate;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -87,15 +85,22 @@ namespace InteractiveSpace.EngineController
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,
                 fingerRisingThresholdSlider.Value, fingerFallingThresholdSlider.Value, clickFloodMaxGradSlider.Value);
            
-            engineUpdateDelegate = new Action(engineUpdateCallback);
-            NativeWrappers.CommandDllWrapper.registerEngineUpdateCallback(Marshal.GetFunctionPointerForDelegate(engineUpdateDelegate));
-
-            //projectorFeedbackWindow.Show();
+            //engineUpdateDelegate = new Action(engineUpdateCallback);
+            //NativeWrappers.CommandDllWrapper.registerEngineUpdateCallback(Marshal.GetFunctionPointerForDelegate(engineUpdateDelegate));
 
             //omni cropping
             NativeWrappers.CommandDllWrapper.setOmniTouchCropping(settings.OmniTouchCroppingLeft, settings.OmniTouchCroppingTop, settings.OmniTouchCroppingRight, settings.OmniTouchCroppingBottom);
 
+
+            EngineBackgroundWorker.Instance.EngineUpdate += new EventHandler(engineUpdate);
+            EngineBackgroundWorker.Instance.Run();
+
             fpsTimer = new System.Threading.Timer(new System.Threading.TimerCallback(fpsTimer_Tick), null, 0, 1000);
+        }
+
+        void engineUpdate(object sender, EventArgs e)
+        {
+            smExporter.Update();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -172,7 +177,6 @@ namespace InteractiveSpace.EngineController
 
                 window = new VideoWindow();
                 window.SetVideo(videoType);
-                window.MainWindow = this;
                 window.Closed += delegate(object cSender, EventArgs cArgs)
                 {
                     button.IsChecked = false;
@@ -274,7 +278,6 @@ namespace InteractiveSpace.EngineController
         private void systemCalibrateButton_Click(object sender, RoutedEventArgs e)
         {
             CalibrationWindow caliWin = new CalibrationWindow();
-            caliWin.MainWindow = this;
             //caliWin.ProjectorFeedbackWindow = projectorFeedbackWindow;
             caliWin.Show();
         }
@@ -285,16 +288,6 @@ namespace InteractiveSpace.EngineController
             {
                 fpsLabel.Content = NativeWrappers.ResultsDllWrapper.getFPS().ToString("0.00");
             }, null);
-        }
-
-        private void engineUpdateCallback()
-        {
-            if (EngineUpdate != null && !IsStopRequested)
-            {
-                EngineUpdate(this, EventArgs.Empty);
-            }
-
-            smExporter.Update();
         }
 
         private void recordButton_Click(object sender, RoutedEventArgs e)

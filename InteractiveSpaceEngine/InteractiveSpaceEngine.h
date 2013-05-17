@@ -14,7 +14,7 @@
 #include "TuioExporter.h"
 
 
-class InteractiveSpaceEngine : ThreadWorker
+class InteractiveSpaceEngine
 {
 private:
 	static InteractiveSpaceEngine instance;
@@ -52,12 +52,10 @@ public:
 	InteractiveSpaceEngine();
 	virtual ~InteractiveSpaceEngine();
 	static InteractiveSpaceEngine* sharedEngine();
+
 	void run();
 	void stop(Callback stoppedCallback);
-
-	inline void join() { threadJoin(); } //for console debug
-
-	virtual void operator() ();
+    void mainLoopUpdate();
 
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }
 	inline ImageProcessingFactory* getImageProcessingFactory() {return ipf; }

@@ -13,6 +13,11 @@ DLL_EXPORT void engineStop(void* stoppedCallback)
 	InteractiveSpaceEngine::sharedEngine()->stop((Callback)stoppedCallback);
 }
 
+DLL_EXPORT void engineMainLoopUpdate()
+{
+    InteractiveSpaceEngine::sharedEngine()->mainLoopUpdate();
+}
+
 DLL_EXPORT int getRGBWidth()
 {
 	return InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProductWidth(RGBSourceProduct);

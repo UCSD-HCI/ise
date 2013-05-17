@@ -10,11 +10,15 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     {
         private const string DLL_NAME = "InteractiveSpaceEngine.dll";
 
+        //TODO: change this to engineInit()
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void engineRun();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void engineStop(IntPtr stoppedCallback);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe void engineMainLoopUpdate();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe int getRGBWidth();

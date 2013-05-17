@@ -105,7 +105,7 @@ void InteractiveSpaceEngine::run()	//initilize
 
 	//kinectSensor->start();
 	//motionCameraReader->start();
-	threadStart();
+	//threadStart();
 }
 
 void InteractiveSpaceEngine::stop(Callback stoppedCallback)
@@ -114,82 +114,55 @@ void InteractiveSpaceEngine::stop(Callback stoppedCallback)
 	isStopRequested = true;
 }
 
-void InteractiveSpaceEngine::operator() ()
+void InteractiveSpaceEngine::mainLoopUpdate()
 {
-	while(!isStopRequested)
+    kinectSensor->refresh();
+
+	if (calibrator->isCalibrating())
 	{
-		boost::this_thread::interruption_point();
-		//boost::this_thread::sleep(boost::posix_time::milliseconds(1000/60));	//TODO: set constant
-
-
-		kinectSensor->refresh();
-
-		if (calibrator->isCalibrating())
+		long long newFrameCount = kinectSensor->getFrameCount();
+		if (newFrameCount > kinectSensorFrameCount)
 		{
-			long long newFrameCount = kinectSensor->getFrameCount();
-			if (newFrameCount > kinectSensorFrameCount)
-			{
-				ipf->refreshDepthHistogramed();
-				calibrator->refresh();
-			}
-			else
-			{
-				boost::this_thread::yield();
-			}
-		}
-		else
-		{
-			long long newFrameCount = kinectSensor->getFrameCount();
-			if (newFrameCount > kinectSensorFrameCount)
-			{
-				ipf->refresh(kinectSensorFrameCount);
-				omniTracker->refresh();
-				//thresholdFingerTracker->refresh();
-				fingerSelector->refresh();
-				fingerEventsGenerator->refresh(newFrameCount); 
-				handTracker->refresh();
-
-				ipf->updateRectifiedTabletop(calibrator);
-
-				if (videoRecorder != NULL)
-				{
-					videoRecorder->refresh();
-				}
-
-				if (tuioExporter != NULL)
-				{
-					tuioExporter->refresh();
-				}
-
-				kinectSensorFrameCount = newFrameCount;
-				engineFrameCount++;
-
-				fpsCounter++;
-
-				double elapsed = fpsTimer.elapsed();
-				if (elapsed > 1.0f)
-				{
-					fps = fpsCounter / elapsed;
-					fpsTimer.restart();
-					fpsCounter = 0;
-				}
-			}
-			else
-			{
-				boost::this_thread::yield();
-			}
-		}
-
-		if (engineUpdateCallback != NULL && !isStopRequested)
-		{
-			engineUpdateCallback();
+			ipf->refreshDepthHistogramed();
+			calibrator->refresh();
 		}
 	}
-
-	dispose();
-
-	if (stoppedCallback != NULL)
+	else
 	{
-		stoppedCallback();
+		long long newFrameCount = kinectSensor->getFrameCount();
+		if (newFrameCount > kinectSensorFrameCount)
+		{
+			ipf->refresh(kinectSensorFrameCount);
+			omniTracker->refresh();
+			//thresholdFingerTracker->refresh();
+			fingerSelector->refresh();
+			fingerEventsGenerator->refresh(newFrameCount); 
+			handTracker->refresh();
+
+			ipf->updateRectifiedTabletop(calibrator);
+
+			if (videoRecorder != NULL)
+			{
+				videoRecorder->refresh();
+			}
+
+			if (tuioExporter != NULL)
+			{
+				tuioExporter->refresh();
+			}
+
+			kinectSensorFrameCount = newFrameCount;
+			engineFrameCount++;
+
+			fpsCounter++;
+
+			double elapsed = fpsTimer.elapsed();
+			if (elapsed > 1.0f)
+			{
+				fps = fpsCounter / elapsed;
+				fpsTimer.restart();
+				fpsCounter = 0;
+			}
+		}
 	}
 }

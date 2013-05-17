@@ -58,18 +58,10 @@ namespace InteractiveSpace.EngineController
             InitializeComponent();
         }
 
-        public MainWindow MainWindow
-        {
-            get { return mainWindow; }
-            set
-            {
-                mainWindow = value;
-                mainWindow.EngineUpdate += new EventHandler(mainWindow_EngineUpdate);
-            }
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            EngineBackgroundWorker.Instance.EngineUpdateOnMainUI += new EventHandler(engineUpdate);
+
             unsafe
             {
                 rgbWidth = CommandDllWrapper.getRGBWidth();
@@ -132,30 +124,28 @@ namespace InteractiveSpace.EngineController
             }
         }*/
 
-        void mainWindow_EngineUpdate(object sender, EventArgs e)
+        void engineUpdate(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)delegate
+            if (rgbSource != null)
             {
-                if (rgbSource != null)
-                {
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationRGBImage();
-                    rgbSource.Lock();
-                    rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
-                    rgbSource.Unlock();
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    rgbVideo.ImageSource = rgbSource;
-                }
+                ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationRGBImage();
+                rgbSource.Lock();
+                rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                rgbSource.Unlock();
+                ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                rgbVideo.ImageSource = rgbSource;
+            }
 
-                if (depthSource != null)
-                {
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationDepthImage();
-                    depthSource.Lock();
-                    depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
-                    depthSource.Unlock();
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    depthVideo.ImageSource = depthSource;
-                }
-            }, null);
+            if (depthSource != null)
+            {
+                ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationDepthImage();
+                depthSource.Lock();
+                depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
+                depthSource.Unlock();
+                ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
+                depthVideo.ImageSource = depthSource;
+            }
+            
         }
 
         /*void refreshWorker_DoWork(object sender, DoWorkEventArgs e)
