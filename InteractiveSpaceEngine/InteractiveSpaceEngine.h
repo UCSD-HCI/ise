@@ -1,9 +1,7 @@
 #ifndef INTERACTIVE_SPACE_ENGINE_H
 #define INTERACTIVE_SPACE_ENGINE_H
 
-#include <boost/timer.hpp>
 #include "ise.h"
-
 
 class InteractiveSpaceEngine
 {
@@ -28,8 +26,8 @@ private:
 	volatile long long engineFrameCount;
 	
 	int fpsCounter;
-	boost::timer fpsTimer;
 	volatile float fps;
+    Timer* fpsTimer;
 
 	volatile bool isStopRequested;
 

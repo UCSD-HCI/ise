@@ -10,6 +10,7 @@ class HandTracker;
 class Calibrator;
 class VideoRecorder;
 class TuioExporter;
+class Timer;
 
 struct IntPoint3D;
 struct FloatPoint3D;

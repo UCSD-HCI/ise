@@ -62,16 +62,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(CUDA_PATH_V5_0)\include;$(SolutionDir)\externals\ise_cvcore\InteractiveSpaceCvLib;$(KINECTSDK10_DIR)\inc;$(BOOST_INC_DIR);$(OPENCV_INC_DIR)\opencv;$(OPENCV_INC_DIR);$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
-    <LibraryPath>$(CUDA_PATH_V5_0)\lib\x64;$(KINECTSDK10_DIR)\lib\amd64;$(BOOST_LIB_DIR);$(OPENCV_LIB_DIR);$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(CUDA_PATH_V5_0)\include;$(SolutionDir)\externals\ise_cvcore\InteractiveSpaceCvLib;$(KINECTSDK10_DIR)\inc;$(OPENCV_INC_DIR)\opencv;$(OPENCV_INC_DIR);$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
+    <LibraryPath>$(CUDA_PATH_V5_0)\lib\x64;$(KINECTSDK10_DIR)\lib\amd64;$(OPENCV_LIB_DIR);$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\kinect\Kinect\boost_1_47_0;C:\Program Files\OpenCV2.3.1\install\include;C:\Program Files\OpenCV2.3.1\install\include\opencv;$(SolutionDir)libvisca-1.1.0\visca;$(SolutionDir)SpaceTracking\;$(KINECTSDK10_DIR)\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\OpenNI\Lib64;C:\Users\kinect\Kinect\boost_1_47_0\stage\lib;C:\Program Files\OpenCV2.3.1\lib\Release;$(OutDir);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(CUDA_PATH_V5_0)\include;$(SolutionDir)\externals\ise_cvcore\InteractiveSpaceCvLib;$(KINECTSDK10_DIR)\inc;$(BOOST_INC_DIR);$(OPENCV_INC_DIR)\opencv;$(OPENCV_INC_DIR);$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
-    <LibraryPath>$(CUDA_PATH_V5_0)\lib\x64;$(KINECTSDK10_DIR)\lib\amd64;$(BOOST_LIB_DIR);$(OPENCV_LIB_DIR);$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(CUDA_PATH_V5_0)\include;$(SolutionDir)\externals\ise_cvcore\InteractiveSpaceCvLib;$(KINECTSDK10_DIR)\inc;$(OPENCV_INC_DIR)\opencv;$(OPENCV_INC_DIR);$(ProjectDir)\TUIO\;$(ProjectDir)\oscpack;$(IncludePath)</IncludePath>
+    <LibraryPath>$(CUDA_PATH_V5_0)\lib\x64;$(KINECTSDK10_DIR)\lib\amd64;$(OPENCV_LIB_DIR);$(OutDir);$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)\TUIO;$(ProjectDir)\oscpack\ip\win32;$(ProjectDir)\oscpack\osc;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -164,6 +164,7 @@
     <ClInclude Include="ImageProcessingFactory.h" />
     <ClInclude Include="InteractiveSpaceEngine.h" />
     <ClInclude Include="KinectSensor.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TuioExporter.h" />
     <ClInclude Include="TUIO\TuioClient.h" />
     <ClInclude Include="TUIO\TuioContainer.h" />

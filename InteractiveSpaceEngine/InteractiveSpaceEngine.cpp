@@ -11,12 +11,16 @@
 #include "KinectSensor.h"
 #include "VideoRecorder.h"
 #include "TuioExporter.h"
+#include "Timer.h"
+#include "DebugUtils.h"
+
+#include <Windows.h>    //for timer
 
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1),  
 	fingerEventsGenerator(NULL), tuioExporter(NULL), 
-	fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL)
+    fps(0), engineFrameCount(0), engineUpdateCallback(NULL), videoRecorder(NULL), stoppedCallback(NULL), fpsTimer(new Timer())
 {
 }
 
@@ -109,11 +113,7 @@ void InteractiveSpaceEngine::init()	//initilize
 
 	engineFrameCount = 0;
 	fpsCounter = 0;
-	fpsTimer.restart();
-
-	//kinectSensor->start();
-	//motionCameraReader->start();
-	//threadStart();
+    fpsTimer->reset();
 }
 
 void InteractiveSpaceEngine::mainLoopUpdate()
@@ -156,13 +156,14 @@ void InteractiveSpaceEngine::mainLoopUpdate()
 			kinectSensorFrameCount = newFrameCount;
 			engineFrameCount++;
 
+            //compute fps
 			fpsCounter++;
 
-			double elapsed = fpsTimer.elapsed();
-			if (elapsed > 1.0f)
+			double elapsed = fpsTimer->getElapsed();
+			if (elapsed > 1.0)
 			{
-				fps = fpsCounter / (float)elapsed;
-				fpsTimer.restart();
+				fps = fpsCounter / elapsed;
+                fpsTimer->reset();
 				fpsCounter = 0;
 			}
 		}
