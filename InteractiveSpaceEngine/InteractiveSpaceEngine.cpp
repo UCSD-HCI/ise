@@ -2,6 +2,16 @@
 #include <cv.h>
 #include <highgui.h>
 
+#include "OmniTouchFingerTracker.h"
+#include "Calibrator.h"
+#include "FingerEventsGenerator.h"
+#include "FingerSelector.h"
+#include "HandTracker.h"
+#include "ImageProcessingFactory.h"
+#include "KinectSensor.h"
+#include "VideoRecorder.h"
+#include "TuioExporter.h"
+
 InteractiveSpaceEngine InteractiveSpaceEngine::instance;
 
 InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL), omniTracker(NULL), fingerSelector(NULL), calibrator(NULL), kinectSensorFrameCount(-1),  
@@ -12,13 +22,11 @@ InteractiveSpaceEngine::InteractiveSpaceEngine() : kinectSensor(NULL), ipf(NULL)
 
 InteractiveSpaceEngine::~InteractiveSpaceEngine()
 {
-	dispose();
+	exit();
 }
 
-void InteractiveSpaceEngine::dispose()
+void InteractiveSpaceEngine::exit()
 {
-	//threadStop();
-
 	if (tuioExporter != NULL)
 	{
 		delete tuioExporter;
@@ -79,7 +87,7 @@ InteractiveSpaceEngine* InteractiveSpaceEngine::sharedEngine()
 	return &instance;
 }
 
-void InteractiveSpaceEngine::run()	//initilize
+void InteractiveSpaceEngine::init()	//initilize
 {
 	kinectSensor = new KinectSensor();
 	ipf = new ImageProcessingFactory(kinectSensor);
@@ -106,12 +114,6 @@ void InteractiveSpaceEngine::run()	//initilize
 	//kinectSensor->start();
 	//motionCameraReader->start();
 	//threadStart();
-}
-
-void InteractiveSpaceEngine::stop(Callback stoppedCallback)
-{
-	this->stoppedCallback = stoppedCallback;
-	isStopRequested = true;
 }
 
 void InteractiveSpaceEngine::mainLoopUpdate()
@@ -159,7 +161,7 @@ void InteractiveSpaceEngine::mainLoopUpdate()
 			double elapsed = fpsTimer.elapsed();
 			if (elapsed > 1.0f)
 			{
-				fps = fpsCounter / elapsed;
+				fps = fpsCounter / (float)elapsed;
 				fpsTimer.restart();
 				fpsCounter = 0;
 			}

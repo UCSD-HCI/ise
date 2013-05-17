@@ -2,10 +2,8 @@
 #define FINGER_SELECTOR
 
 #include <vector>
+#include "ise.h"
 #include "InteractiveSpaceTypes.h"
-#include "OmniTouchFingerTracker.h"
-#include "ThreadUtils.h"
-#include "KinectSensor.h"
 
 #define MAX_FINGER_NUM 10
 #define MAX_HAND_HINT_NUM 2
@@ -75,7 +73,6 @@ class FingerSelector
 {
 private:
 	OmniTouchFingerTracker* omniTracker;
-	ThresholdTouchFingerTracker* thresholdTracker;
 	const KinectSensor* kinectSensor;
 
 	Finger fingers[MAX_FINGER_NUM];
@@ -84,7 +81,6 @@ private:
 	HandHint handHints[MAX_HAND_HINT_NUM];
 	int handHintNum;
 
-	Mutex fingersMutex;
 
 	void generateHandHints();
 
@@ -94,14 +90,20 @@ public:
 	void refresh();
 
 	//return finger num
-	inline ReadLockedPtr<Finger*> lockFingers(int* fingerNumPtr)
+	inline Finger* getFingers(int* fingerNumPtr)
 	{
 		*fingerNumPtr = fingerNum;
-		return ReadLockedPtr<Finger*>(fingers, fingersMutex);
+		return fingers;
+	}
+
+    inline const Finger* getFingers(int* fingerNumPtr) const
+	{
+		*fingerNumPtr = fingerNum;
+		return fingers;
 	}
 
 	//no thread-safe
-	inline void getHandHints(HandHint** handHintPtr, int* handHintNumPtr) 
+	inline void getHandHints(const HandHint** handHintPtr, int* handHintNumPtr) const
 	{
 		*handHintNumPtr = handHintNum;
 		*handHintPtr = handHints;

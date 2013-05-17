@@ -30,7 +30,6 @@ namespace InteractiveSpace.EngineController
         private System.Threading.Timer fpsTimer;
         private Action engineUpdateDelegate;
         private Action engineStoppedDelegate;
-        public bool IsStopRequested { get; private set; }
         private bool isRecording;
         private SharedMemoryExporter smExporter;
         private MultiTouchVistaController multiTouchVistaController;
@@ -41,11 +40,40 @@ namespace InteractiveSpace.EngineController
             smExporter = new SharedMemoryExporter();
         }
 
-        public void EngineStop()
+        public void Exit()
         {
-            IsStopRequested = true;
-            engineStoppedDelegate = new Action(onEngineStopped);
-            CommandDllWrapper.engineStop(Marshal.GetFunctionPointerForDelegate(engineStoppedDelegate));
+            if (rawVideoWindow != null)
+            {
+                rawVideoWindow.Close();
+            }
+
+            if (depthVideoWindow != null)
+            {
+                depthVideoWindow.Close();
+            }
+
+            if (multiTouchVideoWindow != null)
+            {
+                multiTouchVideoWindow.Close();
+            }
+
+            if (thresholdTouchVideoWindow != null)
+            {
+                thresholdTouchVideoWindow.Close();
+            }
+
+            /*if (projectorFeedbackWindow != null)
+            {
+                projectorFeedbackWindow.Close();
+            }*/
+
+            if (motionCameraVideoWindow != null)
+            {
+                motionCameraVideoWindow.Close();
+            }
+
+            multiTouchVistaController.StopServer();
+            EngineBackgroundWorker.Instance.Stop();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -81,7 +109,11 @@ namespace InteractiveSpace.EngineController
                 MessageBox.Show(ex.Message);
             }
 
-            CommandDllWrapper.engineRun();
+            EngineBackgroundWorker.Instance.EngineUpdate += new EventHandler(engineUpdate);
+            EngineBackgroundWorker.Instance.Run();
+
+            EngineBackgroundWorker.Instance.WaitForInit();
+
             NativeWrappers.CommandDllWrapper.setOmniTouchParameters(fingerMinWidthSlider.Value, fingerMaxWidthSlider.Value, fingerMinLengthSlider.Value, fingerMaxLengthSlider.Value,
                 fingerRisingThresholdSlider.Value, fingerFallingThresholdSlider.Value, clickFloodMaxGradSlider.Value);
            
@@ -91,59 +123,17 @@ namespace InteractiveSpace.EngineController
             //omni cropping
             NativeWrappers.CommandDllWrapper.setOmniTouchCropping(settings.OmniTouchCroppingLeft, settings.OmniTouchCroppingTop, settings.OmniTouchCroppingRight, settings.OmniTouchCroppingBottom);
 
-
-            EngineBackgroundWorker.Instance.EngineUpdate += new EventHandler(engineUpdate);
-            EngineBackgroundWorker.Instance.Run();
-
             fpsTimer = new System.Threading.Timer(new System.Threading.TimerCallback(fpsTimer_Tick), null, 0, 1000);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Exit();
         }
 
         void engineUpdate(object sender, EventArgs e)
         {
             smExporter.Update();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (rawVideoWindow != null)
-            {
-                rawVideoWindow.Close();
-            }
-
-            if (depthVideoWindow != null)
-            {
-                depthVideoWindow.Close();
-            }
-
-            if (multiTouchVideoWindow != null)
-            {
-                multiTouchVideoWindow.Close();
-            }
-
-            if (thresholdTouchVideoWindow != null)
-            {
-                thresholdTouchVideoWindow.Close();
-            }
-
-            /*if (projectorFeedbackWindow != null)
-            {
-                projectorFeedbackWindow.Close();
-            }*/
-
-            if (motionCameraVideoWindow != null)
-            {
-                motionCameraVideoWindow.Close();
-            }
-
-            multiTouchVistaController.StopServer();
-        }
-
-        private void onEngineStopped()
-        {
-            Dispatcher.BeginInvoke((Action)delegate()
-            {
-                this.Close();
-            }, null);
         }
 
         private void rawVideoToggleButton_Click(object sender, RoutedEventArgs e)

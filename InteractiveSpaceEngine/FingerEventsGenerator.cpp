@@ -1,5 +1,7 @@
 #include "FingerEventsGenerator.h"
 #include "InteractiveSpaceEngine.h"
+#include "Calibrator.h"
+#include "KinectSensor.h"
 
 FingerEventsGenerator::FingerEventsGenerator(FingerSelector* fingerSelector) : fingerSelector(fingerSelector), eventNum(0), frameCount(0), lastId(0)
 {
@@ -38,9 +40,8 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 	eventNum = 0;
 
 	int fingerNum;
-	ReadLockedPtr<Finger*> fingersPtr = fingerSelector->lockFingers(&fingerNum);
-	Finger* fingers = *fingersPtr;	//to go around a weird bug that visiting paths will modify fingersPtr.obj in debug mode
-
+	Finger* fingers = fingerSelector->getFingers(&fingerNum);
+	
 	for (int i = 0; i < fingerNum; i++)
 	{
 		Finger& finger = fingers[i];
@@ -144,5 +145,4 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 
 	frameCount = newFrameCount;
 
-	fingersPtr.release();
 }

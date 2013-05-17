@@ -36,7 +36,7 @@ namespace InteractiveSpace.EngineController
 
         public void StopServer()
         {
-            if (process != null)
+            if (process != null && !process.HasExited)
             {
                 if (process.StartInfo.RedirectStandardInput)
                 {

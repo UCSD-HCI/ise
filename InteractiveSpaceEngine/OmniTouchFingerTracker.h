@@ -1,11 +1,10 @@
 #ifndef OMNI_TOUCH_FINGER_TRACKER
 #define OMNI_TOUCH_FINGER_TRACKER
 
-#include <vector>
 #include <DataTypes.h>
 #include <Detector.h>
-#include "ImageProcessingFactory.h"
-#include "KinectSensor.h"
+#include <vector>
+#include "ise.h"
 
 #define STRIP_MAX_BLANK_PIXEL 5
 #define FINGER_MIN_PIXEL_LENGTH 20
@@ -43,7 +42,6 @@ public:
 	inline void setEnabled(bool enabled) 
 	{ 
 		this->enabled = enabled; 
-		ipf->setSobelEnabled(enabled);
 	}
 	inline bool isEnabled() { return enabled; }
 };

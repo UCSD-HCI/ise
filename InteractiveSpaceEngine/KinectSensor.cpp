@@ -3,6 +3,7 @@
 #include <memory.h>
 #include "ImageProcessingFactory.h"
 #include "DebugUtils.h"
+#include "InteractiveSpaceTypes.h"
 
 KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1), nuiSensor(NULL), depthHandle(NULL)
 {
@@ -113,9 +114,9 @@ void KinectSensor::estimateIntrinsicParameters()
 	for (int i = 0; i < 100; i++)
 	{
 		FloatPoint3D p;
-		p.x = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_WIDTH - 1));
-		p.y = (int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_HEIGHT - 1));
-		p.z = (int)((rand() / (double)RAND_MAX) * 2600) + 400;	//The documentation said in near mode the effective distance is 400 ~ 2600
+		p.x = (float)(int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_WIDTH - 1));
+		p.y = (float)(int)((rand() / (double)RAND_MAX) * (KINECT_DEPTH_HEIGHT - 1));
+		p.z = (float)(int)((rand() / (double)RAND_MAX) * 2600) + 400;	//The documentation said in near mode the effective distance is 400 ~ 2600
 	
 		double xn = p.x / KINECT_DEPTH_WIDTH - 0.5;
 		double yn = 0.5 - p.y / KINECT_DEPTH_HEIGHT;
@@ -145,8 +146,8 @@ void KinectSensor::estimateIntrinsicParameters()
 	DEBUG("realWorldXToZ=" << intrinsicParam.realWorldXToZ << ", realWorldYToZ=" << intrinsicParam.realWorldYToZ);
 	DEBUG("a=" << x->data.db[0] << ", b=" << x->data.db[1]);
 
-	intrinsicParam.depthSlope = x->data.db[0];
-	intrinsicParam.depthIntercept = x->data.db[1];
+	intrinsicParam.depthSlope = (float)x->data.db[0];
+	intrinsicParam.depthIntercept = (float)x->data.db[1];
 
 	cvReleaseMat(&a);
 	cvReleaseMat(&b);
@@ -202,10 +203,9 @@ void KinectSensor::refresh()
 
 	if (lockedRect.Pitch != 0)
 	{
-		WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
+		IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
 		memcpy(depthPtr->imageData, lockedRect.pBits, lockedRect.size);
 		cvFlip(depthPtr, depthPtr, 0);
-		depthPtr.release();
 	}
 
 	pTexture->UnlockRect(0);
@@ -226,18 +226,17 @@ void KinectSensor::refresh()
 	{
 		memcpy(rawColorImg->imageData, lockedRect.pBits, lockedRect.size);
 
-		WriteLockedIplImagePtr rgbPtr = ipf->lockWritableImageProduct(RGBSourceProduct);
+		IplImage* rgbPtr = ipf->getImageProduct(RGBSourceProduct);
 		cvCvtColor(rawColorImg, rgbPtr, CV_RGBA2BGR);
 		cvFlip(rgbPtr, rgbPtr, 0);
-		rgbPtr.release();
 	}
 
 	pTexture->UnlockRect(0);
 	nuiSensor->NuiImageStreamReleaseFrame(rgbHandle, &rgbFrame);
 
     //compute depth to color coordinate frame
-    ReadLockedIplImagePtr depthPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
-    WriteLockedIplImagePtr coordPtr = ipf->lockWritableImageProduct(DepthToRGBCoordProduct);
+    IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
+    IplImage* coordPtr = ipf->getImageProduct(DepthToRGBCoordProduct);
     hr = nuiSensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
         NUI_IMAGE_RESOLUTION_640x480,
         NUI_IMAGE_RESOLUTION_640x480,
@@ -297,7 +296,7 @@ IplImage* KinectSensor::createBlankDepthImage()
 	return cvCreateImage(cvSize(KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT), IPL_DEPTH_16U, 1);	
 }
 
-float KinectSensor::distSquaredInRealWorld(int x1, int y1, int depth1, int x2, int y2, int depth2) const
+float KinectSensor::distSquaredInRealWorld(float x1, float y1, float depth1, float x2, float y2, float depth2) const
 {
 	//FIXME: maybe not correct
 	FloatPoint3D real1 = convertProjectiveToRealWorld(FloatPoint3D(x1, y1, depth1));
@@ -324,10 +323,10 @@ FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) c
 {
 
 	Vector4 vec;
-	vec.x = p.x / 100.0;
-	vec.y = p.y / 100.0;
-	vec.z = p.z / 100.0;
-	vec.w = 1.0;
+	vec.x = (float)(p.x / 100.0);
+	vec.y = (float)(p.y / 100.0);
+	vec.z = (float)(p.z / 100.0);
+	vec.w = 1.0f;
 
 	LONG x, y;
 	USHORT z;

@@ -1,64 +1,45 @@
 #include "DllWrapper.h"
-#include "ThreadUtils.h"
 #include "InteractiveSpaceEngine.h"
+#include "ImageProcessingFactory.h"
+#include "FingerSelector.h"
+#include "HandTracker.h"
+#include "Calibrator.h"
+#include "FingerEventsGenerator.h"
 
-DLL_EXPORT ReadLockedWrapperPtr lockFactoryImage(ImageProductType type)
+DLL_EXPORT const char* getFactoryImage(ImageProductType type)
 {
-	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->lockImageProduct(type);
-	ReadLockedWrapperPtr res;
-	res.obj = srcPtr->imageData;
-	res.readLock = srcPtr.getReadLock();
-	return res;
+	const IplImage* srcPtr = InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->getImageProduct(type);
+    return srcPtr->imageData;
 }
 
-DLL_EXPORT void releaseReadLockedWrapperPtr(ReadLockedWrapperPtr ptr)
+DLL_EXPORT const Finger* getFingers(int* fingerNum)
 {
-	ptr.release();
+	const Finger* fingersPtr = InteractiveSpaceEngine::sharedEngine()->getFingerSelector()->getFingers(fingerNum);
+	return fingersPtr;
 }
 
-DLL_EXPORT ReadLockedWrapperPtr lockFingers(int* fingerNum)
+DLL_EXPORT const Hand* getHands(int* handNum)
 {
-	ReadLockedPtr<Finger*> fingersPtr = InteractiveSpaceEngine::sharedEngine()->getFingerSelector()->lockFingers(fingerNum);
-	ReadLockedWrapperPtr res;
-	res.obj = *fingersPtr;
-	res.readLock = fingersPtr.getReadLock();
-	return res;
+	const Hand* handsPtr = InteractiveSpaceEngine::sharedEngine()->getHandTracker()->getHands(handNum);
+	return handsPtr;
 }
 
-DLL_EXPORT ReadLockedWrapperPtr lockHands(int* handNum)
+DLL_EXPORT const char* getCalibrationRGBImage()
 {
-	ReadLockedPtr<Hand*> handsPtr = InteractiveSpaceEngine::sharedEngine()->getHandTracker()->lockHands(handNum);
-	ReadLockedWrapperPtr res;
-	res.obj = *handsPtr;
-	res.readLock = handsPtr.getReadLock();
-	return res;
+	const IplImage* srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRGBImage();
+    return srcPtr->imageData;
 }
 
-DLL_EXPORT ReadLockedWrapperPtr lockCalibrationRGBImage()
+DLL_EXPORT const char* getCalibrationDepthImage()
 {
-	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->lockRGBImage();
-	ReadLockedWrapperPtr res;
-	res.obj = srcPtr->imageData;
-	res.readLock = srcPtr.getReadLock();
-	return res;
+	const IplImage* srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthImage();
+    return srcPtr->imageData;
 }
 
-DLL_EXPORT ReadLockedWrapperPtr lockCalibrationDepthImage()
+DLL_EXPORT const FingerEvent* lockFingerEvents(int* fingerNum, long long* frame)
 {
-	ReadLockedIplImagePtr srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->lockDepthImage();
-	ReadLockedWrapperPtr res;
-	res.obj = srcPtr->imageData;
-	res.readLock = srcPtr.getReadLock();
-	return res;
-}
-
-DLL_EXPORT ReadLockedWrapperPtr lockFingerEvents(int* fingerNum, long long* frame)
-{
-	ReadLockedPtr<FingerEvent*> fingerEventsPtr = InteractiveSpaceEngine::sharedEngine()->getFingerEventsGenerator()->lockEvents(fingerNum, frame);
-	ReadLockedWrapperPtr res;
-	res.obj = *fingerEventsPtr;
-	res.readLock = fingerEventsPtr.getReadLock();
-	return res;
+	const FingerEvent* fingerEventsPtr = InteractiveSpaceEngine::sharedEngine()->getFingerEventsGenerator()->getEvents(fingerNum, frame);
+    return fingerEventsPtr;
 }
 
 DLL_EXPORT long long getEngineFrameCount()

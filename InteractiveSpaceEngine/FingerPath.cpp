@@ -11,9 +11,9 @@ void FingerPath::addPoint(const FloatPoint3D& point, long long frame, FingerStat
 	{
 		//apply IIR filter
 		FloatPoint3D newFilteredPoint;
-		newFilteredPoint.x = 0.7757 * points.back().x + 0.1122 * point.x + 0.1122 * previousInput.x;
-		newFilteredPoint.y = 0.7757 * points.back().y + 0.1122 * point.y + 0.1122 * previousInput.y;
-		newFilteredPoint.z = 0.7757 * points.back().z + 0.1122 * point.z + 0.1122 * previousInput.z;
+		newFilteredPoint.x = 0.7757f * points.back().x + 0.1122f * point.x + 0.1122f * previousInput.x;
+		newFilteredPoint.y = 0.7757f * points.back().y + 0.1122f * point.y + 0.1122f * previousInput.y;
+		newFilteredPoint.z = 0.7757f * points.back().z + 0.1122f * point.z + 0.1122f * previousInput.z;
 
 		points.push_back(newFilteredPoint);
 		previousInput = point;

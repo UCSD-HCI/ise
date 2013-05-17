@@ -1,9 +1,8 @@
 #ifndef HAND_TRACKER_H
 #define HAND_TRACKER_H
 
+#include "ise.h"
 #include "InteractiveSpaceTypes.h"
-#include "FingerSelector.h"
-#include "ThreadUtils.h"
 #include <vector>
 
 #define MAX_HAND_NUM 2	//wrapper const
@@ -18,7 +17,7 @@ typedef enum
 	TrackingHand	//OpenNI is tracking this hand
 } HandType;
 
-typedef struct Hand
+typedef struct _Hand
 {
 	HandType handType;
 	unsigned int id;
@@ -27,8 +26,8 @@ typedef struct Hand
 	double confidence;
 	int captured;
 
-	bool operator< (const Hand& ref) const {return confidence > ref.confidence; }	//sort more to less
-};
+	bool operator< (const struct _Hand& ref) const {return confidence > ref.confidence; }	//sort more to less
+} Hand;
 
 //events
 typedef enum
@@ -38,14 +37,14 @@ typedef enum
 	HandLost
 } HandEventType;
 
-typedef struct HandEvent
+typedef struct _HandEvent
 {
 	int id;
 	FloatPoint3D position;
 	FloatPoint3D positionTable2D;
 
 	HandEventType eventType;
-};
+} HandEvent;
 
 typedef void (*HandEventCallback)(HandEvent e);
 
@@ -59,7 +58,6 @@ private:
 	Hand hands[MAX_HAND_NUM];
 	int handNum;
 	int nextHintId;
-	Mutex handsMutex;
 
 	//event listener
 	HandEventCallback handMoveCallback, handCapturedCallback, handLostCallback;
@@ -84,10 +82,10 @@ public:
 
 	void registerCallbacks(HandEventCallback handMoveCallback, HandEventCallback handCapturedCallback, HandEventCallback handLostCallback);
 
-	inline ReadLockedPtr<Hand*> lockHands(int* handNum) 
+	inline const Hand* getHands(int* handNum) const
 	{
 		*handNum = this->handNum;
-		return ReadLockedPtr<Hand*>(hands, handsMutex); 
+		return hands;
 	}
 };
 

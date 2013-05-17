@@ -128,21 +128,19 @@ namespace InteractiveSpace.EngineController
         {
             if (rgbSource != null)
             {
-                ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationRGBImage();
+                IntPtr ptr = ResultsDllWrapper.getCalibrationRGBImage();
                 rgbSource.Lock();
-                rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
                 rgbSource.Unlock();
-                ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 rgbVideo.ImageSource = rgbSource;
             }
 
             if (depthSource != null)
             {
-                ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationDepthImage();
+                IntPtr ptr = ResultsDllWrapper.getCalibrationDepthImage();
                 depthSource.Lock();
-                depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
+                depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr, depthWidth * depthHeight, depthWidth);
                 depthSource.Unlock();
-                ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 depthVideo.ImageSource = depthSource;
             }
             

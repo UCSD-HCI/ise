@@ -90,7 +90,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Kinect10.lib;opencv_core245.lib;opencv_calib3d245.lib;opencv_highgui245.lib;opencv_video245.lib;opencv_ml245.lib;opencv_legacy245.lib;opencv_imgproc245.lib;opencv_gpu245.lib;atlsd.lib;ws2_32.lib;winmm.lib;msvcrt.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kinect10.lib;opencv_core245d.lib;opencv_calib3d245d.lib;opencv_highgui245d.lib;opencv_video245d.lib;opencv_ml245d.lib;opencv_legacy245d.lib;opencv_imgproc245d.lib;opencv_gpu245d.lib;atlsd.lib;ws2_32.lib;winmm.lib;msvcrt.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -150,6 +150,7 @@
     <ClInclude Include="FingerSelector.h" />
     <ClInclude Include="HandTracker.h" />
     <ClInclude Include="InteractiveSpaceTypes.h" />
+    <ClInclude Include="ise.h" />
     <ClInclude Include="OmniTouchFingerTracker.h" />
     <ClInclude Include="oscpack\ip\IpEndpointName.h" />
     <ClInclude Include="oscpack\ip\NetworkingUtils.h" />
@@ -160,11 +161,9 @@
     <ClInclude Include="oscpack\osc\OscOutboundPacketStream.h" />
     <ClInclude Include="oscpack\osc\OscPacketListener.h" />
     <ClInclude Include="oscpack\osc\OscTypes.h" />
-    <ClInclude Include="ThreadWorker.h" />
     <ClInclude Include="ImageProcessingFactory.h" />
     <ClInclude Include="InteractiveSpaceEngine.h" />
     <ClInclude Include="KinectSensor.h" />
-    <ClInclude Include="ThreadUtils.h" />
     <ClInclude Include="TuioExporter.h" />
     <ClInclude Include="TUIO\TuioClient.h" />
     <ClInclude Include="TUIO\TuioContainer.h" />

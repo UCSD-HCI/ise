@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "DebugUtils.h"
 #include "InteractiveSpaceEngine.h"
+#include "Calibrator.h"
+#include "KinectSensor.h"
 using namespace std;
 
 //TODO: @Nadir

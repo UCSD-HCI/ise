@@ -30,12 +30,11 @@ namespace InteractiveSpace.EngineController
             {
                 unsafe
                 {
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RectifiedTabletopProduct);
-                    using (UnmanagedMemoryStream srcStream = new UnmanagedMemoryStream(ptr.BytePtr, imgSize, imgSize, FileAccess.Read))
+                    IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.RectifiedTabletopProduct);
+                    using (UnmanagedMemoryStream srcStream = new UnmanagedMemoryStream((byte*)ptr, imgSize, imgSize, FileAccess.Read))
                     {
                         srcStream.CopyTo(mmfStream);
                     }
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
             }
             //mutex.ReleaseMutex();

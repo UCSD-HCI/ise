@@ -2,9 +2,9 @@
 #define FINGER_EVENTS_GENERATOR
 
 #include <vector>
-#include "FingerSelector.h"
+#include "ise.h"
+#include "InteractiveSpaceTypes.h"
 #include "FingerPath.h"
-#include "ThreadUtils.h"
 
 #define TRACK_RADIUS 100
 #define PATH_IDLE_FRAMES 3	//A path will survive for PATH_IDLE_FRAMES since there is no new point assigned to it
@@ -43,7 +43,6 @@ class FingerEventsGenerator
 private:
 	FingerEvent events[MAX_FINGER_NUM * 2];	
 	int eventNum;
-	Mutex eventsMutex;
 	long long frameCount;
 	unsigned int lastId;
 
@@ -59,11 +58,11 @@ public:
 	/**
 	 * @remark The caller should check if events of this frame has already consumed
 	 */
-	inline ReadLockedPtr<FingerEvent*> lockEvents(int* eventNumPtr, long long* frame)
+	inline const FingerEvent* getEvents(int* eventNumPtr, long long* frame) const
 	{
 		*eventNumPtr = eventNum;
 		*frame = frameCount;	
-		return ReadLockedPtr<FingerEvent*>(events, eventsMutex);
+		return events;
 	}
 };
 

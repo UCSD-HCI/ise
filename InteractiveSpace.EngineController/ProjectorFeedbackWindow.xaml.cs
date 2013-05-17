@@ -111,8 +111,8 @@ namespace InteractiveSpace.EngineController
                 unsafe
                 {
                     int fingerNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
-                    Finger* fingers = (Finger*)ptr.IntPtr;
+                    IntPtr ptr = ResultsDllWrapper.getFingers(&fingerNum);
+                    Finger* fingers = (Finger*)ptr;
 
                     FloatPoint3D[] kinectPoints = new FloatPoint3D[fingerNum];
                     FloatPoint3D[] rgbPoints = new FloatPoint3D[fingerNum];
@@ -146,7 +146,6 @@ namespace InteractiveSpace.EngineController
                         fingerPoints[i].Opacity = 0;
                     }
 
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
 
 
@@ -154,8 +153,8 @@ namespace InteractiveSpace.EngineController
                 unsafe
                 {
                     int handNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockHands(&handNum);
-                    Hand* hands = (Hand*)ptr.IntPtr;
+                    IntPtr ptr = ResultsDllWrapper.getHands(&handNum);
+                    Hand* hands = (Hand*)ptr;
 
                     FloatPoint3D[] kinectPoints = new FloatPoint3D[handNum];
                     FloatPoint3D[] projPoints = new FloatPoint3D[handNum];
@@ -188,7 +187,6 @@ namespace InteractiveSpace.EngineController
                         handPoints[i].Opacity = 0;
                     }
 
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
             }, null);
         }

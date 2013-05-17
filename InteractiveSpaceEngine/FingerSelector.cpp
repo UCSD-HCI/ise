@@ -1,8 +1,10 @@
 #include "FingerSelector.h"
 #include <DataTypes.h>
+#include "KinectSensor.h"
+#include "OmniTouchFingerTracker.h"
 using namespace std;
 
-FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), thresholdTracker(thresholdTracker),
+FingerSelector::FingerSelector(OmniTouchFingerTracker* omniTracker, const KinectSensor* kinectSensor) : omniTracker(omniTracker), 
 	kinectSensor(kinectSensor), fingerNum(0), handHintNum(0)
 {
 
@@ -14,7 +16,6 @@ FingerSelector::~FingerSelector()
 
 void FingerSelector::refresh()
 {
-	WriteLock wLock(fingersMutex);
 	int i = 0;
 	for (int j = 0; i < MAX_FINGER_NUM && j < omniTracker->getFingers().size(); i++, j++)
 	{

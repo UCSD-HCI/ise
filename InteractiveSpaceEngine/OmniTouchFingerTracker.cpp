@@ -1,14 +1,17 @@
 #include "OmniTouchFingerTracker.h"
+
 #include <deque>
 #include <math.h>
 #include "DebugUtils.h"
+#include "ImageProcessingFactory.h"
+#include "KinectSensor.h"
 using namespace std;
 using namespace ise;
 
 OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0),
 	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0), enabled(true),
     _rgbFrame(ipf->getImageProduct(RGBSourceProduct)),
-    _depthFrame(ipf->getImageProduct(DepthSynchronizedProduct)),
+    _depthFrame(ipf->getImageProduct(DepthSourceProduct)),
     _debugFrame(ipf->getImageProduct(DebugOmniOutputProduct)),
     _debugFrame2(ipf->getImageProduct(DebugOmniTransposedOutputProduct)),
     _depthToRgbCoordFrame(ipf->getImageProduct(DepthToRGBCoordProduct))

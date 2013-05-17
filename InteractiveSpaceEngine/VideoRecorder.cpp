@@ -1,5 +1,8 @@
 #include "VideoRecorder.h"
 #include "InteractiveSpaceEngine.h"
+#include "OmniTouchFingerTracker.h"
+#include "ImageProcessingFactory.h"
+#include "KinectSensor.h"
 #include <string>
 #include <cxcore.h>
 using namespace std;
@@ -88,23 +91,20 @@ void VideoRecorder::refresh()
 	}
 
 	//rgb
-	ReadLockedIplImagePtr srcPtr = ipf->lockImageProduct(RGBSourceProduct);
+	IplImage* srcPtr = ipf->getImageProduct(RGBSourceProduct);
 	IplImage* dst = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->createBlankRGBImage();
 	cvCvtColor(srcPtr, dst, CV_RGB2BGR);
 	cvWriteFrame(rgbWriter, dst);
 	cvReleaseImage(&dst);
-	srcPtr.release();
 
 	//depth
-	ReadLockedIplImagePtr depthHistPtr = ipf->lockImageProduct(DebugDepthHistogramedProduct);
+	IplImage* depthHistPtr = ipf->getImageProduct(DebugDepthHistogramedProduct);
 	IplImage* dstDepth = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->createBlankRGBImage();
 	cvCvtColor(depthHistPtr, dstDepth, CV_GRAY2BGR);
 	cvWriteFrame(depthHistWriter, dstDepth);
 	cvReleaseImage(&dstDepth);
-	depthHistPtr.release();
 
 	//depth bin
-	ReadLockedIplImagePtr depthDataPtr = ipf->lockImageProduct(DepthSynchronizedProduct);
+	IplImage* depthDataPtr = ipf->getImageProduct(DepthSourceProduct);
 	fwrite(depthDataPtr->imageData, 1, depthDataPtr->imageSize, depthDataFp);
-	depthDataPtr.release();
 }

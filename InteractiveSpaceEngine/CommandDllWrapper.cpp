@@ -2,15 +2,19 @@
 #include "InteractiveSpaceEngine.h"
 #include "InteractiveSpaceTypes.h"
 #include "HandTracker.h"
+#include "Calibrator.h"
+#include "VideoRecorder.h"
+#include "ImageProcessingFactory.h"
+#include "OmniTouchFingerTracker.h"
 
-DLL_EXPORT void engineRun()
+DLL_EXPORT void engineInit()
 {
-	InteractiveSpaceEngine::sharedEngine()->run();
+	InteractiveSpaceEngine::sharedEngine()->init();
 }
 
-DLL_EXPORT void engineStop(void* stoppedCallback)
+DLL_EXPORT void engineExit()
 {
-	InteractiveSpaceEngine::sharedEngine()->stop((Callback)stoppedCallback);
+	InteractiveSpaceEngine::sharedEngine()->exit();
 }
 
 DLL_EXPORT void engineMainLoopUpdate()

@@ -1,10 +1,7 @@
 #ifndef CALIBRATOR_H
 #define CALIBRATOR_H
 
-#include "KinectSensor.h"
-#include "InteractiveSpaceTypes.h"
-#include "ImageProcessingFactory.h"
-#include "ThreadUtils.h"
+#include "ise.h"
 #include <cv.h>
 
 #define CHESSBOARD_CAPTURE_FRAMES 20
@@ -41,8 +38,6 @@ private:
 	IplImage* rgbImg;
 	IplImage* grayImg;
 	IplImage* depthImg;
-
-	Mutex rgbImgMutex, depthImgMutex;
 
 	//chessboard data
 	RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback;
@@ -92,14 +87,14 @@ public:
 		return state != CalibratorNotInit && state != CalibratorStopped && state != AllCalibrated;
 	}
 
-	inline ReadLockedIplImagePtr lockRGBImage()
+	inline const IplImage* getRGBImage() const
 	{
-		return ReadLockedIplImagePtr(*rgbImg, rgbImgMutex);
+        return rgbImg;
 	}
 
-	inline ReadLockedIplImagePtr lockDepthImage()
+	inline const IplImage* getDepthImage() const
 	{
-		return ReadLockedIplImagePtr(*depthImg, depthImgMutex);
+		return depthImg;
 	}
 
 	inline const CvMat* getRgbSurfHomographyInversed() const

@@ -12,10 +12,10 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         //TODO: change this to engineInit()
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern unsafe void engineRun();
+        public static extern unsafe void engineInit();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern unsafe void engineStop(IntPtr stoppedCallback);
+        public static extern unsafe void engineExit();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe void engineMainLoopUpdate();

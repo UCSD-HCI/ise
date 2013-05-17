@@ -16,7 +16,6 @@ namespace InteractiveSpace.EngineController
         private ImageSource depthSource;
         private ImageSource omniSource;
         private ushort[] depthData;
-        private int[] sobelData;
         private int stride;
 
         public FrameCapture()
@@ -29,17 +28,11 @@ namespace InteractiveSpace.EngineController
             int depthPixelSize = stride * CommandDllWrapper.getDepthHeight();
             short[] depthInShort = new short[depthPixelSize];
 
-            ReadLockedWrapperPtr depthPtr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DepthSynchronizedProduct);
-            Marshal.Copy(depthPtr.IntPtr, depthInShort, 0, depthPixelSize);
-            ResultsDllWrapper.releaseReadLockedWrapperPtr(depthPtr);
+            IntPtr depthPtr = ResultsDllWrapper.getFactoryImage(ImageProductType.DepthSourceProduct);
+            Marshal.Copy(depthPtr, depthInShort, 0, depthPixelSize);
 
             depthData = new ushort[depthPixelSize];
             Buffer.BlockCopy(depthInShort, 0, depthData, 0, depthPixelSize * 2);
-
-            sobelData = new int[depthPixelSize];
-            ReadLockedWrapperPtr sobelPtr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DepthSobeledProduct);
-            Marshal.Copy(sobelPtr.IntPtr, sobelData, 0, depthPixelSize);
-            ResultsDllWrapper.releaseReadLockedWrapperPtr(sobelPtr);
         }
 
         public void Save()
@@ -58,7 +51,6 @@ namespace InteractiveSpace.EngineController
             saveBmp(depthSource, filePrefix + "_depth.bmp");
             saveBmp(omniSource, filePrefix + "_omni.bmp");
             saveCsv(depthData, filePrefix + "_depth.csv");
-            saveCsv(sobelData, filePrefix + "_sobel.csv");
         }
 
         private void saveBmp(ImageSource source, string fileName)

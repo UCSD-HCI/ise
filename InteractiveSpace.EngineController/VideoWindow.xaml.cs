@@ -101,8 +101,8 @@ namespace InteractiveSpace.EngineController
                 unsafe
                 {
                     int fingerNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFingers(&fingerNum);
-                    Finger* fingers = (Finger*)ptr.IntPtr;
+                    IntPtr ptr = ResultsDllWrapper.getFingers(&fingerNum);
+                    Finger* fingers = (Finger*)ptr;
 
                     if (videoSourceType == VideoSourceType.RGB) //transform points
                     {
@@ -166,15 +166,14 @@ namespace InteractiveSpace.EngineController
                         fingerPoints[i].Opacity = 0;
                     }
 
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
 
                 //draw hands
                 unsafe
                 {
                     int handNum;
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockHands(&handNum);
-                    Hand* hands = (Hand*)ptr.IntPtr;
+                    IntPtr ptr = ResultsDllWrapper.getHands(&handNum);
+                    Hand* hands = (Hand*)ptr;
 
                     for (int i = 0; i < handNum; i++)
                     {
@@ -190,7 +189,6 @@ namespace InteractiveSpace.EngineController
                         handPoints[i].Opacity = 0;
                     }
 
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                 }
             }
         }

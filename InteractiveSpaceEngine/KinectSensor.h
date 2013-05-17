@@ -3,12 +3,10 @@
 
 //fix a weird issue that new version of NuiApi seems not to include windows.h
 #include <Windows.h>	
-
-#include "ThreadUtils.h"
-#include "ThreadWorker.h"
-#include "InteractiveSpaceTypes.h"
-#include "NuiApi.h"
+#include <NuiApi.h>
 #include <DataTypes.h>
+#include <cv.h>
+#include "ise.h"
 
 class ImageProcessingFactory;
 
@@ -32,9 +30,7 @@ private:
 	HANDLE depthHandle;
 	HANDLE rgbHandle;
 
-	Mutex frameCountMutex;
-
-	long long frameCount;
+    long long frameCount;
 
 	ImageProcessingFactory* ipf;
 	IplImage* rawColorImg;
@@ -53,7 +49,6 @@ public:
 
 	inline long long getFrameCount() 
 	{
-		ReadLock frameCountLock(frameCountMutex);
 		return frameCount; 
 	}
 
@@ -68,7 +63,7 @@ public:
 	//inline xn::HandsGenerator* getHandsGenerator() { return &handsGen; }
 
 	//parameters are in Kinect perspective
-	float distSquaredInRealWorld(int x1, int y1, int depth, int x2, int y2, int depth2) const;
+	float distSquaredInRealWorld(float x1, float y1, float depth, float x2, float y2, float depth2) const;
 	float distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const;
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	FloatPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;

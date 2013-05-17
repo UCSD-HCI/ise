@@ -87,11 +87,10 @@ namespace InteractiveSpace.EngineController
                 {
                     if (rgbSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RGBSourceProduct);
+                        IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.RGBSourceProduct);
                         rgbSource.Lock();
-                        rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                        rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
                         rgbSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
                 }
 
@@ -107,11 +106,10 @@ namespace InteractiveSpace.EngineController
                 {
                     if (depthHistogramedSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugDepthHistogramedProduct);
+                        IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.DebugDepthHistogramedProduct);
                         depthHistogramedSource.Lock();
-                        depthHistogramedSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
+                        depthHistogramedSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr, depthWidth * depthHeight, depthWidth);
                         depthHistogramedSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
                 }
 
@@ -127,11 +125,10 @@ namespace InteractiveSpace.EngineController
                 {
                     if (omniTouchSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DebugOmniOutputProduct);
+                        IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.DebugOmniOutputProduct);
                         omniTouchSource.Lock();
-                        omniTouchSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight * 3, depthWidth * 3);
+                        omniTouchSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr, depthWidth * depthHeight * 3, depthWidth * 3);
                         omniTouchSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
                 }
 
@@ -147,11 +144,10 @@ namespace InteractiveSpace.EngineController
                 {
                     if (rectifiedTabletopSource != null)
                     {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RectifiedTabletopProduct);
+                        IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.RectifiedTabletopProduct);
                         rectifiedTabletopSource.Lock();
-                        rectifiedTabletopSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                        rectifiedTabletopSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
                         rectifiedTabletopSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
                     }
                 }
 

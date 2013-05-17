@@ -1,17 +1,8 @@
 #ifndef INTERACTIVE_SPACE_ENGINE_H
 #define INTERACTIVE_SPACE_ENGINE_H
 
-#include <boost/thread.hpp>
 #include <boost/timer.hpp>
-#include "OmniTouchFingerTracker.h"
-#include "KinectSensor.h"
-#include "ImageProcessingFactory.h"
-#include "FingerSelector.h"
-#include "HandTracker.h"
-#include "Calibrator.h"
-#include "FingerEventsGenerator.h"
-#include "VideoRecorder.h"
-#include "TuioExporter.h"
+#include "ise.h"
 
 
 class InteractiveSpaceEngine
@@ -19,7 +10,6 @@ class InteractiveSpaceEngine
 private:
 	static InteractiveSpaceEngine instance;
 
-	//thread workers
 	KinectSensor* kinectSensor;
 	ImageProcessingFactory* ipf;
 	
@@ -53,8 +43,8 @@ public:
 	virtual ~InteractiveSpaceEngine();
 	static InteractiveSpaceEngine* sharedEngine();
 
-	void run();
-	void stop(Callback stoppedCallback);
+	void init();
+	void exit();
     void mainLoopUpdate();
 
 	inline KinectSensor* getKinectSensor() { return kinectSensor; }

@@ -26,10 +26,7 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     {
         RGBSourceProduct,
         DepthSourceProduct,	//this depth data is from the Kinect thread
-        DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
         DepthToRGBCoordProduct,
-
-        DepthSobeledProduct,
 
         DebugDepthHistogramedProduct,
         DebugOmniOutputProduct,
@@ -77,20 +74,6 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 	    Depth3D,
 	    Motion2D
     };
-
-    /// <summary>
-    /// <remarks>ThreadUtils.h, ReadLockedWrapperPtr</remarks>
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    unsafe public struct ReadLockedWrapperPtr
-    {
-        private IntPtr obj;
-        private IntPtr readLock;
-
-        public byte* BytePtr { get { return (byte*)obj; } }
-        public ushort* UShortPtr { get { return (ushort*)obj; } }
-        public IntPtr IntPtr { get { return (IntPtr)obj; } }
-    }
 
     /// <summary>
     /// <remarks>InteractiveSpaceTypes.h, IntPoint3D</remarks>

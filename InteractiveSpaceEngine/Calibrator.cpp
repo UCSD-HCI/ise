@@ -1,4 +1,7 @@
 #include "Calibrator.h"
+#include "KinectSensor.h"
+#include "ImageProcessingFactory.h"
+#include "InteractiveSpaceTypes.h"
 #include <assert.h>
 #include <fstream>
 using namespace std;
@@ -188,9 +191,8 @@ void Calibrator::refresh()
 	if (state != CalibratorNotInit && state != CalibratorStopped && state != RGBCalibrated)
 	{
 		{
-			WriteLock wLock(rgbImgMutex);
-			ReadLockedIplImagePtr rgbInIpf = ipf->lockImageProduct(RGBSourceProduct);
-			ReadLockedIplImagePtr depthInIpf = ipf->lockImageProduct(DepthSourceProduct);
+			IplImage* rgbInIpf = ipf->getImageProduct(RGBSourceProduct);
+			IplImage* depthInIpf = ipf->getImageProduct(DepthSourceProduct);
 			cvCopyImage(rgbInIpf, rgbImg);
 
 			if (state == DetectingRGBChessboard)
@@ -239,19 +241,13 @@ void Calibrator::refresh()
 				}
 			}
 
-			rgbInIpf.release();
-			depthInIpf.release();
 		}
 	}
 
 	if (state != CalibratorNotInit && state != CalibratorStopped)
 	{
-		{
-			WriteLock wLock(depthImgMutex);
-			ReadLockedIplImagePtr depthInIpf = ipf->lockImageProduct(DebugDepthHistogramedProduct);
-			cvCopyImage(depthInIpf, depthImg);
-			depthInIpf.release();
-		}
+		IplImage* depthInIpf = ipf->getImageProduct(DebugDepthHistogramedProduct);
+		cvCopyImage(depthInIpf, depthImg);
 	}
 }
 

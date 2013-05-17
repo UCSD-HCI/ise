@@ -33,13 +33,7 @@
     <ClInclude Include="InteractiveSpaceEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ImageProcessingFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DllWrapper.h">
@@ -125,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="oscpack\ip\IpEndpointName.h">
       <Filter>Header Files\oscpack</Filter>
+    </ClInclude>
+    <ClInclude Include="ise.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,8 +3,7 @@
 
 #include <cv.h>
 #include <assert.h>
-#include "ThreadUtils.h"
-#include "KinectSensor.h"
+#include "ise.h"
 
 #define KINECT_MAX_DEPTH 65536
 
@@ -16,17 +15,11 @@ typedef unsigned char byte;
 #define intValAt(imgPtr, row, col) ((int*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 4))
 #define rgb888ValAt(imgPtr, row, col) ((byte*)((imgPtr)->imageData + (row) * (imgPtr)->widthStep + (col) * 3))
 
-class ThresholdTouchFingerTracker;
-class Calibrator;
-
 typedef enum 
 {
 	RGBSourceProduct,
 	DepthSourceProduct,	//this depth data is from the Kinect thread
-	DepthSynchronizedProduct,	//this depth data is synchronized with the engine thread
 	DepthToRGBCoordProduct,
-
-	DepthSobeledProduct,
 
 	DebugDepthHistogramedProduct,
 	DebugOmniOutputProduct,
@@ -41,48 +34,37 @@ class ImageProcessingFactory
 {
 private:
 	IplImage* products[ImageProductsCount];
-	Mutex productsMutex[ImageProductsCount];
 
 	KinectSensor* kinectSensor;
 
 	int depthHistogram[KINECT_MAX_DEPTH];
 
-	void updateDepthHistogram(ReadLockedIplImagePtr& depthSrc);
-	void depthSobel(const IplImage* src, IplImage* dst);
-	void depthThresholdFilter(const IplImage* src, IplImage* dst, IplImage* debugImg);
+	void updateDepthHistogram(IplImage* depthSrc);
 	void depthFilteredOpen(const IplImage* src, IplImage* dst);
 
-	bool sobelEnabled;
 	bool tabletopRectifiedEnabled;
 
 public:
 	ImageProcessingFactory(KinectSensor* kinectSensor);
 	virtual ~ImageProcessingFactory();
 
-	inline ReadLockedIplImagePtr lockImageProduct(ImageProductType type)
-	{
-		assert(products[type] != NULL);
-		return ReadLockedIplImagePtr(*products[type], productsMutex[type]);
-	}
-
-	inline WriteLockedIplImagePtr lockWritableImageProduct(ImageProductType type)
-	{
-		assert(products[type] != NULL);
-		return WriteLockedIplImagePtr(*products[type], productsMutex[type]);
-	}
-
     inline IplImage* getImageProduct(ImageProductType type)
     {
         return products[type];
     }
 
-	inline int getImageProductWidth(ImageProductType type)
+    inline const IplImage* getImageProduct(ImageProductType type) const
+    {
+        return products[type];
+    }
+
+	inline int getImageProductWidth(ImageProductType type) const
 	{
 		assert(products[type] != NULL);
 		return products[type]->width;
 	}
 
-	inline int getImageProductHeight(ImageProductType type)
+	inline int getImageProductHeight(ImageProductType type) const
 	{
 		assert(products[type] != NULL);
 		return products[type]->height;
@@ -91,9 +73,6 @@ public:
 	void refresh(long long kinectSensorFrameCount);
 	void refreshDepthHistogramed();	//for calibration
 	void updateRectifiedTabletop(Calibrator* calibrator);
-
-	inline bool isSobelEnabled() const { return sobelEnabled; }
-	inline void setSobelEnabled(bool enabled) { sobelEnabled = enabled; }
 
 	inline bool isTabletopRectifiedEnabled() const { return tabletopRectifiedEnabled; }
 	inline void setTabletopRectifiedEnabled(bool enabled) { tabletopRectifiedEnabled = enabled; }

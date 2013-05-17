@@ -11,25 +11,22 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         private const string DLL_NAME = "InteractiveSpaceEngine.dll";
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockFactoryImage(ImageProductType product);
+        public static extern unsafe IntPtr getFactoryImage(ImageProductType product);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe void releaseReadLockedWrapperPtr(ReadLockedWrapperPtr imgPtr);
+        public static extern unsafe IntPtr getFingers(int* fingerNum);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockFingers(int* fingerNum);
+        public static extern unsafe IntPtr getHands(int* handNum);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockHands(int* handNum);
+        public static extern unsafe IntPtr getCalibrationRGBImage();
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockCalibrationRGBImage();
+        public static extern unsafe IntPtr getCalibrationDepthImage();
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockCalibrationDepthImage();
-
-        [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe ReadLockedWrapperPtr lockFingerEvents(int* fingerNum, long* frame);
+        public static extern unsafe IntPtr getFingerEvents(int* fingerNum, long* frame);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe long getEngineFrameCount();
@@ -42,11 +39,6 @@ namespace InteractiveSpace.EngineController.NativeWrappers
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe Matrix33 getDepthSurfHomography();
-
-        /*
-        [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe double getKinectSoundAngle();
-         */
     }
 
 }
