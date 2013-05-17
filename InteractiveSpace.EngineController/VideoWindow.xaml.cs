@@ -103,7 +103,7 @@ namespace InteractiveSpace.EngineController
 
         void mainWindow_EngineUpdate(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)delegate
+            Dispatcher.Invoke((Action)delegate
             {
                 if (mainWindow.IsStopRequested)
                 {
@@ -151,8 +151,8 @@ namespace InteractiveSpace.EngineController
                         {
                             for (int i = 0; i < fingerNum; i++)
                             {
-                                Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x);
-                                Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y);
+                                Canvas.SetLeft(fingerPoints[i], fingers[i].PositionInKinectPersp.x - FINGER_RADIUS);
+                                Canvas.SetTop(fingerPoints[i], fingers[i].PositionInKinectPersp.y - FINGER_RADIUS);
                             }
                         }
 

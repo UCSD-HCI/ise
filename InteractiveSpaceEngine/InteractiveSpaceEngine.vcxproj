@@ -201,9 +201,6 @@
     <ClCompile Include="VideoRecorder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="OpenNIConfig.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\externals\ise_cvcore\InteractiveSpaceCvLib\InteractiveSpaceCvLib.vcxproj">
       <Project>{20df62c7-b16a-4aa2-896b-9363ab5991c5}</Project>
     </ProjectReference>

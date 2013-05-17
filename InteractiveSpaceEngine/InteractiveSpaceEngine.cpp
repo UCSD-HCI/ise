@@ -193,9 +193,3 @@ void InteractiveSpaceEngine::operator() ()
 		stoppedCallback();
 	}
 }
-
-int main()
-{
-
-	return 0;
-}

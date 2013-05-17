@@ -195,9 +195,4 @@
       <Filter>Source Files\oscpack</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="OpenNIConfig.xml">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>
