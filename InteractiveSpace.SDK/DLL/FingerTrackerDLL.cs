@@ -31,14 +31,13 @@ namespace InteractiveSpace.SDK.DLL
 
             unsafe
             {
-                ReadLockedWrapperPtr fingerEventsPtr = ResultsDllWrapper.lockFingerEvents(&fingerNum, &frame); //frame already checked by the caller
-                FingerEvent* fingerEventsSrc = (FingerEvent*)fingerEventsPtr.IntPtr;
+                IntPtr fingerEventsPtr = ResultsDllWrapper.getFingerEvents(&fingerNum, &frame); //frame already checked by the caller
+                FingerEvent* fingerEventsSrc = (FingerEvent*)fingerEventsPtr;
                 FingerEvent[] fingerEvents = new FingerEvent[fingerNum];
                 for (int i = 0; i < fingerNum; i++)
                 {
                     fingerEvents[i] = fingerEventsSrc[i];   //deep clone happened for struct
                 }
-                ResultsDllWrapper.releaseReadLockedWrapperPtr(fingerEventsPtr); //release the locker before raising events, or the engine may be blocked by application
 
                 for (int i = 0; i < fingerNum; i++)
                 {

@@ -33,36 +33,31 @@ namespace InteractiveSpace.SDK.DLL
             depthSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray16, null);
         }
 
-        internal void Refresh(Dispatcher dispatcher)
+        internal void Refresh()
         {
-            dispatcher.BeginInvoke((Action)delegate
+            //RGB
+            unsafe
             {
-                //RGB
-                unsafe
+                if (rgbSource != null)
                 {
-                    if (rgbSource != null)
-                    {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.RGBSourceProduct);
-                        rgbSource.Lock();
-                        rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
-                        rgbSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    }
+                    IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.RGBSourceProduct);
+                    rgbSource.Lock();
+                    rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
+                    rgbSource.Unlock();
                 }
+            }
 
-                //Depth
-                unsafe
+            //Depth
+            unsafe
+            {
+                if (depthSource != null)
                 {
-                    if (depthSource != null)
-                    {
-                        ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockFactoryImage(ImageProductType.DepthSynchronizedProduct);
-                        depthSource.Lock();
-                        depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight * 2, depthWidth * 2);
-                        depthSource.Unlock();
-                        ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    }
+                    IntPtr ptr = ResultsDllWrapper.getFactoryImage(ImageProductType.DepthSourceProduct);
+                    depthSource.Lock();
+                    depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr, depthWidth * depthHeight * 2, depthWidth * 2);
+                    depthSource.Unlock();
                 }
-            }, null);
+            }
         }
 
 

@@ -25,6 +25,7 @@ namespace InteractiveSpace.SDK.DLL
         private Int64 lastFrameCount;
 
         public event EventHandler EngineUpdate;
+        public event EventHandler EngineUpdateOnMainUI;
 
         public void Connect()
         {
@@ -33,14 +34,43 @@ namespace InteractiveSpace.SDK.DLL
             mainWindow.Top = 0;
             mainWindow.Left = 0;
 
-            //workingThread = new Thread(threadWorker);
-            //workingThread.Start();
-            mainWindow.EngineUpdate += new EventHandler(mainWindow_EngineUpdate);
+            EngineBackgroundWorker.Instance.EngineUpdate += new EventHandler(engineUpdate);
+            EngineBackgroundWorker.Instance.EngineUpdateOnMainUI += new EventHandler(engineUpdateOnMainUI);
+        }
+
+        void engineUpdateOnMainUI(object sender, EventArgs e)
+        {
+            if (rawVideoStreaming != null)
+            {
+                rawVideoStreaming.Refresh();
+            }
+
+            if (EngineUpdateOnMainUI != null)
+            {
+                EngineUpdateOnMainUI(this, EventArgs.Empty);
+            }
+        }
+
+        void engineUpdate(object sender, EventArgs e)
+        {
+            long newFrameCount = ResultsDllWrapper.getEngineFrameCount();
+
+            if (fingerTracker != null)
+            {
+                fingerTracker.Refresh();
+            }
+
+            lastFrameCount = newFrameCount;
+
+            if (EngineUpdate != null)
+            {
+                EngineUpdate(this, EventArgs.Empty);
+            }
         }
 
         public void Close()
         {
-            stopRequested = true;
+            mainWindow.Close();
         }
 
         public void CreateFingerTracker()
@@ -51,66 +81,6 @@ namespace InteractiveSpace.SDK.DLL
         public FingerTracker FingerTracker
         {
             get { return fingerTracker; }
-        }
-
-        /*private void threadWorker()
-        {
-            while (true)
-            {
-                if (stopRequested)
-                {
-                    mainWindow.Dispatcher.BeginInvoke((Action)delegate()
-                    {
-                        mainWindow.Close();
-                    }, null);
-                    break;
-                }
-
-                long newFrameCount = ResultsDllWrapper.getEngineFrameCount();
-                if (newFrameCount > lastFrameCount)
-                {
-                    if (fingerTracker != null)
-                    {
-                        fingerTracker.Refresh();
-                    }
-
-                    lastFrameCount = newFrameCount;
-                }
-                else
-                {
-                    Thread.Yield();
-                }
-            }
-            
-        }*/
-
-
-        void mainWindow_EngineUpdate(object sender, EventArgs e)
-        {
-            if (stopRequested)
-            {
-                mainWindow.EngineStop();
-                return;
-            }
-
-            long newFrameCount = ResultsDllWrapper.getEngineFrameCount();
-
-            if (fingerTracker != null)
-            {
-                fingerTracker.Refresh();
-            }
-
-            if (rawVideoStreaming != null)
-            {
-                rawVideoStreaming.Refresh(mainWindow.Dispatcher);
-            }
-
-            lastFrameCount = newFrameCount;
-
-            if (EngineUpdate != null)
-            {
-                EngineUpdate(this, EventArgs.Empty);
-            }
         }
 
         public void CreateHandTracker()

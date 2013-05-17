@@ -40,42 +40,6 @@ namespace InteractiveSpace.EngineController
             smExporter = new SharedMemoryExporter();
         }
 
-        public void Exit()
-        {
-            if (rawVideoWindow != null)
-            {
-                rawVideoWindow.Close();
-            }
-
-            if (depthVideoWindow != null)
-            {
-                depthVideoWindow.Close();
-            }
-
-            if (multiTouchVideoWindow != null)
-            {
-                multiTouchVideoWindow.Close();
-            }
-
-            if (thresholdTouchVideoWindow != null)
-            {
-                thresholdTouchVideoWindow.Close();
-            }
-
-            /*if (projectorFeedbackWindow != null)
-            {
-                projectorFeedbackWindow.Close();
-            }*/
-
-            if (motionCameraVideoWindow != null)
-            {
-                motionCameraVideoWindow.Close();
-            }
-
-            multiTouchVistaController.StopServer();
-            EngineBackgroundWorker.Instance.Stop();
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var settings = Properties.Settings.Default;
@@ -128,7 +92,38 @@ namespace InteractiveSpace.EngineController
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Exit();
+            if (rawVideoWindow != null)
+            {
+                rawVideoWindow.Close();
+            }
+
+            if (depthVideoWindow != null)
+            {
+                depthVideoWindow.Close();
+            }
+
+            if (multiTouchVideoWindow != null)
+            {
+                multiTouchVideoWindow.Close();
+            }
+
+            if (thresholdTouchVideoWindow != null)
+            {
+                thresholdTouchVideoWindow.Close();
+            }
+
+            /*if (projectorFeedbackWindow != null)
+            {
+                projectorFeedbackWindow.Close();
+            }*/
+
+            if (motionCameraVideoWindow != null)
+            {
+                motionCameraVideoWindow.Close();
+            }
+
+            multiTouchVistaController.StopServer();
+            EngineBackgroundWorker.Instance.Stop();
         }
 
         void engineUpdate(object sender, EventArgs e)

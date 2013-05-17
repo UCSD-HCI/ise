@@ -7,7 +7,7 @@ FingerPath::FingerPath(int id) : id(id)
 
 void FingerPath::addPoint(const FloatPoint3D& point, long long frame, FingerState fingerState)
 {
-	if (false && points.size() > 0)
+	if (false && points.size() > 0) //TODO better filter
 	{
 		//apply IIR filter
 		FloatPoint3D newFilteredPoint;
