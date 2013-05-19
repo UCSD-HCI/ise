@@ -202,6 +202,9 @@ namespace InteractiveSpace.EngineController
                 calibrateDepthButton.IsEnabled = true;
                 calibrateDepthSaveButton.IsEnabled = true;
                 calibrateDepthLoadButton.IsEnabled = true;
+
+                //now we can do automatic calibration
+                calibrateDepthButton_Click(this, new RoutedEventArgs());
             }, null);
         }
 
@@ -417,6 +420,9 @@ namespace InteractiveSpace.EngineController
             calibrateDepthButton.IsEnabled = false;
             calibrateDepthSaveButton.IsEnabled = false;
             calibrateDepthLoadButton.IsEnabled = false;
+
+            //automatic close
+            this.Close();
         }
 
         private void calibrateDepthSaveButton_Click(object sender, RoutedEventArgs e)

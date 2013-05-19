@@ -9,6 +9,9 @@ KinectSensor::KinectSensor() : ipf(NULL), frameCount(-1), nuiSensor(NULL), depth
 {
 
 	rawColorImg = cvCreateImage(cvSize(KINECT_RGB_WIDTH, KINECT_RGB_HEIGHT), IPL_DEPTH_8U, 4);	
+    rgbToDepthCoordMap = cvCreateImage(cvSize(KINECT_RGB_WIDTH, KINECT_RGB_HEIGHT), IPL_DEPTH_32S, 2);
+    //depthWithPlayerIndexImg = cvCreateImage(cvSize(KINECT_DEPTH_WIDTH, KINECT_DEPTH_HEIGHT), IPL_DEPTH_16U, 2);
+    //cvSet(depthWithPlayerIndexImg, cvScalar(0, 0));
 
 	HRESULT res = CreateFirstConnected();
 	assert(!FAILED(res));
@@ -20,6 +23,7 @@ KinectSensor::~KinectSensor()
 {
 	nuiSensor->Release();
 	cvReleaseImage(&rawColorImg);
+    cvReleaseImage(&rgbToDepthCoordMap);
 }
 
 /// <summary>
@@ -63,7 +67,7 @@ HRESULT KinectSensor::CreateFirstConnected()
     if (NULL != nuiSensor)
     {
         // Initialize the Kinect and specify that we'll be using depth
-		hr = nuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_AUDIO | NUI_INITIALIZE_FLAG_USES_SKELETON); 
+		hr = nuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX | NUI_INITIALIZE_FLAG_USES_AUDIO | NUI_INITIALIZE_FLAG_USES_SKELETON); 
 		
         if (SUCCEEDED(hr))
         {
@@ -72,7 +76,7 @@ HRESULT KinectSensor::CreateFirstConnected()
 
             // Open a depth image stream to receive depth frames
             hr = nuiSensor->NuiImageStreamOpen(
-                NUI_IMAGE_TYPE_DEPTH,
+                NUI_IMAGE_TYPE_DEPTH_AND_PLAYER_INDEX,
 				KINECT_DEPTH_RES,
                 0,
                 2,
@@ -157,34 +161,12 @@ void KinectSensor::estimateIntrinsicParameters()
 void KinectSensor::setImageProcessingFactory(ImageProcessingFactory* ipf)
 {
 	this->ipf = ipf;
-	//threadStart();
 }
-
-//This is for multi-treahding structure. You may currently ignore it. 
-/*void KinectSensor::operator() ()
-{
-	while(true)
-	{
-		boost::this_thread::interruption_point();
-		context.WaitAndUpdateAll();
-		
-		WriteLockedIplImagePtr rgbPtr = ipf->lockWritableImageProduct(RGBSourceProduct);
-		WriteLockedIplImagePtr depthPtr = ipf->lockWritableImageProduct(DepthSourceProduct);
-		WriteLock frameLock(frameCountMutex);
-		//lock 3 resources at the same time to keep synchronization
-		
-		memcpy(rgbPtr->imageData, rgbGen.GetData(), rgbGen.GetDataSize());
-		memcpy(depthPtr->imageData, depthGen.GetData(), depthGen.GetDataSize());
-
-		frameCount++;
-
-		depthPtr.release();
-		rgbPtr.release();
-	}
-}*/
 
 void KinectSensor::refresh()
 {
+    rgbToDepthMapReady = false;
+
 	HRESULT hr;
 	INuiFrameTexture * pTexture;
 	NUI_LOCKED_RECT lockedRect;
@@ -199,16 +181,35 @@ void KinectSensor::refresh()
 
 	pTexture = depthFrame.pFrameTexture;
 
+    IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
 	pTexture->LockRect(0, &lockedRect, NULL, 0);
-
-	if (lockedRect.Pitch != 0)
+    if (lockedRect.Pitch != 0)
 	{
-		IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
 		memcpy(depthPtr->imageData, lockedRect.pBits, lockedRect.size);
-		cvFlip(depthPtr, depthPtr, 0);
 	}
+    pTexture->UnlockRect(0);
 
-	pTexture->UnlockRect(0);
+    //test (not working)[[[
+    /*INuiFrameTexture* depthTex;
+    BOOL nearMode;
+    nuiSensor->NuiImageFrameGetDepthImagePixelFrameTexture(depthHandle, &depthFrame, &nearMode, &depthTex);
+    depthTex->LockRect(0, &lockedRect, NULL, 0);
+    if (lockedRect.Pitch != 0)
+    {
+        NUI_DEPTH_IMAGE_PIXEL* px = (NUI_DEPTH_IMAGE_PIXEL*)lockedRect.pBits;
+
+        INuiCoordinateMapper* mapper;
+        hr = nuiSensor->NuiGetCoordinateMapper(&mapper);
+        hr = mapper->MapColorFrameToDepthFrame(NUI_IMAGE_TYPE_COLOR, KINECT_RGB_RES, KINECT_DEPTH_RES, 
+            KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT, px,
+            KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT, p);
+
+        assert(SUCCEEDED(hr));
+    }
+    depthTex->UnlockRect(0);
+    */
+    //]]]
+
 	nuiSensor->NuiImageStreamReleaseFrame(depthHandle, &depthFrame);
 
 	//get RGB
@@ -225,27 +226,22 @@ void KinectSensor::refresh()
 	if (lockedRect.Pitch != 0)
 	{
 		memcpy(rawColorImg->imageData, lockedRect.pBits, lockedRect.size);
-
-		IplImage* rgbPtr = ipf->getImageProduct(RGBSourceProduct);
-		cvCvtColor(rawColorImg, rgbPtr, CV_RGBA2BGR);
-		cvFlip(rgbPtr, rgbPtr, 0);
 	}
 
 	pTexture->UnlockRect(0);
 	nuiSensor->NuiImageStreamReleaseFrame(rgbHandle, &rgbFrame);
 
-    //compute depth to color coordinate frame
-    IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
-    IplImage* coordPtr = ipf->getImageProduct(DepthToRGBCoordProduct);
-    hr = nuiSensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
-        NUI_IMAGE_RESOLUTION_640x480,
-        NUI_IMAGE_RESOLUTION_640x480,
-        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT,
-        (ushort*)(depthPtr->imageData),
-        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT * 2,
-        (long*)coordPtr->imageData
-    );
-    assert(SUCCEEDED(hr));
+    //flip depth
+    refreshDepthToRGBCoordMap();
+    cvFlip(depthPtr, depthPtr, 0);
+
+    //flip rgb
+    IplImage* rgbPtr = ipf->getImageProduct(RGBSourceProduct);
+	cvCvtColor(rawColorImg, rgbPtr, CV_RGBA2BGR);
+	cvFlip(rgbPtr, rgbPtr, 0);
+
+
+    refreshDepthToRGBCoordMap();
 
 	frameCount++;
 
@@ -284,6 +280,167 @@ void KinectSensor::refresh()
 	//DEBUG(rpt.z << "," << rp.z);
 	
 	//]]]
+}
+
+void KinectSensor::refreshDepthToRGBCoordMap()
+{
+    //compute depth to color coordinate frame, depth is not flipped yet
+    HRESULT hr;
+    IplImage* depthPtr = ipf->getImageProduct(DepthSourceProduct);
+    IplImage* coordPtr = ipf->getImageProduct(DepthToRGBCoordProduct);
+    hr = nuiSensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
+        NUI_IMAGE_RESOLUTION_640x480,
+        NUI_IMAGE_RESOLUTION_640x480,
+        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT,
+        (ushort*)(depthPtr->imageData),
+        KINECT_DEPTH_WIDTH * KINECT_DEPTH_HEIGHT * 2,
+        (long*)coordPtr->imageData
+    );
+    assert(SUCCEEDED(hr));
+
+    //our frame will be flipped, so we need the coord map to flip as well
+    cvFlip(coordPtr);
+    for (int y = 0; y < coordPtr->height; y++)
+    {
+        long* ptr = (long*)(coordPtr->imageData + y * coordPtr->widthStep);
+        for (int x = 0; x < coordPtr->width; x++, ptr += 2)
+        {
+            ptr[1] = KINECT_RGB_HEIGHT - ptr[1];
+        }
+    }
+
+    //cvScale(coordPtr, coordPtr, -1.0, KINECT_RGB_HEIGHT);
+
+    //interlace depth data with player index so as to use coordmapper
+    /*int channelFromTo[] = { 0,1 };
+    const CvArr* in[] = {depthPtr};
+    CvArr* out[] = {depthWithPlayerIndexImg};
+    cvMixChannels(in, 1, out, 1, channelFromTo, 1);
+    cvScale(depthWithPlayerIndexImg, depthWithPlayerIndexImg, 0.125);*/
+
+    //test result
+    /*IplImage* debugPtr = ipf->getImageProduct(DebugOmniOutputProduct);
+    cvSet(debugPtr, cvScalar(255,0,0));
+
+    for (int y = 0; y < coordPtr->height; y++)
+    {
+        long* ptr = (long*)(coordPtr->imageData + y * coordPtr->widthStep);
+        for (int x = 0; x < coordPtr->width; x++, ptr += 2)
+        {
+            int cx = ptr[0];
+            int cy = ptr[1];
+
+            if (cx >= 0 && cx < KINECT_RGB_WIDTH && cy >= 0 && cy < KINECT_RGB_HEIGHT)
+            {
+                uchar* px = rgb888ValAt(debugPtr, cy, cx);
+                px[0] = px[1] = px[2] = 0;
+            }
+        }
+    }*/
+}
+
+void KinectSensor::refreshRGBToDepthCoordMap()
+{
+    //TODO: use Kinect API
+    IplImage* depthToRGBCoordMap = ipf->getImageProduct(DepthToRGBCoordProduct);
+    cvSet(rgbToDepthCoordMap, cvScalar(-1, -1));
+
+    for (int y = 0; y < depthToRGBCoordMap->height; y++)
+    {
+        long* ptr = (long*)(depthToRGBCoordMap->imageData + y * depthToRGBCoordMap->widthStep);
+        for (int x = 0; x < depthToRGBCoordMap->width; x++, ptr += 2)
+        {
+            int cx = ptr[0];
+            int cy = ptr[1];
+
+            if (cx >= 0 && cx < KINECT_RGB_WIDTH && cy >= 0 && cy < KINECT_RGB_HEIGHT)
+            {
+                int* coord = (int*)(rgbToDepthCoordMap->imageData + cy * rgbToDepthCoordMap->widthStep + cx * sizeof(int) * 2);
+                coord[0] = x;
+                coord[1] = y;
+            }
+        }
+    }
+
+    rgbToDepthMapReady = true;
+}
+
+void KinectSensor::convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, FloatPoint3D* results)
+{
+    if (!rgbToDepthMapReady)
+    {
+        refreshRGBToDepthCoordMap();
+    }
+
+    for (int i = 0; i < count; i++)
+    {
+        int cx = cvRound(rgbPoints[i].x);
+        int cy = cvRound(rgbPoints[i].y);
+        
+        int* coord = (int*)(rgbToDepthCoordMap->imageData + cy * rgbToDepthCoordMap->widthStep + cx * sizeof(int) * 2);
+        if (coord[0] >= 0 && coord[1] >= 0)
+        {
+            results[i].x = coord[0];
+            results[i].y = coord[1];
+        }
+        else
+        {
+            //unknown point, use the average of its 9 neighbors  //FIXME: is this really reasonble?!
+            int avgCount = 0;
+            float dx = 0;
+            float dy = 0;
+            for (int ny = cy - 1; ny <= cy + 1; ny++)
+            {
+                if (ny < 0 || ny >= KINECT_RGB_HEIGHT)
+                {
+                    continue;
+                }
+
+                for (int nx = cx - 1; nx <= cx + 1; nx++)
+                {
+                    if (nx < 0 || nx >= KINECT_RGB_WIDTH)
+                    {
+                        continue;
+                    }
+
+                    coord = (int*)(rgbToDepthCoordMap->imageData + cy * rgbToDepthCoordMap->widthStep + cx * sizeof(int) * 2);
+                    if (coord[0] >= 0 && coord[1] >= 0)
+                    {
+                        dx += coord[0];
+                        dy += coord[1];
+                        avgCount++;
+                    }
+                }
+            }
+
+            if (avgCount > 0)
+            {
+                results[i].x = dx / avgCount;
+                results[i].y = dy / avgCount;             
+            }
+            else
+            {
+                results[i].x = -1;
+                results[i].y = -1;
+                results[i].z = -1;
+                continue;
+            }
+        } //else black point
+
+        //get depth
+        IplImage* depthImage = ipf->getImageProduct(DepthSourceProduct);
+        ushort* depth = (ushort*)(depthImage->imageData + cvRound(results[i].y) * depthImage->widthStep + cvRound(results[i].x) * sizeof(ushort));
+        results[i].z = *depth;
+
+        //check back
+        DEBUG("RGB: " << cx << "," << cy);
+        DEBUG("Depth: " << results[i].x << ", " << results[i].y << ", " << results[i].z);
+        
+        IplImage* depthToRGBCoordMap = ipf->getImageProduct(DepthToRGBCoordProduct);
+        int* backCoord = (int*)(depthToRGBCoordMap->imageData + cvRound(results[i].y) * depthToRGBCoordMap->widthStep + cvRound(results[i].x * 2) * sizeof(int));
+        DEBUG("RGB Back: " << backCoord[0] << ", " << backCoord[1]);
+        DEBUG("\n");
+    }
 }
 
 IplImage* KinectSensor::createBlankRGBImage()

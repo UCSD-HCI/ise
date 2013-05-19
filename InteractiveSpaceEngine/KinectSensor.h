@@ -21,24 +21,23 @@ public: //const
 	static const NUI_IMAGE_RESOLUTION KINECT_DEPTH_RES = NUI_IMAGE_RESOLUTION_640x480;
 
 private:
-	/*xn::Context context;
-	xn::DepthGenerator depthGen;
-	xn::ImageGenerator rgbGen;
-	xn::HandsGenerator handsGen;*/
-
 	INuiSensor* nuiSensor;
 	HANDLE depthHandle;
 	HANDLE rgbHandle;
 
     long long frameCount;
+    bool rgbToDepthMapReady;
 
 	ImageProcessingFactory* ipf;
 	IplImage* rawColorImg;
+    IplImage* rgbToDepthCoordMap;
 
 	ise::KinectIntrinsicParameters intrinsicParam;
 
 	HRESULT CreateFirstConnected();
 	void estimateIntrinsicParameters();
+    void refreshDepthToRGBCoordMap();
+    void refreshRGBToDepthCoordMap();
 
 public:
 
@@ -52,23 +51,16 @@ public:
 		return frameCount; 
 	}
 
-	//inline void start() { threadStart(); }
-
-	//virtual void operator() ();	//thread worker
-
 	IplImage* createBlankRGBImage();		//create a blank image to store rgb data
 	IplImage* createBlankDepthImage();	//create a blank image to store depth data
-
-	//inline xn::DepthGenerator* getDepthGenerator() { return &depthGen; }
-	//inline xn::HandsGenerator* getHandsGenerator() { return &handsGen; }
 
 	//parameters are in Kinect perspective
 	float distSquaredInRealWorld(float x1, float y1, float depth, float x2, float y2, float depth2) const;
 	float distSquaredInRealWorld(const FloatPoint3D& p1, const FloatPoint3D& p2) const;
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	FloatPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
+    void convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, FloatPoint3D* results);
 
-	
 	void refresh();
 
 	inline const ise::KinectIntrinsicParameters& getIntrinsicParameters() const

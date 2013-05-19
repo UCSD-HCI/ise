@@ -228,6 +228,7 @@ void Calibrator::refresh()
 							cvPerspectiveTransform(homoTransSrc, homoTransDst, rgbSurfHomographyInversed);
 							convertCvArrToFloatPoint3D(homoTransDst, chessboardCheckPoints, cornerCount);
 							convertCvPointsToFloatPoint3D(averageChessboardCorners, chessboardDepthRefCorners, cornerCount);
+                            kinectSensor->convertRGBToDepth(cornerCount, chessboardDepthRefCorners, chessboardDepthRefCorners);
 
 							onRGBChessboardDetectedCallback(chessboardCheckPoints, cornerCount, chessboardDepthRefCorners, cornerCount);
 						}
@@ -422,14 +423,15 @@ bool Calibrator::load()
 
 bool Calibrator::fileExists(const char* path) const
 {
-	ifstream fin(path);
-	if (!fin)
+	FILE* fp = fopen(path, "r");
+	if (fp == NULL)
 	{
 		return false;
 	}
 	else
 	{
-		fin.close();
+		//fin.close();
+        fclose(fp);
 		return true;
 	}
 } 
