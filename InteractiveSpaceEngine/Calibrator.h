@@ -64,7 +64,6 @@ private:
 
 	void save() const;
 	bool load();
-	bool fileExists(const char* path) const;
 
 public:
 	Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf);

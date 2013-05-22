@@ -270,28 +270,5 @@ bool Calibrator::load()
     fs["rgbSurfHomography"] >> rgbSurfHomography;
     fs["depthSurfHomography"] >> depthSurfHomography;
 
-    /*
-	if (!fileExists("depthSurfHomography.xml") || !fileExists("rgbSurfHomography.xml"))
-	{
-		return false;
-	}
-	
-	rgbSurfHomography = (CvMat*)cvLoad("rgbSurfHomography.xml");
-	depthSurfHomography = (CvMat*)cvLoad("depthSurfHomography.xml");*/
 	return true;
 }
-
-bool Calibrator::fileExists(const char* path) const
-{
-	FILE* fp = fopen(path, "r");
-	if (fp == NULL)
-	{
-		return false;
-	}
-	else
-	{
-		//fin.close();
-        fclose(fp);
-		return true;
-	}
-} 
