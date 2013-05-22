@@ -121,6 +121,12 @@ namespace InteractiveSpace.EngineController
                 motionCameraVideoWindow.Close();
             }
 
+            if (rectifiedTabletopVideoWindow != null)
+            {
+                rectifiedTabletopVideoWindow.Close();
+            }
+
+            fpsTimer.Dispose();
             multiTouchVistaController.StopServer();
             EngineBackgroundWorker.Instance.Stop();
         }

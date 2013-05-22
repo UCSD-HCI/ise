@@ -26,14 +26,12 @@ DLL_EXPORT const Hand* getHands(int* handNum)
 
 DLL_EXPORT const char* getCalibrationRGBImage()
 {
-	const IplImage* srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRGBImage();
-    return srcPtr->imageData;
+    return (char*)InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRGBImage().data;
 }
 
 DLL_EXPORT const char* getCalibrationDepthImage()
 {
-	const IplImage* srcPtr = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthImage();
-    return srcPtr->imageData;
+    return (char*)InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthImage().data;
 }
 
 DLL_EXPORT const FingerEvent* lockFingerEvents(int* fingerNum, long long* frame)
@@ -54,17 +52,16 @@ DLL_EXPORT float getFPS()
 
 DLL_EXPORT Matrix33 getRgbSurfHomography()
 {
-	const CvMat* cvMat = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRgbSurfHomography();
-	double* m = cvMat->data.db;
-	Matrix33 r(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+    const cv::Mat& m = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getRgbSurfHomography();
+    
+	Matrix33 r(m.at<double>(0), m.at<double>(1), m.at<double>(2), m.at<double>(3), m.at<double>(4), m.at<double>(5), m.at<double>(6), m.at<double>(7), m.at<double>(8));
 	return r;
 }
 
 DLL_EXPORT Matrix33 getDepthSurfHomography()
 {
-	const CvMat* cvMat = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthSurfHomography();
-	double* m = cvMat->data.db;
-	Matrix33 r(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+	const cv::Mat& m = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthSurfHomography();
+	Matrix33 r(m.at<double>(0), m.at<double>(1), m.at<double>(2), m.at<double>(3), m.at<double>(4), m.at<double>(5), m.at<double>(6), m.at<double>(7), m.at<double>(8));
 	return r;
 }
 

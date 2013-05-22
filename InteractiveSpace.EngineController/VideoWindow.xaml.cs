@@ -221,26 +221,29 @@ namespace InteractiveSpace.EngineController
 
         private void videoImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            isCropDragging = false;
-            videoImage.ReleaseMouseCapture();
-
-            int left = (int)Canvas.GetLeft(cropRect);
-            int top = (int)Canvas.GetTop(cropRect);
-            int right = (int)(videoImage.Width - cropRect.Width - left);
-            int bottom = (int)(videoImage.Height - cropRect.Height - top);
-
-            Properties.Settings.Default.OmniTouchCroppingLeft = left;
-            Properties.Settings.Default.OmniTouchCroppingTop = top;
-            Properties.Settings.Default.OmniTouchCroppingRight = right;
-            Properties.Settings.Default.OmniTouchCroppingBottom = bottom;
-            Properties.Settings.Default.Save();
-
-            unsafe
+            if (isCropDragging)
             {
-                CommandDllWrapper.setOmniTouchCropping(left, top, right, bottom);
-            }
+                isCropDragging = false;
+                videoImage.ReleaseMouseCapture();
 
-            cropButton.IsChecked = false;
+                int left = (int)Canvas.GetLeft(cropRect);
+                int top = (int)Canvas.GetTop(cropRect);
+                int right = (int)(videoImage.Width - cropRect.Width - left);
+                int bottom = (int)(videoImage.Height - cropRect.Height - top);
+
+                Properties.Settings.Default.OmniTouchCroppingLeft = left;
+                Properties.Settings.Default.OmniTouchCroppingTop = top;
+                Properties.Settings.Default.OmniTouchCroppingRight = right;
+                Properties.Settings.Default.OmniTouchCroppingBottom = bottom;
+                Properties.Settings.Default.Save();
+
+                unsafe
+                {
+                    CommandDllWrapper.setOmniTouchCropping(left, top, right, bottom);
+                }
+
+                cropButton.IsChecked = false;
+            }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

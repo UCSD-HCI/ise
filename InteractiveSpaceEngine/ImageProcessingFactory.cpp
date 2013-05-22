@@ -74,23 +74,24 @@ void ImageProcessingFactory::updateRectifiedTabletop(Calibrator* calibrator)
 		return;
 	}
 
-    IplImage* rgbSrc = getImageProduct(RGBSourceProduct);
-
-	const CvMat* rgbInv = calibrator->getRgbSurfHomographyInversed();
-	CvMat* mat = cvCreateMat(3,3,CV_64F);
-	
+    const cv::Mat& rgbInv = calibrator->getRgbSurfHomographyInversed();
 	double Sdata[] = { 0.4, 0, 0, 0, 0.4, 0, 0, 0, 1.0 };	//TODO: constant
-	memcpy(mat->data.db, Sdata, 9 * sizeof(double));
+    cv::Mat mat(3, 3, CV_64F,Sdata);  
 
-	cvGEMM(mat, rgbInv, 1, NULL, 0, mat);
+    mat *= rgbInv;
 
-	IplImage* tmpImg = kinectSensor->createBlankRGBImage();
-	cvWarpPerspective(rgbSrc, tmpImg, mat);
+    cv::Mat rgbSrcMat(getImageProduct(RGBSourceProduct));
+    cv::Mat dstMat(getImageProduct(RectifiedTabletopProduct));
+    cv::Size dSize(640, 480);
 
+    cv::warpPerspective(rgbSrcMat, dstMat, mat, dSize);
+
+    /*
 	cvCopy(tmpImg, products[RectifiedTabletopProduct]);
 	cvSetImageROI(tmpImg, cvRect(0,0,640,480));
 	cvCopy(tmpImg, products[RectifiedTabletopProduct]);
 	cvReleaseImage(&tmpImg);
+    */
 }
 
 //TODO: do this only when window popup

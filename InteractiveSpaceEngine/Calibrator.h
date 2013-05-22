@@ -3,9 +3,7 @@
 
 #include "ise.h"
 #include <cv.h>
-
-#define CHESSBOARD_CAPTURE_FRAMES 20
-#define CORNER_COUNT 35
+#include <vector>
 
 typedef enum 
 {
@@ -31,38 +29,38 @@ typedef enum
 class Calibrator
 {
 private:
+    static const int CHESSBOARD_CAPTURE_FRAMES = 20;
+    static const int CORNER_COUNT = 35;
+
 	CalibratorState state;
 	KinectSensor* kinectSensor;
 	ImageProcessingFactory* ipf;
 
-	IplImage* rgbImg;
-	IplImage* grayImg;
-	IplImage* depthImg;
+    cv::Mat rgbImg;
+	cv::Mat grayImg;
+	cv::Mat depthImg;
 
 	//chessboard data
 	RGBCalibrationFinishedCallback onRGBChessboardDetectedCallback;
 	int chessboardRows, chessboardCols;
-	CvPoint2D32f* chessboardCorners;
-	CvPoint2D32f* averageChessboardCorners;
+    std::vector<cv::Point2f> chessboardCorners;
+    std::vector<cv::Point2f> averageChessboardCorners;
+	
 	int chessboardCapturedFrame;
 	FloatPoint3D* chessboardRefCorners;
 	FloatPoint3D* chessboardCheckPoints;
 	FloatPoint3D* chessboardDepthRefCorners;	//draw these corners on depth image and let the user refine them
 
-	CvMat *homoEstiSrc, *homoEstiDst, *homoTransSrc, *homoTransDst;
+    std::vector<cv::Point2f> homoEstiSrc, homoEstiDst, homoTransDst;
 
 	//calibration results
-	CvMat* rgbSurfHomography;
-	CvMat* rgbSurfHomographyInversed;
-	CvMat* depthSurfHomography;
-	CvMat* depthSurfHomographyInversed;
+    cv::Mat rgbSurfHomography;
+	cv::Mat rgbSurfHomographyInversed;
+	cv::Mat depthSurfHomography;
+	cv::Mat depthSurfHomographyInversed;
 
-	void convertFloatPoint3DToCvMat(const FloatPoint3D* floatPoints, CvMat* cvMat, int count) const;	//for findHomography
-	void convertCvPointsToCvMat(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count) const;	//for findHomography
-	void convertCvPointsToCvArr(const CvPoint2D32f* cvPoints, CvMat* cvMat, int count) const;	//for perspective transform, src
-	void convertFloatPoint3DToCvArr(const FloatPoint3D* floatPoints, CvMat* cvMat, int count) const;	//for perspective transform, src
-	void convertCvArrToFloatPoint3D(const CvMat* cvMat, FloatPoint3D* floatPoints, int count) const;	//for perspective transform, dst
-	void convertCvPointsToFloatPoint3D(const CvPoint2D32f* cvPoints, FloatPoint3D* floatPoints, int count) const;
+    void convertFloatPoint3DToCvPoints(const FloatPoint3D* floatPoints, std::vector<cv::Point2f>& points, int count) const;	//for findHomography
+	void convertCvPointsToFloatPoint3D(const std::vector<cv::Point2f>& cvPoints, FloatPoint3D* floatPoints) const;
 
 	void save() const;
 	bool load();
@@ -87,27 +85,27 @@ public:
 		return state != CalibratorNotInit && state != CalibratorStopped /*&& state != AllCalibrated*/;
 	}
 
-	inline const IplImage* getRGBImage() const
+    inline const cv::Mat& getRGBImage() const
 	{
         return rgbImg;
 	}
 
-	inline const IplImage* getDepthImage() const
+	inline const cv::Mat& getDepthImage() const
 	{
 		return depthImg;
 	}
 
-	inline const CvMat* getRgbSurfHomographyInversed() const
+	inline const cv::Mat& getRgbSurfHomographyInversed() const
 	{
 		return rgbSurfHomographyInversed;
 	}
 
-	inline const CvMat* getRgbSurfHomography() const 
+	inline const cv::Mat& getRgbSurfHomography() const 
 	{
 		return rgbSurfHomography;
 	}
 
-	inline const CvMat* getDepthSurfHomography() const
+	inline const cv::Mat& getDepthSurfHomography() const
 	{
 		return depthSurfHomography;
 	}
