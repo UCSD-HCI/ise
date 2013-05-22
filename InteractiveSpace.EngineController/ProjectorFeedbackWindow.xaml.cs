@@ -22,8 +22,8 @@ namespace InteractiveSpace.EngineController
     /// </summary>
     public partial class ProjectorFeedbackWindow : Window
     {
-        public const int CHESSBOARD_ROWS = 4;
-        public const int CHESSBOARD_COLS = 5;
+        public const int CHESSBOARD_ROWS = 6;
+        public const int CHESSBOARD_COLS = 8;
 
         private const double HAND_RADIUS = 50;
         private const double FINGER_RADIUS = 10;
@@ -260,8 +260,8 @@ namespace InteractiveSpace.EngineController
                     checkPointEllipses.Add(e);
 
                     globalCanvas.Children.Add(e);
-                    Canvas.SetLeft(e, checkPoints[i].x);
-                    Canvas.SetTop(e, checkPoints[i].y);
+                    Canvas.SetLeft(e, checkPoints[i].x - 5);
+                    Canvas.SetTop(e, checkPoints[i].y - 5);
                 }
             }, null);
         }

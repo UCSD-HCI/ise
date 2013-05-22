@@ -22,7 +22,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
+
+            <StackPanel Orientation="Vertical" Grid.Row="0" Margin="0,0,0,30">
+                <Label Name="messageLabel" HorizontalAlignment="Left">Auto calibrating...</Label>
+                <Button Name="okButton" HorizontalAlignment="Left" Margin="5" Padding="10,2" Click="okButton_Click">OK</Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Visibility="Collapsed">
                 <Button Name="calibrateDepthButton" VerticalAlignment="Center" Click="calibrateDepthButton_Click" IsEnabled="False" Margin="10">Calibrate Depth Camera</Button>
                 <Button Name="calibrateDepthSaveButton" Margin="10" Click="calibrateDepthSaveButton_Click" IsEnabled="False" Visibility="Collapsed">Save</Button>
                 <Button Name="calibrateDepthLoadButton" Margin="10" Click="calibrateDepthLoadButton_Click" IsEnabled="False" Visibility="Collapsed">Load</Button>

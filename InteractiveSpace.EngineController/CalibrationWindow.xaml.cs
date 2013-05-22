@@ -31,14 +31,11 @@ namespace InteractiveSpace.EngineController
         private const double TEST_POINT_RADIUS = 5;
 
         private WriteableBitmap rgbSource, depthSource;
-        //private BackgroundWorker refreshWorker;
         private RGBCalibrationFinishedDelegate onRGBChessboardDetectedDelegate;
         private ViscaCommandDelegate onPanTiltFinishedDelegate;
 
         private bool isAllCalibrated = false;
         private ProjectorFeedbackWindow projectorFeedbackWindow;
-
-        //public ProjectorFeedbackWindow ProjectorFeedbackWindow { get; set; }
 
         int rgbWidth, rgbHeight, depthWidth, depthHeight;
 
@@ -50,8 +47,6 @@ namespace InteractiveSpace.EngineController
         private FloatPoint3D? testPointInTableSurface = null;
 
         private Ellipse testPointRGB = null, testPointDepth = null, testPointTable = null;
-
-        private MainWindow mainWindow;
 
         public CalibrationWindow()
         {
@@ -72,10 +67,6 @@ namespace InteractiveSpace.EngineController
 
             rgbSource = new WriteableBitmap(rgbWidth, rgbHeight, DPI_X, DPI_Y, PixelFormats.Rgb24, null);
             depthSource = new WriteableBitmap(depthWidth, depthHeight, DPI_X, DPI_Y, PixelFormats.Gray8, null);
-
-            /*refreshWorker = new BackgroundWorker();
-            refreshWorker.DoWork += new DoWorkEventHandler(refreshWorker_DoWork);
-            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);*/
 
             projectorFeedbackWindow = new ProjectorFeedbackWindow();
             projectorFeedbackWindow.Show();
@@ -100,7 +91,6 @@ namespace InteractiveSpace.EngineController
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            //CompositionTarget.Rendering -= CompositionTarget_Rendering;
             projectorFeedbackWindow.HitTestLayer.MouseMove -= HitTestLayer_MouseMove;
             projectorFeedbackWindow.HitTestLayer.MouseLeave -= HitTestLayer_MouseLeave;
             projectorFeedbackWindow.HitTestLayer.MouseDown -= HitTestLayer_MouseDown;
@@ -112,17 +102,8 @@ namespace InteractiveSpace.EngineController
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            //ProjectorFeedbackWindow.HideChecssboard();
             CommandDllWrapper.systemCalibrationStop();
         }
-
-        /*void CompositionTarget_Rendering(object sender, EventArgs e)
-        {
-            if (!refreshWorker.IsBusy)
-            {
-                refreshWorker.RunWorkerAsync();
-            }
-        }*/
 
         void engineUpdate(object sender, EventArgs e)
         {
@@ -145,33 +126,6 @@ namespace InteractiveSpace.EngineController
             }
             
         }
-
-        /*void refreshWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            Dispatcher.BeginInvoke((Action)delegate
-            {
-                if (rgbSource != null)
-                {
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationRGBImage();
-                    rgbSource.Lock();
-                    rgbSource.WritePixels(new Int32Rect(0, 0, rgbWidth, rgbHeight), ptr.IntPtr, rgbWidth * rgbHeight * 3, rgbWidth * 3);
-                    rgbSource.Unlock();
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    rgbVideo.ImageSource = rgbSource;
-                }
-
-                if (depthSource != null)
-                {
-                    ReadLockedWrapperPtr ptr = ResultsDllWrapper.lockCalibrationDepthImage();
-                    depthSource.Lock();
-                    depthSource.WritePixels(new Int32Rect(0, 0, depthWidth, depthHeight), ptr.IntPtr, depthWidth * depthHeight, depthWidth);
-                    depthSource.Unlock();
-                    ResultsDllWrapper.releaseReadLockedWrapperPtr(ptr);
-                    depthVideo.ImageSource = depthSource;
-                }
-
-            }, null);
-        }*/
 
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {
@@ -412,17 +366,19 @@ namespace InteractiveSpace.EngineController
                 }
             }
 
+            
             foreach (var ellipse in depthRefEllipses)
             {
-                depthVideo.UiCanvas.Children.Remove(ellipse);
+                //depthVideo.UiCanvas.Children.Remove(ellipse);
+                ellipse.MouseDown -= depthRefPoint_MouseDown;
             }
+            
 
             calibrateDepthButton.IsEnabled = false;
             calibrateDepthSaveButton.IsEnabled = false;
             calibrateDepthLoadButton.IsEnabled = false;
 
-            //automatic close
-            this.Close();
+            messageLabel.Content = "Calibration done.";
         }
 
         private void calibrateDepthSaveButton_Click(object sender, RoutedEventArgs e)
@@ -495,6 +451,11 @@ namespace InteractiveSpace.EngineController
         private void rgbVideo_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void okButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

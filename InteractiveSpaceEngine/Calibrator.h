@@ -5,7 +5,7 @@
 #include <cv.h>
 
 #define CHESSBOARD_CAPTURE_FRAMES 20
-#define CORNER_COUNT 12
+#define CORNER_COUNT 35
 
 typedef enum 
 {
@@ -84,7 +84,7 @@ public:
 
 	inline bool isCalibrating() 
 	{
-		return state != CalibratorNotInit && state != CalibratorStopped && state != AllCalibrated;
+		return state != CalibratorNotInit && state != CalibratorStopped /*&& state != AllCalibrated*/;
 	}
 
 	inline const IplImage* getRGBImage() const

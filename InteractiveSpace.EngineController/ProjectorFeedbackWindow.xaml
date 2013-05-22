@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ProjectorFeedbackWindow" Height="1200" Width="1600" WindowStyle="None" Topmost="True" Loaded="Window_Loaded" Background="Black" Closing="Window_Closing">
     <Grid>
-        <Canvas Name="chessboardBorderCanvas" Height="680" HorizontalAlignment="Center" VerticalAlignment="Center" Width="830" Background="White" Visibility="Hidden">
-            <Canvas Name="chessboardCanvas" Height="600" Width="750" Canvas.Top="40" Canvas.Left="40" Background="Black"></Canvas>
-            <Rectangle Stroke="Black" StrokeThickness="5" Height="600" Width="750" Canvas.Top="40" Canvas.Left="40"/>
+        <Canvas Name="chessboardBorderCanvas" Height="980" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1280" Background="White" Visibility="Visible">
+            <Canvas Name="chessboardCanvas" Height="900" Width="1200" Canvas.Top="40" Canvas.Left="40" Background="Black"></Canvas>
+            <Rectangle Stroke="Black" StrokeThickness="5" Height="900" Width="1200" Canvas.Top="40" Canvas.Left="40"/>
         </Canvas>
         <Canvas Name="globalCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         </Canvas>

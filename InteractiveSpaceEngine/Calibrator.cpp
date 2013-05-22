@@ -125,57 +125,6 @@ void Calibrator::detectRGBChessboard(RGBCalibrationFinishedCallback onRGBChessbo
 	memset(averageChessboardCorners, 0, sizeof(CvPoint2D32f) * cornersCount);
 	memcpy(chessboardRefCorners, refCorners, sizeof(FloatPoint3D) * cornersCount);
 
-	/*
-	if (chessboardCorners != NULL)
-	{
-		delete chessboardCorners;
-	}
-	chessboardCorners = new CvPoint2D32f[cornersCount];
-
-	if (averageChessboardCorners != NULL)
-	{
-		delete averageChessboardCorners;
-	}
-	averageChessboardCorners = new CvPoint2D32f[cornersCount];
-	memset(averageChessboardCorners, 0, sizeof(CvPoint2D32f) * cornersCount);
-
-	if (chessboardRefCorners != NULL)
-	{
-		delete chessboardRefCorners;
-	}
-	chessboardRefCorners = new FloatPoint3D[cornersCount];
-	memcpy(chessboardRefCorners, refCorners, sizeof(FloatPoint3D) * cornersCount);
-
-	if (chessboardCheckPoints != NULL)
-	{
-		delete chessboardCheckPoints;
-	}
-	chessboardCheckPoints = new FloatPoint3D[cornersCount];
-
-	if (homoEstiSrc != NULL)
-	{
-		cvReleaseMat(&homoEstiSrc);
-	}
-	homoEstiSrc = cvCreateMat(cornersCount, 2, CV_32FC1);
-
-	if (homoEstiDst != NULL)
-	{
-		cvReleaseMat(&homoEstiDst);
-	}
-	homoEstiDst = cvCreateMat(cornersCount, 2, CV_32FC1);
-
-	if (homoTransSrc != NULL)
-	{
-		cvReleaseMat(&homoTransSrc);
-	}
-	homoTransSrc = cvCreateMat(1, cornersCount, CV_32FC2);
-
-	if (homoTransDst != NULL)
-	{
-		cvReleaseMat(&homoTransDst);
-	}
-	homoTransDst = cvCreateMat(1, cornersCount, CV_32FC2);*/
-
 	chessboardCapturedFrame = 0;
 
 	state = DetectingRGBChessboard;
