@@ -45,6 +45,7 @@ namespace InteractiveSpace.EngineController
 
         private FloatPoint3D[] refCorners;
         private FloatPoint3D? testPointInTableSurface = null;
+        private FloatPoint3D[] depthRefCorners;
 
         private Ellipse testPointRGB = null, testPointDepth = null, testPointTable = null;
 
@@ -130,13 +131,15 @@ namespace InteractiveSpace.EngineController
         unsafe void onRGBChessboardDetected(FloatPoint3D* checkPoints, int checkPointNum, FloatPoint3D* depthRefPoints, int depthRefPointNum)
         {
             projectorFeedbackWindow.DrawCheckpoints(checkPoints, checkPointNum);
-
+            
             //draw depth ref corners
             Dispatcher.BeginInvoke((Action)delegate()
             {
+                depthRefCorners = new FloatPoint3D[depthRefPointNum];
                 depthRefEllipses = new List<Ellipse>();
                 for (int i = 0; i < depthRefPointNum; i++)
                 {
+                    depthRefCorners[i] = depthRefPoints[i];
                     Ellipse e = new Ellipse()
                     {
                         Fill = Brushes.Yellow,
@@ -354,7 +357,7 @@ namespace InteractiveSpace.EngineController
             {
                 depthCorners[i].x = (float)(Canvas.GetLeft(depthRefEllipses[i]) + CALIBRATION_POINT_RADIUS);
                 depthCorners[i].y = (float)(Canvas.GetTop(depthRefEllipses[i]) + CALIBRATION_POINT_RADIUS);
-                depthCorners[i].z = 0;
+                depthCorners[i].z = depthRefCorners[i].z;
             }
 
             unsafe

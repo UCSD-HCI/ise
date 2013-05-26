@@ -54,13 +54,17 @@ private:
     std::vector<cv::Point2f> homoEstiSrc, homoEstiDst, homoTransDst;
 
 	//calibration results
-    cv::Mat rgbSurfHomography;
-	cv::Mat rgbSurfHomographyInversed;
-	cv::Mat depthSurfHomography;
+    cv::Mat rgbSurfHomography;          //tabletop to RGB
+	cv::Mat rgbSurfHomographyInversed;  //RGB to tabletop
+	cv::Mat depthSurfHomography;        //tabletop to depth projective    
 	cv::Mat depthSurfHomographyInversed;
+    cv::Mat tabletopToDepthRealAffine;  //tabletop to depth real
+    cv::Mat depthRealToTabletopAffine; 
+    cv::Vec4d tabletopInKinectReal;    //the tabletop plane, v[0] * x + v[1] * y + v[2] * z + v[3] = 0
 
     void convertFloatPoint3DToCvPoints(const FloatPoint3D* floatPoints, std::vector<cv::Point2f>& points, int count) const;	//for findHomography
 	void convertCvPointsToFloatPoint3D(const std::vector<cv::Point2f>& cvPoints, FloatPoint3D* floatPoints) const;
+    void estimate3DAffine(const FloatPoint3D* refCorners, const FloatPoint3D* depthCorners, int count);
 
 	void save() const;
 	bool load();
@@ -78,6 +82,9 @@ public:
 	void refresh();
 
 	void transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace) const;
+
+    //for debug
+    FloatPoint3D transformFromDepthRealToTabletop(const FloatPoint3D& depthRealPos);
 
 	inline bool isCalibrating() 
 	{

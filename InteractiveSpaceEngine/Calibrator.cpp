@@ -4,6 +4,7 @@
 #include "InteractiveSpaceTypes.h"
 #include <assert.h>
 #include <fstream>
+#include "DebugUtils.h"
 using namespace std;
 
 Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) : kinectSensor(kinectSensor), state(CalibratorNotInit), ipf(ipf),
@@ -15,6 +16,8 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
     depthSurfHomography(3, 3, CV_64F),
     rgbSurfHomographyInversed(3, 3, CV_64F),
     depthSurfHomographyInversed(3, 3, CV_64F),
+    tabletopToDepthRealAffine(3, 4, CV_64F),
+    depthRealToTabletopAffine(3, 4, CV_64F),
     averageChessboardCorners(CORNER_COUNT),
     homoEstiSrc(CORNER_COUNT),
     homoEstiDst(CORNER_COUNT),
@@ -157,9 +160,90 @@ void Calibrator::calibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* 
 	depthSurfHomography = cv::findHomography(homoEstiSrc, homoEstiDst);
 	cv::invert(depthSurfHomography, depthSurfHomographyInversed);
 
+    estimate3DAffine(refCorners, depthCorners, cornerCount);
+
 	state = AllCalibrated;
 
 	save();
+}
+
+void Calibrator::estimate3DAffine(const FloatPoint3D* refCorners, const FloatPoint3D* depthCorners, int count)
+{
+    //pre-condition: depthCorners should contain depth values, not zeros
+    
+    cv::Mat3d depthRealPoints(1, count * 2);    //first half for original data, second half for z-shifted data
+    cv::Mat3d refPoints(1, count * 2);
+
+    //matrix for plane detection
+    cv::Mat_<double> depthP(count, 3);
+
+    cv::Vec3d* depthRealOrigin = depthRealPoints.ptr<cv::Vec3d>(0);
+    cv::Vec3d* refOrigin = refPoints.ptr<cv::Vec3d>(0);
+
+    for (int i = 0; i < count; i++)
+    {
+        FloatPoint3D p = kinectSensor->convertProjectiveToRealWorld(FloatPoint3D(depthCorners[i].x, depthCorners[i].y, depthCorners[i].z));
+        depthRealOrigin[i] = cv::Vec3d(p.x, p.y, p.z);
+        refOrigin[i] = cv::Vec3d(refCorners[i].x, refCorners[i].y, 0);
+
+        double* row = depthP.ptr<double>(i);
+        row[0] = p.x;
+        row[1] = p.y;
+        row[2] = p.z;
+    }
+
+    //find plane in kinect real coordinates
+    cv::Mat_<double> centroid = depthP.t() * cv::Mat_<double>::ones(count, 1) / count;
+    cv::Mat_<double> centeredPts = depthP - cv::Mat_<double>::ones(count, 1) * centroid.t();
+    
+    cv::Vec3d n;
+    cv::SVD::solveZ(centeredPts, n);
+    
+    if (n[2] > 0)
+    {
+        n = -n;     //the normal should be pointing up, i.e. into the kinect
+    }
+
+    tabletopInKinectReal[0] = n[0];
+    tabletopInKinectReal[1] = n[1];
+    tabletopInKinectReal[2] = n[2];
+    tabletopInKinectReal[3] = centroid.dot(n);
+
+    /*
+    DEBUG("Ref: " << depthP);
+    DEBUG("Tabletop Plane: " << tabletopInKinectReal);
+    //check residue
+    cv::SVD svd(centeredPts);
+    DEBUG("SVD singular: " << svd.w);
+    */
+
+    //shift
+    cv::Vec3d* depthRealShifted = depthRealPoints.ptr<cv::Vec3d>(0) + count;
+    cv::Vec3d* refShifted = refPoints.ptr<cv::Vec3d>(0) + count;
+    cv::Vec3d shiftInDepthReal = n;
+    cv::Vec3d shiftInTabletop(0, 0, 1);
+    for (int i = 0; i < count; i++)
+    {
+        depthRealShifted[i] = depthRealOrigin[i] + shiftInDepthReal;
+        refShifted[i] = refOrigin[i] + shiftInTabletop;
+    }
+
+    //affine estimation
+    //cv::Mat inliers;
+    cv::estimateAffine3D(refPoints, depthRealPoints, tabletopToDepthRealAffine, cv::noArray());
+    cv::estimateAffine3D(depthRealPoints, refPoints, depthRealToTabletopAffine, cv::noArray());
+
+    //DEBUG("Affine inliners: " << inliers.size());
+    DEBUG("tabletopToDepthRealAffine: " << tabletopToDepthRealAffine);
+    DEBUG("depthRealToTabletopAffine: " << depthRealToTabletopAffine);
+}
+
+FloatPoint3D Calibrator::transformFromDepthRealToTabletop(const FloatPoint3D& depthRealPos)
+{
+    double t[] = {depthRealPos.x, depthRealPos.y, depthRealPos.z, 1};
+    cv::Mat_<double> x(4, 1, t);
+    cv::Mat_<double> r = depthRealToTabletopAffine * x;
+    return FloatPoint3D((float)r.at<double>(0,0), (float)r.at<double>(1,0), (float)r.at<double>(2,0));
 }
 
 void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace) const

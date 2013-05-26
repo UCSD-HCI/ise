@@ -433,6 +433,7 @@ void KinectSensor::convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, F
         results[i].z = *depth;
 
         //check back
+        /*
         DEBUG("RGB: " << cx << "," << cy);
         DEBUG("Depth: " << results[i].x << ", " << results[i].y << ", " << results[i].z);
         
@@ -440,6 +441,7 @@ void KinectSensor::convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, F
         int* backCoord = (int*)(depthToRGBCoordMap->imageData + cvRound(results[i].y) * depthToRGBCoordMap->widthStep + cvRound(results[i].x * 2) * sizeof(int));
         DEBUG("RGB Back: " << backCoord[0] << ", " << backCoord[1]);
         DEBUG("\n");
+        */
     }
 }
 

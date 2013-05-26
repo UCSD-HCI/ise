@@ -2,6 +2,7 @@
 #include "InteractiveSpaceEngine.h"
 #include "Calibrator.h"
 #include "KinectSensor.h"
+#include "DebugUtils.h"
 
 FingerEventsGenerator::FingerEventsGenerator(FingerSelector* fingerSelector) : fingerSelector(fingerSelector), eventNum(0), frameCount(0), lastId(0)
 {
@@ -33,6 +34,10 @@ void FingerEventsGenerator::addEvent(FingerEventType type, const Finger& finger)
 	events[eventNum].positionTable2D.z = finger.positionInRealWorld.z;
 
 	eventNum++;
+
+    //test affine transformation
+    FloatPoint3D table3d = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformFromDepthRealToTabletop(finger.positionInRealWorld);
+    DEBUG("Finger Test: " << table3d.x << ", " << table3d.y << ", " << table3d.z);
 }
 
 void FingerEventsGenerator::refresh(long long newFrameCount)
