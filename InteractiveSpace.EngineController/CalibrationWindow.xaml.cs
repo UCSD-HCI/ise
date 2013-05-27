@@ -190,30 +190,47 @@ namespace InteractiveSpace.EngineController
             if (isAllCalibrated)
             {
                 Point mousePos = e.GetPosition(video.UiCanvas);
-                FloatPoint3D p = new FloatPoint3D()
-                {
-                    x = (float)mousePos.X,
-                    y = (float)mousePos.Y,
-                    z = 0
-                };
+                int width = (sender == depthVideo ? CommandDllWrapper.getDepthWidth() : CommandDllWrapper.getRGBWidth());
+                int height = (sender == depthVideo ? CommandDllWrapper.getDepthHeight() : CommandDllWrapper.getRGBHeight());
 
-                CalibratedCoordinateSystem srcSpace;
-                if (sender == depthVideo)
+                if (mousePos.X >= 0 && mousePos.X < width && mousePos.Y >= 0 && mousePos.Y < height)
                 {
-                    srcSpace = CalibratedCoordinateSystem.Depth2D;
-                }
-                else if (sender == rgbVideo)
-                {
-                    srcSpace = CalibratedCoordinateSystem.RGB2D;
+                    FloatPoint3D p = new FloatPoint3D()
+                    {
+                        x = (float)mousePos.X,
+                        y = (float)mousePos.Y,
+                        z = 0
+                    };
+
+                    CoordinateSpaceConversion cvtCode;
+                    if (sender == depthVideo)
+                    {
+                        cvtCode = CoordinateSpaceConversion.SpaceDepthProjectiveToTabletop;
+
+                        //read depth value
+                        unsafe
+                        {
+                            ushort* ptr = (ushort*)ResultsDllWrapper.getFactoryImage(ImageProductType.DepthSourceProduct);
+                            p.z = *(ptr + CommandDllWrapper.getDepthWidth() * (int)p.y + (int)p.x);
+                        }
+                    }
+                    else if (sender == rgbVideo)
+                    {
+                        cvtCode = CoordinateSpaceConversion.SpaceRGBToTabletop;
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    unsafe
+                    {
+                        testPointInTableSurface = CommandDllWrapper.transformPoint(p, cvtCode);
+                    }
                 }
                 else
                 {
-                    throw new NotImplementedException();
-                }
-
-                unsafe
-                {
-                    testPointInTableSurface = CommandDllWrapper.transformPoint(p, srcSpace, CalibratedCoordinateSystem.Table2D);
+                    testPointInTableSurface = null;
                 }
 
                 refreshTestPoint();
@@ -316,8 +333,8 @@ namespace InteractiveSpace.EngineController
                 FloatPoint3D rgbPos, depthPos;
                 unsafe
                 {
-                    rgbPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.RGB2D);
-                    depthPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CalibratedCoordinateSystem.Table2D, CalibratedCoordinateSystem.Depth2D);
+                    rgbPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CoordinateSpaceConversion.SpaceTabletopToRGB);
+                    depthPos = CommandDllWrapper.transformPoint(testPointInTableSurface.Value, CoordinateSpaceConversion.SpaceTabletopToDepthProjective);
                 }
 
                 Canvas.SetLeft(testPointTable, testPointInTableSurface.Value.x - TEST_POINT_RADIUS);

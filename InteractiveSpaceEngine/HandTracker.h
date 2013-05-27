@@ -21,7 +21,7 @@ typedef struct _Hand
 {
 	HandType handType;
 	unsigned int id;
-	FloatPoint3D positionInRealWorld;
+	FloatPoint3D positionInKinectReal;
 	IntPoint3D positionInKinectProj;
 	double confidence;
 	int captured;
@@ -40,8 +40,8 @@ typedef enum
 typedef struct _HandEvent
 {
 	int id;
-	FloatPoint3D position;
-	FloatPoint3D positionTable2D;
+	FloatPoint3D positionInKinectReal;
+	FloatPoint3D positionTabletop;
 
 	HandEventType eventType;
 } HandEvent;

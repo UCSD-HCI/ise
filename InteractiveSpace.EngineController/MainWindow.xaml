@@ -1,7 +1,7 @@
 ﻿<Window x:Class="InteractiveSpace.EngineController.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="InteractiveSpace Control Panel" Height="510" Width="391" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="InteractiveSpace Control Panel" Height="550" Width="391" Loaded="Window_Loaded" Closing="Window_Closing">
     <StackPanel Orientation="Vertical">
         <GroupBox Header="Preview Video" Margin="5">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="5">
@@ -17,6 +17,7 @@
         <GroupBox Header="Enabled Components">
             <StackPanel>
                 <CheckBox Name="omniTouchCheckBox" Margin="5" IsChecked="True" Click="omniTouchCheckBox_Click">OmniTouch</CheckBox>
+                <CheckBox Name="projectorFeedbackCheckbox" Margin="5" IsChecked="False" Click="projectorFeedbackCheckbox_Click">Projector Feedbak</CheckBox>
                 <CheckBox Name="rectifiedTabletopCheckBox" Margin="5" IsChecked="False" Click="rectifiedTabletopCheckBox_Click">Rectified Tabletop</CheckBox>
                 <CheckBox Name="sharedMemoryCheckBox" Margin="5" IsChecked="False" Click="sharedMemoryCheckBox_Click">Shared Memory Stream</CheckBox>
             </StackPanel>

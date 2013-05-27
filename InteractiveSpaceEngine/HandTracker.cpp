@@ -40,7 +40,7 @@ void HandTracker::addHandHint(FloatPoint3D& positionInRealWorld, double confiden
 	hands[handNum].id = nextHintId;
 	nextHintId++;
 
-	hands[handNum].positionInRealWorld = positionInRealWorld;
+	hands[handNum].positionInKinectReal = positionInRealWorld;
 	hands[handNum].positionInKinectProj = kinectSensor->convertRealWorldToProjective(positionInRealWorld);
 
 	hands[handNum].confidence = confidence;
@@ -92,10 +92,10 @@ void HandTracker::raiseEvent(const Hand& hand, HandEventType eventType)
 	HandEvent e;
 	e.eventType = eventType;
 	e.id = hand.id;
-	e.position = hand.positionInKinectProj;
+	e.positionInKinectReal = hand.positionInKinectProj;
 
 	FloatPoint3D pointProj = hand.positionInKinectProj;
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(e.positionTable2D), 1, Depth2D, Table2D);
+    InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(1, &(pointProj), &(e.positionTabletop), SpaceDepthProjectiveToTabletop);
 
 	switch(eventType)
 	{

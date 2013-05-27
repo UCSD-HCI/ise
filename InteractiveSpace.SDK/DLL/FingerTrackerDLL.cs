@@ -54,7 +54,7 @@ namespace InteractiveSpace.SDK.DLL
                                 break;
                             }
 
-                            movingFinger.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
+                            movingFinger.Position = new Point3D(e.PositionTabletop.x, e.PositionTabletop.y, e.PositionTabletop.z);
                             if (FingerMove != null)
                             {
                                 FingerMove(this, new FingerEventArgs(movingFinger, this));
@@ -80,7 +80,7 @@ namespace InteractiveSpace.SDK.DLL
                             break;
 
                         case FingerEventType.FingerCaptured:
-                            Finger newFinger = new Finger(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z), FingerState.Hovering);
+                            Finger newFinger = new Finger(e.ID, new Point3D(e.PositionTabletop.x, e.PositionTabletop.y, e.PositionTabletop.z), FingerState.Hovering);
                             fingers.Add(newFinger.ID, newFinger);
                             if (FingerCaptured != null)
                             {

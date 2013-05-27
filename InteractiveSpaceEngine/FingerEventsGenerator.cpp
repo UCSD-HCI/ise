@@ -12,12 +12,12 @@ void FingerEventsGenerator::addEvent(FingerEventType type, int id, const FloatPo
 {
 	events[eventNum].eventType = type;
 	events[eventNum].id = id;
-	events[eventNum].position = position;
+    events[eventNum].positionInKinectReal = position;
 	events[eventNum].fingerState = fingerState;
 
-	FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(position);
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&pointProj, &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
-	events[eventNum].positionTable2D.z = position.z;	
+	//FloatPoint3D pointProj = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->convertRealWorldToProjective(position);
+    InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(1, &position, &(events[eventNum].positionTabletop), SpaceDepthRealToTabletop);
+	//events[eventNum].positionTable2D.z = position.z;	
 
 	eventNum++;
 }
@@ -26,18 +26,16 @@ void FingerEventsGenerator::addEvent(FingerEventType type, const Finger& finger)
 {
 	events[eventNum].eventType = type;
 	events[eventNum].id = finger.id;
-	events[eventNum].position = finger.positionInRealWorld;
+	events[eventNum].positionInKinectReal = finger.positionInKinectReal;
 	events[eventNum].fingerState = finger.fingerState;
 
-	FloatPoint3D pointProj = finger.positionInKinectProj;
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&(pointProj), &(events[eventNum].positionTable2D), 1, Depth2D, Table2D);
-	events[eventNum].positionTable2D.z = finger.positionInRealWorld.z;
-
+    InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(1, &(finger.positionInKinectReal), &(events[eventNum].positionTabletop), SpaceDepthRealToTabletop);
+	
 	eventNum++;
 
     //test affine transformation
-    FloatPoint3D table3d = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformFromDepthRealToTabletop(finger.positionInRealWorld);
-    DEBUG("Finger Test: " << table3d.x << ", " << table3d.y << ", " << table3d.z);
+    //FloatPoint3D table3d = InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformFromDepthRealToTabletop(finger.positionInKinectReal);
+    //DEBUG("Finger Test: " << table3d.x << ", " << table3d.y << ", " << table3d.z);
 }
 
 void FingerEventsGenerator::refresh(long long newFrameCount)
@@ -74,7 +72,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 				continue;	//this path is already dispatched to a point
 			}
 
-			double currSquDist = finger.positionInRealWorld.squaredDistanceTo(it->getEndPoint());
+			double currSquDist = finger.positionInKinectReal.squaredDistanceTo(it->getEndPoint());
 			//double currSquDist = finger.positionInRealWorld.squaredDistanceTo(paths[i].getEndPoint());
 			if (currSquDist < minSquDist)
 			{
@@ -89,7 +87,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		{
 			lastId++;
 			FingerPath newPath(lastId);
-			newPath.addPoint(finger.positionInRealWorld, newFrameCount, finger.fingerState);
+			newPath.addPoint(finger.positionInKinectReal, newFrameCount, finger.fingerState);
 			finger.id = lastId;
 			paths.push_back(newPath);
 
@@ -98,7 +96,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 		else	//add this point to an existing path
 		{
 			FingerState prevState = nearestPath->getLastFingerState();
-			nearestPath->addPoint(finger.positionInRealWorld, newFrameCount, finger.fingerState);
+			nearestPath->addPoint(finger.positionInKinectReal, newFrameCount, finger.fingerState);
 			//paths[nearestIndex].addPoint(finger.positionInRealWorld, newFrameCount);
 			finger.id = nearestPath->getID();
 			//finger.id = paths[nearestIndex].getID();

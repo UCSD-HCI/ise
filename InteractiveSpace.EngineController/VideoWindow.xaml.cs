@@ -121,7 +121,7 @@ namespace InteractiveSpace.EngineController
 
                         fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, rgbPointsPtr = rgbPoints)
                         {
-                            CommandDllWrapper.transformPoints(kinectPointsPtr, rgbPointsPtr, fingerNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.RGB2D);
+                            CommandDllWrapper.transformPoints(fingerNum, kinectPointsPtr, rgbPointsPtr, CoordinateSpaceConversion.SpaceDepthProjectiveToRGB);
                         }
 
                         for (int i = 0; i < fingerNum; i++)

@@ -60,6 +60,7 @@ public:
 	FloatPoint3D convertProjectiveToRealWorld(const FloatPoint3D& p) const;
 	FloatPoint3D convertRealWorldToProjective(const FloatPoint3D& p) const;
     void convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, FloatPoint3D* results);
+    void convertDepthToRGB(int count, const FloatPoint3D* depthPoints, FloatPoint3D* rgbPoints);
 
 	void refresh();
 

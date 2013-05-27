@@ -365,6 +365,29 @@ void KinectSensor::refreshRGBToDepthCoordMap()
     rgbToDepthMapReady = true;
 }
 
+void KinectSensor::convertDepthToRGB(int count, const FloatPoint3D* depthPoints, FloatPoint3D* rgbPoints)
+{
+    for (int i = 0; i < count; i++)
+    {
+        int dx = cvRound(depthPoints[i].x);
+        int dy = cvRound(depthPoints[i].y);
+
+        if (dx < 0 || dx >= KINECT_DEPTH_WIDTH || dy < 0 || dy >= KINECT_DEPTH_HEIGHT)
+        {
+            rgbPoints[i].x = -1;
+            rgbPoints[i].y = -1;
+            rgbPoints[i].z = -1;
+            continue;
+        }
+
+        IplImage* coordPtr = ipf->getImageProduct(DepthToRGBCoordProduct);
+        int* coord = (int*)(coordPtr->imageData + dy * coordPtr->widthStep + dx * sizeof(int) * 2);
+        rgbPoints[i].x = coord[0];
+        rgbPoints[i].y = coord[1];
+        rgbPoints[i].z = 0;
+    }
+}
+
 void KinectSensor::convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, FloatPoint3D* results)
 {
     if (!rgbToDepthMapReady)
@@ -376,6 +399,14 @@ void KinectSensor::convertRGBToDepth(int count, const FloatPoint3D* rgbPoints, F
     {
         int cx = cvRound(rgbPoints[i].x);
         int cy = cvRound(rgbPoints[i].y);
+
+        if (cx < 0 || cx >= KINECT_RGB_WIDTH || cy < 0 || cy >= KINECT_RGB_HEIGHT)
+        {
+            results[i].x = -1;
+            results[i].y = -1;
+            results[i].z = -1;
+            continue;
+        }
         
         int* coord = (int*)(rgbToDepthCoordMap->imageData + cy * rgbToDepthCoordMap->widthStep + cx * sizeof(int) * 2);
         if (coord[0] >= 0 && coord[1] >= 0)
@@ -475,7 +506,7 @@ FloatPoint3D KinectSensor::convertProjectiveToRealWorld(const FloatPoint3D& p) c
 {
 	Vector4 vec = NuiTransformDepthImageToSkeleton((LONG)p.x, (LONG)(KINECT_DEPTH_HEIGHT - p.y), (USHORT)p.z, NUI_IMAGE_RESOLUTION_640x480);
 
-	return FloatPoint3D(vec.x / vec.w * 100.0, vec.y / vec.w * 100.0, vec.z / vec.w * 100.0);	//cm
+	return FloatPoint3D(vec.x / vec.w * 100.0, -vec.y / vec.w * 100.0, vec.z / vec.w * 100.0);	//cm
 }
 
 FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) const
@@ -483,7 +514,7 @@ FloatPoint3D KinectSensor::convertRealWorldToProjective(const FloatPoint3D& p) c
 
 	Vector4 vec;
 	vec.x = (float)(p.x / 100.0);
-	vec.y = (float)(p.y / 100.0);
+	vec.y = -(float)(p.y / 100.0);
 	vec.z = (float)(p.z / 100.0);
 	vec.w = 1.0f;
 

@@ -175,11 +175,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>rem copy /Y $(TargetDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem copy /Y $(TargetDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
-rem xcopy /Y /E $(SolutionDir)MultiTouchVista\Output $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
+    <PostBuildEvent>copy /Y $(TargetDir)InteractiveSpace.EngineController.exe $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
+copy /Y $(TargetDir)*.dll $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
+copy /Y $(TargetDir)*.config $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
+copy /Y $(TargetDir)*.xml $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
+xcopy /Y /E $(SolutionDir)MultiTouchVista\Output $(SolutionDir)InteractiveSpaceTemplate\lib$(PlatformName)\
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

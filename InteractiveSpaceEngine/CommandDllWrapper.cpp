@@ -67,15 +67,15 @@ DLL_EXPORT void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners
 	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->calibrateDepthCamera(depthCorners, refCorners, cornerCount);
 }
 
-DLL_EXPORT void transformPoints(FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace)
+DLL_EXPORT void transformPoints(int pointNum, FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, CoordinateSpaceConversion cvtCode)
 {
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(srcPoints, dstPoints, pointNum, srcSpace, dstSpace);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(pointNum, srcPoints, dstPoints, cvtCode);
 }
 
-DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace)
+DLL_EXPORT FloatPoint3D transformPoint(FloatPoint3D srcPoint, CoordinateSpaceConversion cvtCode)
 {
 	FloatPoint3D result;
-	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(&srcPoint, &result, 1, srcSpace, dstSpace);
+	InteractiveSpaceEngine::sharedEngine()->getCalibrator()->transformPoint(1, &srcPoint, &result, cvtCode);
 	return result;
 }
 

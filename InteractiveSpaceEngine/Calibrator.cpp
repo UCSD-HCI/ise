@@ -27,6 +27,7 @@ Calibrator::Calibrator(KinectSensor* kinectSensor, ImageProcessingFactory* ipf) 
 	{
         cv::invert(rgbSurfHomography, rgbSurfHomographyInversed);
         cv::invert(depthSurfHomography, depthSurfHomographyInversed);
+        cv::invert(tabletopToDepthRealAffine, depthRealToTabletopAffine);
         state = CalibratorStopped;
 	}
 
@@ -228,24 +229,75 @@ void Calibrator::estimate3DAffine(const FloatPoint3D* refCorners, const FloatPoi
         refShifted[i] = refOrigin[i] + shiftInTabletop;
     }
 
-    //affine estimation
-    //cv::Mat inliers;
-    cv::estimateAffine3D(refPoints, depthRealPoints, tabletopToDepthRealAffine, cv::noArray());
-    cv::estimateAffine3D(depthRealPoints, refPoints, depthRealToTabletopAffine, cv::noArray());
+    //Hartley normalization
+    //cv::Mat_<double> tr = hartleyNormalize(refPoints);
+    //cv::Mat_<double> td = hartleyNormalize(depthRealPoints);
+    //DEBUG("Tr: " << tr);
+    //DEBUG("Td: " << td);
 
-    //DEBUG("Affine inliners: " << inliers.size());
+    //affine estimation
+    cv::Mat inliers;
+    DEBUG("refPoints: " << refPoints);
+    DEBUG("depthReal: " << depthRealPoints);
+    cv::estimateAffine3D(refPoints, depthRealPoints, tabletopToDepthRealAffine, inliers, 0.001, 0.9999);
+    //cv::estimateAffine3D(depthRealPoints, refPoints, depthRealToTabletopAffine, inliers, 0.01, 0.9999);
+
+    DEBUG("Affine inliners: " << inliers.size());
+    
+    tabletopToDepthRealAffine.resize(4, 0);
+    tabletopToDepthRealAffine.at<double>(3,3) = 1;
+    
+    //tabletopToDepthRealAffine = td.inv() * tabletopToDepthRealAffine * tr;
+    //depthRealToTabletopAffine = tr.inv() * depthRealToTabletopAffine * td;
+    depthRealToTabletopAffine = tabletopToDepthRealAffine.inv();
+    
     DEBUG("tabletopToDepthRealAffine: " << tabletopToDepthRealAffine);
     DEBUG("depthRealToTabletopAffine: " << depthRealToTabletopAffine);
 }
 
-FloatPoint3D Calibrator::transformFromDepthRealToTabletop(const FloatPoint3D& depthRealPos)
+cv::Mat_<double> Calibrator::hartleyNormalize(cv::Mat3d& mat) const
 {
-    double t[] = {depthRealPos.x, depthRealPos.y, depthRealPos.z, 1};
-    cv::Mat_<double> x(4, 1, t);
-    cv::Mat_<double> r = depthRealToTabletopAffine * x;
-    return FloatPoint3D((float)r.at<double>(0,0), (float)r.at<double>(1,0), (float)r.at<double>(2,0));
+    cv::Vec3d* ptr = mat.ptr<cv::Vec3d>(0);
+    cv::Vec3d minVec = ptr[0];
+    cv::Vec3d maxVec = ptr[0];
+    for (int i = 1; i < mat.size().width; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (ptr[i][j] < minVec[j])
+            {
+                minVec[j] = ptr[i][j];
+            }
+            if (ptr[i][j] > maxVec[j])
+            {
+                maxVec[j] = ptr[i][j];
+            }
+        }
+    }
+
+    //normalize
+    for (int i = 0; i < mat.size().width; i++)
+    {
+        cv::Vec3d* ptr = mat.ptr<cv::Vec3d>(0);
+        for (int j = 0; j < 3; j++)
+        {
+            ptr[i][j] = (ptr[i][j] - minVec[j]) / (maxVec[j] - minVec[j]);
+        }
+    }
+
+    cv::Mat_<double> r = cv::Mat_<double>::zeros(4, 4);
+
+    for (int i = 0; i < 3; i++)
+    {
+        r.at<double>(i, i) = 1.0 / (maxVec[i] - minVec[i]);
+        r.at<double>(i, 3) = - minVec[i] / (maxVec[i] - minVec[i]);
+    }
+    r.at<double>(3,3) = 1;
+
+    return r;
 }
 
+/*
 void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace) const
 {
 	//TODO 3D
@@ -312,6 +364,146 @@ void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dst
 
 	convertCvPointsToFloatPoint3D(dstArr, dstPoints);
 }
+*/
+
+void Calibrator::transformPoint(int count, const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, CoordinateSpaceConversion cvtCode)
+{
+    if (count <= 0 || (state != AllCalibrated && state != CalibratorStopped))
+    {
+        return;
+    }
+
+    switch (cvtCode)
+    {
+    //forward primitives
+    case SpaceRGBToDepthProjective:
+        kinectSensor->convertRGBToDepth(count, srcPoints, dstPoints);
+        break;
+
+    case SpaceDepthProjectiveToDepthReal:
+        for (int i = 0; i < count; i++)
+        {
+            dstPoints[i] = kinectSensor->convertProjectiveToRealWorld(srcPoints[i]);
+        }
+        break;
+
+    case SpaceDepthRealToTabletop:
+        {
+            cv::Mat_<double> x = convertFloatPoint3DToCvMatHomo(srcPoints, count);
+            cv::Mat_<double> r = depthRealToTabletopAffine * x;
+            convertCvMatToFloatPoint3D(r, dstPoints);
+            break;
+        }
+
+    //forward, combinition
+    case SpaceRGBToDepthReal:
+        transformPoint(count, srcPoints, dstPoints, SpaceRGBToDepthProjective);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthProjectiveToDepthReal);
+        break;
+
+    case SpaceRGBToTabletop:
+        transformPoint(count, srcPoints, dstPoints, SpaceRGBToDepthProjective);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthProjectiveToDepthReal);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthRealToTabletop);
+        break;
+
+    case SpaceDepthProjectiveToTabletop:
+        transformPoint(count, srcPoints, dstPoints, SpaceDepthProjectiveToDepthReal);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthRealToTabletop);
+        break;
+
+    //backward, primitive
+    case SpaceTabletopToDepthReal:
+        {
+            cv::Mat_<double> x = convertFloatPoint3DToCvMatHomo(srcPoints, count);
+            cv::Mat_<double> r = tabletopToDepthRealAffine * x;
+            convertCvMatToFloatPoint3D(r, dstPoints);
+            break;
+        }
+
+    case SpaceDepthRealToDepthProjective:
+        for (int i = 0; i < count; i++)
+        {
+            dstPoints[i] = kinectSensor->convertRealWorldToProjective(srcPoints[i]);
+        }
+        break;
+
+    case SpaceDepthProjectiveToRGB:
+        kinectSensor->convertDepthToRGB(count, srcPoints, dstPoints);
+        break;
+
+    //backward, combination
+    case SpaceTabletopToDepthProjective:
+        transformPoint(count, srcPoints, dstPoints, SpaceTabletopToDepthReal);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthRealToDepthProjective);
+        break;
+
+    case SpaceDepthRealToRGB:
+        transformPoint(count, srcPoints, dstPoints, SpaceDepthRealToDepthProjective);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthProjectiveToRGB);
+        break;
+
+    case SpaceTabletopToRGB:
+        transformPoint(count, srcPoints, dstPoints, SpaceTabletopToDepthReal);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthRealToDepthProjective);
+        transformPoint(count, dstPoints, dstPoints, SpaceDepthProjectiveToRGB);
+        break;
+
+    default:
+        assert(0);  //not implemented
+    }
+}
+
+cv::Mat_<double> Calibrator::convertFloatPoint3DToCvMatHomo(const FloatPoint3D* floatPoints, int count) const
+{
+    cv::Mat_<double> mat(4, count);
+    double* x = mat.ptr<double>(0);
+    double* y = mat.ptr<double>(1);
+    double* z = mat.ptr<double>(2);
+    double* w = mat.ptr<double>(3);
+
+    for (int i = 0; i < count; i++)
+    {
+        x[i] = floatPoints[i].x;
+        y[i] = floatPoints[i].y;
+        z[i] = floatPoints[i].z;
+        w[i] = 1.f;
+    }
+
+    return mat;
+}
+
+void Calibrator::convertCvMatToFloatPoint3D(const cv::Mat_<double>& mat, FloatPoint3D* floatPoints) const
+{
+    const double* x = mat.ptr<double>(0);
+    const double* y = mat.ptr<double>(1);
+    const double* z = mat.ptr<double>(2);
+    
+
+    if (mat.size().height == 4)
+    {
+        const double* w = mat.ptr<double>(3);
+        for (int i = 0; i < mat.size().width; i++)
+        {
+            floatPoints[i].x = x[i] / w[i];
+            floatPoints[i].y = y[i] / w[i];
+            floatPoints[i].z = z[i] / w[i];
+        }
+    }
+    else if (mat.size().height == 3)
+    {
+        for (int i = 0; i < mat.size().width; i++)
+        {
+            floatPoints[i].x = x[i];
+            floatPoints[i].y = y[i];
+            floatPoints[i].z = z[i];
+        }
+    }
+    else
+    {
+        assert(0);
+    }
+}
 
 void Calibrator::convertFloatPoint3DToCvPoints(const FloatPoint3D* floatPoints, std::vector<cv::Point2f>& points, int count) const
 {
@@ -338,6 +530,8 @@ void Calibrator::save() const
 
     fs << "rgbSurfHomography" << rgbSurfHomography;
     fs << "depthSurfHomography" << depthSurfHomography;
+    fs << "tabletopToDepthRealAffine" << tabletopToDepthRealAffine;
+    fs << "tabletopInKinectReal" << cv::Mat4d(1,1,tabletopInKinectReal);
 
     fs.release();
 }
@@ -353,6 +547,13 @@ bool Calibrator::load()
 
     fs["rgbSurfHomography"] >> rgbSurfHomography;
     fs["depthSurfHomography"] >> depthSurfHomography;
+    fs["tabletopToDepthRealAffine"] >> tabletopToDepthRealAffine;
+
+    cv::Mat4d mat;
+    fs["tabletopInKinectReal"] >> mat;
+    tabletopInKinectReal = mat.at<cv::Vec4d>(0,0);
+
+    fs.release();
 
 	return true;
 }

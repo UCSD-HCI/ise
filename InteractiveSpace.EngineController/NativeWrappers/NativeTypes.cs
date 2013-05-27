@@ -67,12 +67,32 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     /// </summary>
     public enum CalibratedCoordinateSystem
     {
-	    Table2D = 0,
-	    Table3D,
-	    RGB2D,
-	    Depth2D,
-	    Depth3D,
-	    Motion2D
+        SpaceTabletop = 0,
+        SpaceRGB,
+        SpaceDepthProjective,
+        SpaceDepthReal
+    };
+
+    /// <summary>
+    /// <remarks>Calibrator.h, CoordinateSpaceConversion</remarks>
+    /// </summary>
+    public enum CoordinateSpaceConversion
+    {
+        //forward
+        SpaceRGBToDepthProjective = 0,          //warning: from RGB to depth/tabletop is very expensive
+        SpaceDepthProjectiveToDepthReal,
+        SpaceDepthRealToTabletop,
+        SpaceRGBToDepthReal,
+        SpaceRGBToTabletop,
+        SpaceDepthProjectiveToTabletop,
+
+        //backward
+        SpaceTabletopToDepthReal,
+        SpaceDepthRealToDepthProjective,
+        SpaceDepthProjectiveToRGB,
+        SpaceTabletopToDepthProjective,
+        SpaceDepthRealToRGB,
+        SpaceTabletopToRGB
     };
 
     /// <summary>
@@ -110,22 +130,22 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     unsafe public struct Finger
     {
         private int id;
-        private FloatPoint3D positionInRealWorld;
+        private FloatPoint3D positionInKinectReal;
         private IntPoint3D positionInKinectProj;
         private FingerType fingerType;
         private FingerState fingerState;
 
-        public Finger(int id, FloatPoint3D positionInRealWorld, IntPoint3D positionInKinectPersp, FingerType fingerType, FingerState fingerState)
+        public Finger(int id, FloatPoint3D positionInKinectReal, IntPoint3D positionInKinectPersp, FingerType fingerType, FingerState fingerState)
         {
             this.id = id;
             this.positionInKinectProj = positionInKinectPersp;
-            this.positionInRealWorld = positionInRealWorld;
+            this.positionInKinectReal = positionInKinectReal;
             this.fingerType = fingerType;
             this.fingerState = fingerState;
         }
 
         public int ID { get { return id; } }
-        public FloatPoint3D PositionInRealWorld { get { return positionInRealWorld; } }
+        public FloatPoint3D PositionInKinectReal { get { return positionInKinectReal; } }
         public IntPoint3D PositionInKinectPersp { get { return positionInKinectProj; } }
         public FingerType FingerType { get { return fingerType; } }
         public FingerState FingerState { get { return fingerState; } }
@@ -139,14 +159,14 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     {
         private HandType handType;
 	    private UInt32 id;
-	    private FloatPoint3D positionInRealWorld;
+	    private FloatPoint3D positionInKinectReal;
 	    private IntPoint3D positionInKinectProj;
 	    private double confidence;
         private int captured;
 
         public HandType HandType { get { return handType; } }
         public UInt32 ID { get { return id; } }
-        public FloatPoint3D PositionInRealWorld { get { return positionInRealWorld; } }
+        public FloatPoint3D PositionInKinectReal { get { return positionInKinectReal; } }
         public IntPoint3D PositionInKinectProj { get { return positionInKinectProj; } }
         public double Confidence { get { return confidence; } }
         public int Captured { get { return captured; } }
@@ -172,14 +192,14 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     unsafe public struct FingerEvent
     {
 	    private int id;
-	    private FloatPoint3D position;
-        private FloatPoint3D positionTable2D;
+	    private FloatPoint3D positionInKinectReal;
+        private FloatPoint3D positionTabletop;
 	    private FingerEventType eventType;
         private FingerState fingerState;
 
         public int ID { get { return id; } }
-        public FloatPoint3D Position { get { return position; } }
-        public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
+        public FloatPoint3D PositionInKinectReal { get { return positionInKinectReal; } }
+        public FloatPoint3D PositionTabletop { get { return positionTabletop; } }
         public FingerEventType EventType { get { return eventType; } }
         public FingerState FingerState { get { return fingerState; } }
     };
@@ -202,13 +222,13 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     public struct HandEvent
     {
 	    private int id;
-	    private FloatPoint3D position;
-	    private FloatPoint3D positionTable2D;
+	    private FloatPoint3D positionInKinectReal;
+	    private FloatPoint3D positionTabletop;
 	    private HandEventType eventType;
 
         public int ID { get { return id; } }
-        public FloatPoint3D Position { get { return position; } }
-        public FloatPoint3D PositionTable2D { get { return positionTable2D; } }
+        public FloatPoint3D PositionInKinectReal { get { return positionInKinectReal; } }
+        public FloatPoint3D PositionTabletop { get { return positionTabletop; } }
         public HandEventType EventType { get { return eventType; } }
     };
 

@@ -70,6 +70,8 @@ namespace InteractiveSpace.EngineController
                     Height = FINGER_RADIUS * 2,
                     Fill = Brushes.Yellow,
                     Opacity = 0,
+                    Stroke = Brushes.White,
+                    StrokeThickness = 2,
                 };
                 fingerPoints.Add(ellipse);
                 fingerCanvas.Children.Add(ellipse);
@@ -121,23 +123,24 @@ namespace InteractiveSpace.EngineController
                     {
                         kinectPoints[i] = new FloatPoint3D()
                         {
-                            x = fingers[i].PositionInKinectPersp.x,
-                            y = fingers[i].PositionInKinectPersp.y,
-                            z = 0
+                            x = fingers[i].PositionInKinectReal.x,
+                            y = fingers[i].PositionInKinectReal.y,
+                            z = fingers[i].PositionInKinectReal.z
                         };
                     }
 
                     fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, rgbPointsPtr = rgbPoints)
                     {
-                        CommandDllWrapper.transformPoints(kinectPointsPtr, rgbPointsPtr, fingerNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.Table2D);
+                        CommandDllWrapper.transformPoints(fingerNum, kinectPointsPtr, rgbPointsPtr, CoordinateSpaceConversion.SpaceDepthRealToTabletop);
                     }
 
                     for (int i = 0; i < fingerNum; i++)
                     {
                         Canvas.SetLeft(fingerPoints[i], rgbPoints[i].x - FINGER_RADIUS);
                         Canvas.SetTop(fingerPoints[i], rgbPoints[i].y - FINGER_RADIUS);
-                        fingerPoints[i].Opacity = 1.0;
-                        fingerPoints[i].Fill = fingers[i].FingerType == FingerType.OmniFinger ? Brushes.Orange : Brushes.Purple;
+                        fingerPoints[i].Opacity = Math.Max(0, Math.Min(1.0, 1.0 - (rgbPoints[i].z / 20)));
+                        fingerPoints[i].Fill = new SolidColorBrush(IntColorConverter.ToColor(fingers[i].ID));
+                        fingerPoints[i].StrokeThickness = (fingers[i].FingerState == FingerState.FingerOnSurface ? 2 : 0);
                     }
 
 
@@ -163,15 +166,15 @@ namespace InteractiveSpace.EngineController
                     {
                         kinectPoints[i] = new FloatPoint3D()
                         {
-                            x = hands[i].PositionInKinectProj.x,
-                            y = hands[i].PositionInKinectProj.y,
-                            z = 0
+                            x = hands[i].PositionInKinectReal.x,
+                            y = hands[i].PositionInKinectReal.y,
+                            z = hands[i].PositionInKinectReal.z
                         };
                     }
 
                     fixed (FloatPoint3D* kinectPointsPtr = kinectPoints, projPointsPtr = projPoints)
                     {
-                        CommandDllWrapper.transformPoints(kinectPointsPtr, projPointsPtr, handNum, CalibratedCoordinateSystem.Depth2D, CalibratedCoordinateSystem.Table2D);
+                        CommandDllWrapper.transformPoints(handNum, kinectPointsPtr, projPointsPtr, CoordinateSpaceConversion.SpaceDepthRealToTabletop);
                     }
 
                     for (int i = 0; i < handNum; i++)

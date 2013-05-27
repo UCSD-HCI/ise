@@ -25,7 +25,7 @@ typedef enum
 typedef struct Finger
 {
 	int id;
-	FloatPoint3D positionInRealWorld;
+	FloatPoint3D positionInKinectReal;
 	IntPoint3D positionInKinectProj;
 	FingerType fingerType;
 	FingerState fingerState;
@@ -33,7 +33,7 @@ typedef struct Finger
 
 typedef struct HandHint
 {
-	FloatPoint3D positionInRealWorld;
+	FloatPoint3D positionInKinectReal;
 	double confidence;
 } HandHint;
 

@@ -23,7 +23,7 @@ void FingerSelector::refresh()
 		fingers[i].positionInKinectProj.y = omniTracker->getFingers()[j].tipY;
 		fingers[i].positionInKinectProj.z = omniTracker->getFingers()[j].tipZ;
 
-		fingers[i].positionInRealWorld = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
+		fingers[i].positionInKinectReal = kinectSensor->convertProjectiveToRealWorld(fingers[i].positionInKinectProj);
 		fingers[i].fingerType = OmniFinger;
 		fingers[i].fingerState = omniTracker->getFingers()[j].isOnSurface ? FingerOnSurface : FingerHovering;
 		fingers[i].id = 0;
@@ -85,7 +85,7 @@ void FingerSelector::generateHandHints()
 	int i;
 	for (i = 0; i < guessSets.size() && i < MAX_HAND_HINT_NUM; i++)
 	{
-		handHints[i].positionInRealWorld = guessSets[i].centerPos;
+		handHints[i].positionInKinectReal = guessSets[i].centerPos;
 		handHints[i].confidence = guessSets[i].confidence;
 	}
 	handHintNum = i;

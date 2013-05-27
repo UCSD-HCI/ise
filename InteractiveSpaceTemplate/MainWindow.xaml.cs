@@ -50,6 +50,7 @@ namespace InteractiveSpaceTemplate
             Button b = (Button)sender; 
             b.Background = Brushes.OrangeRed;
             b.Content = "Touching";
+            e.Contact.Capture(b);
         }
 
         private void button_ContactRemoved(object sender, ContactEventArgs e)
@@ -57,6 +58,7 @@ namespace InteractiveSpaceTemplate
             Button b = (Button)sender;
             b.Background = Brushes.White;
             b.Content = "Touch Me!";
+            e.Contact.ReleaseCapture();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

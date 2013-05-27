@@ -25,7 +25,7 @@ namespace InteractiveSpace.EngineController
     public partial class MainWindow : Window
     {
         private VideoWindow rawVideoWindow, depthVideoWindow, multiTouchVideoWindow, thresholdTouchVideoWindow, motionCameraVideoWindow, objTrackingVideoWindow, rectifiedTabletopVideoWindow;
-        //private ProjectorFeedbackWindow projectorFeedbackWindow;
+        private ProjectorFeedbackWindow projectorFeedbackWindow;
         private bool isSlidersValueLoaded;
         private System.Threading.Timer fpsTimer;
         private bool isRecording;
@@ -52,8 +52,6 @@ namespace InteractiveSpace.EngineController
             clickFloodMaxGradSlider.Value = settings.ClickFloodMaxGrad;
 
             isSlidersValueLoaded = true;
-
-            //projectorFeedbackWindow = new ProjectorFeedbackWindow();
 
             multiTouchVistaController = new MultiTouchVistaController();
 
@@ -111,10 +109,10 @@ namespace InteractiveSpace.EngineController
                 thresholdTouchVideoWindow.Close();
             }
 
-            /*if (projectorFeedbackWindow != null)
+            if (projectorFeedbackWindow != null)
             {
                 projectorFeedbackWindow.Close();
-            }*/
+            }
 
             if (motionCameraVideoWindow != null)
             {
@@ -345,6 +343,20 @@ namespace InteractiveSpace.EngineController
         private void sharedMemoryCheckBox_Click(object sender, RoutedEventArgs e)
         {
             isSharedMemoryEnabled = (sharedMemoryCheckBox.IsChecked == null ? false : sharedMemoryCheckBox.IsChecked.Value);
+        }
+
+        private void projectorFeedbackCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            if (projectorFeedbackCheckbox.IsChecked == true)
+            {
+                projectorFeedbackWindow = new ProjectorFeedbackWindow();
+                projectorFeedbackWindow.Show();
+            }
+            else
+            {
+                projectorFeedbackWindow.Close();
+                projectorFeedbackWindow = null;
+            }
         }
 
         

@@ -54,7 +54,7 @@ namespace InteractiveSpace.SDK.DLL
         private void onHandMove(HandEvent e)
         {
             Hand h = hands[e.ID];   //it won't be null
-            h.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
+            h.Position = new Point3D(e.PositionTabletop.x, e.PositionTabletop.y, e.PositionTabletop.z);
             if (HandMove != null)
             {
                 HandMove(this, new HandEventArgs(h, this));
@@ -65,7 +65,7 @@ namespace InteractiveSpace.SDK.DLL
 
         private void onHandCaptured(HandEvent e)
         {
-            Hand h = new Hand(e.ID, new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z));
+            Hand h = new Hand(e.ID, new Point3D(e.PositionTabletop.x, e.PositionTabletop.y, e.PositionTabletop.z));
             hands.Add(h.ID, h);
             if (HandCaptured != null)
             {
@@ -82,7 +82,7 @@ namespace InteractiveSpace.SDK.DLL
                 return; //TODO: it shouldn't goes here
             }
             Hand h = hands[e.ID];   //it won't be null
-            h.Position = new Point3D(e.PositionTable2D.x, e.PositionTable2D.y, e.PositionTable2D.z);
+            h.Position = new Point3D(e.PositionTabletop.x, e.PositionTabletop.y, e.PositionTabletop.z);
             hands.Remove(e.ID);
             if (HandLost != null)
             {

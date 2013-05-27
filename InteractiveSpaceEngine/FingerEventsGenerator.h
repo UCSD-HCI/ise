@@ -26,11 +26,11 @@ struct FingerEvent
 	/**
 	 * Finger position in Kinect real world
 	 */
-	FloatPoint3D position;
+	FloatPoint3D positionInKinectReal;
 	/**
-	 * Finger position in Table2D coordinate
+	 * Finger position in Tabletop coordinate
 	 */
-	FloatPoint3D positionTable2D;
+	FloatPoint3D positionTabletop;
 	FingerEventType eventType;
 	FingerState fingerState;
 };

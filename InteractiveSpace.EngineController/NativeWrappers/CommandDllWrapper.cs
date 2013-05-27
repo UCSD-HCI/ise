@@ -48,10 +48,10 @@ namespace InteractiveSpace.EngineController.NativeWrappers
         public static extern unsafe void systemCalibrationCalibrateDepthCamera(FloatPoint3D* depthCorners, FloatPoint3D* refCorners, int cornerCount);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe void transformPoints(FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, int pointNum, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace);
+        public static extern unsafe void transformPoints(int pointNum, FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, CoordinateSpaceConversion cvtCode);
 
-        [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
-        public static extern unsafe FloatPoint3D transformPoint(FloatPoint3D srcPoint, CalibratedCoordinateSystem srcSpace, CalibratedCoordinateSystem dstSpace);
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe FloatPoint3D transformPoint(FloatPoint3D srcPoint, CoordinateSpaceConversion cvtCode);
 
         [DllImport(DLL_NAME, CallingConvention=CallingConvention.Cdecl)]
         public static extern unsafe void registerHandEventCallbacks(IntPtr handMoveCallback, IntPtr handCapturedCallback, IntPtr handLostCallback);

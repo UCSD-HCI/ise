@@ -23,12 +23,12 @@ void TuioExporter::refresh()
 		
 		if (e.eventType == FingerDown)
 		{
-			TuioCursor* cursor = tuioServer->addTuioCursor(e.positionTable2D.x / SENSOR_WIDTH, e.positionTable2D.y / SENSOR_HEIGHT);
+			TuioCursor* cursor = tuioServer->addTuioCursor(e.positionTabletop.x / SENSOR_WIDTH, e.positionTabletop.y / SENSOR_HEIGHT);
 			tuioCursors[e.id] = cursor;
 		}
 		else if (e.eventType == FingerMove && e.fingerState == FingerOnSurface)
 		{
-			tuioServer->updateTuioCursor(tuioCursors[e.id], e.positionTable2D.x / SENSOR_WIDTH, e.positionTable2D.y / SENSOR_HEIGHT);
+			tuioServer->updateTuioCursor(tuioCursors[e.id], e.positionTabletop.x / SENSOR_WIDTH, e.positionTabletop.y / SENSOR_HEIGHT);
 		}
 		else if (e.eventType == FingerUp)
 		{
