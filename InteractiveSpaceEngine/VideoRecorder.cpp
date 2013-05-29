@@ -45,7 +45,7 @@ void VideoRecorder::start(string filepath)
 	cvWriteReal(fs, "depthIntercept", kinectParams.depthIntercept);
 	cvEndWriteStruct(fs);
 
-	ise::OmniTouchParameters omniParams = InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->getParameters();
+	ise::OmniTouchParameters omniParams = InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->convertParametersToStructure();
 	cvStartWriteStruct(fs, "OmniTouchParameters", CV_NODE_MAP);
 	cvWriteInt(fs, "stripMaxBlankPixel", omniParams.stripMaxBlankPixel);
 	cvWriteInt(fs, "fingerMinPixelLength", omniParams.fingerMinPixelLength);

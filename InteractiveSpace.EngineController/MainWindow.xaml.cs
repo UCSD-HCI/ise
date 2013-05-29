@@ -84,6 +84,26 @@ namespace InteractiveSpace.EngineController
             //omni cropping
             NativeWrappers.CommandDllWrapper.setOmniTouchCropping(settings.OmniTouchCroppingLeft, settings.OmniTouchCroppingTop, settings.OmniTouchCroppingRight, settings.OmniTouchCroppingBottom);
 
+            //flags
+            InteractiveSpaceEngineFlags flags = InteractiveSpaceEngineFlags.ISE_FLAG_ENABLED;
+            if (omniTouchCheckBox.IsChecked == true)
+            {
+                flags |= InteractiveSpaceEngineFlags.ISE_OMNI_TOUCH;
+            }
+            if (colorModelCheckBox.IsChecked == true)
+            {
+                flags |= InteractiveSpaceEngineFlags.ISE_COLOR_MODEL;
+            }
+            if (stablizationCheckBox.IsChecked == true)
+            {
+                flags |= InteractiveSpaceEngineFlags.ISE_STABLIZE;
+            }
+            if (rectifiedTabletopCheckBox.IsChecked == true)
+            {
+                flags |= InteractiveSpaceEngineFlags.ISE_RECTIFIED_TABLETOP;
+            }
+            NativeWrappers.CommandDllWrapper.setFlags(flags);
+
             fpsTimer = new System.Threading.Timer(new System.Threading.TimerCallback(fpsTimer_Tick), null, 0, 1000);
         }
 
@@ -332,12 +352,28 @@ namespace InteractiveSpace.EngineController
 
         private void omniTouchCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            CommandDllWrapper.setOmniTouchEnabled(omniTouchCheckBox.IsChecked.Value ? 1 : 0);
+            //CommandDllWrapper.setOmniTouchEnabled(omniTouchCheckBox.IsChecked.Value ? 1 : 0);
+            if (omniTouchCheckBox.IsChecked.Value == true)
+            {
+                CommandDllWrapper.setFlags(InteractiveSpaceEngineFlags.ISE_OMNI_TOUCH);
+            }
+            else
+            {
+                CommandDllWrapper.clearFlag(InteractiveSpaceEngineFlags.ISE_OMNI_TOUCH);
+            }
         }
 
         private void rectifiedTabletopCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
+            //CommandDllWrapper.setTabletopRectifiedEnabled(rectifiedTabletopCheckBox.IsChecked.Value ? 1 : 0);
+            if (rectifiedTabletopCheckBox.IsChecked == true)
+            {
+                CommandDllWrapper.setFlags(InteractiveSpaceEngineFlags.ISE_RECTIFIED_TABLETOP);
+            }
+            else
+            {
+                CommandDllWrapper.clearFlag(InteractiveSpaceEngineFlags.ISE_RECTIFIED_TABLETOP);
+            }
         }
 
         private void sharedMemoryCheckBox_Click(object sender, RoutedEventArgs e)
@@ -359,6 +395,28 @@ namespace InteractiveSpace.EngineController
             }
         }
 
-        
+        private void colorModelCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (colorModelCheckBox.IsChecked == true)
+            {
+                CommandDllWrapper.setFlags(InteractiveSpaceEngineFlags.ISE_COLOR_MODEL);
+            }
+            else
+            {
+                CommandDllWrapper.clearFlag(InteractiveSpaceEngineFlags.ISE_COLOR_MODEL);
+            }
+        }
+
+        private void stablizationCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (stablizationCheckBox.IsChecked == true)
+            {
+                CommandDllWrapper.setFlags(InteractiveSpaceEngineFlags.ISE_STABLIZE);
+            }
+            else
+            {
+                CommandDllWrapper.clearFlag(InteractiveSpaceEngineFlags.ISE_STABLIZE);
+            }
+        }
     }
 }

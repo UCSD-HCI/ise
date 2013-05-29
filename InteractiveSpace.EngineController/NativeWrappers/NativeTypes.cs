@@ -96,6 +96,20 @@ namespace InteractiveSpace.EngineController.NativeWrappers
     };
 
     /// <summary>
+    /// <remarks>InteractiveSpaceEngine.h, InteractiveSpaceEngineFlags</remarks>
+    /// </summary>
+    [Flags]
+    public enum InteractiveSpaceEngineFlags
+    {
+        ISE_FLAG_ENABLED = 0x1,
+        ISE_DEBUG_WINDOW = 0x2,
+        ISE_COLOR_MODEL = 0x4,
+        ISE_STABLIZE = 0x8,
+        ISE_OMNI_TOUCH = 0x10,
+        ISE_RECTIFIED_TABLETOP = 0x20
+    };
+
+    /// <summary>
     /// <remarks>InteractiveSpaceTypes.h, IntPoint3D</remarks>
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]

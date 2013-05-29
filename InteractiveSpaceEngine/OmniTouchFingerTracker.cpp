@@ -5,11 +5,12 @@
 #include "DebugUtils.h"
 #include "ImageProcessingFactory.h"
 #include "KinectSensor.h"
+#include "InteractiveSpaceEngine.h"
 using namespace std;
 using namespace ise;
 
 OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor) : ipf(ipf), kinectSensor(kinectSensor), fingerWidthMin(0), fingerWidthMax(0), fingerLengthMin(0), fingerLengthMax(0),
-	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0), enabled(true),
+	cropLeft(0), cropTop(0), cropRight(0), cropBottom(0),
     _rgbFrame(ipf->getImageProduct(RGBSourceProduct)),
     _depthFrame(ipf->getImageProduct(DepthSourceProduct)),
     _debugFrame(ipf->getImageProduct(DebugOmniOutputProduct)),
@@ -17,11 +18,11 @@ OmniTouchFingerTracker::OmniTouchFingerTracker(ImageProcessingFactory* ipf, cons
     _depthToRgbCoordFrame(ipf->getImageProduct(DepthToRGBCoordProduct))
 {
     CommonSettings settings;
-    settings.rgbWidth = 640;
-	settings.rgbHeight = 480;
-	settings.depthWidth = 640;
-	settings.depthHeight = 480;
-	settings.maxDepthValue = 4000; 
+    settings.rgbWidth = ipf->getImageProductWidth(RGBSourceProduct);
+	settings.rgbHeight = ipf->getImageProductHeight(RGBSourceProduct);
+	settings.depthWidth = ipf->getImageProductWidth(DepthSourceProduct);
+	settings.depthHeight = ipf->getImageProductHeight(DepthSourceProduct);
+	settings.maxDepthValue = 4000;  //TODO: avoid hard code
     settings.kinectIntrinsicParameters = kinectSensor->getIntrinsicParameters();
 
     detector = new Detector(settings, _rgbFrame, _depthFrame, _depthToRgbCoordFrame, _debugFrame, _debugFrame2);
@@ -44,12 +45,18 @@ void OmniTouchFingerTracker::setParameters(double fingerWidthMin, double fingerW
 	this->fingerFallingThreshold = fingerFallingThreshold;
 	this->clickFloodMaxGrad = clickFloodMaxGrad;
 
+    updateDetectorDynamicParameters();
+}
+
+void OmniTouchFingerTracker::updateDetectorDynamicParameters()
+{
     DynamicParameters params;
-    params.omniTouchParam = getParameters();
+    params.omniTouchParam = convertParametersToStructure();
+    params.flags = InteractiveSpaceEngine::sharedEngine()->getFlags();
     detector->updateDynamicParameters(params);
 }
 
-OmniTouchParameters OmniTouchFingerTracker::getParameters() const
+OmniTouchParameters OmniTouchFingerTracker::convertParametersToStructure() const
 {
 	OmniTouchParameters r;
 	r.stripMaxBlankPixel = STRIP_MAX_BLANK_PIXEL;
@@ -70,7 +77,7 @@ OmniTouchParameters OmniTouchFingerTracker::getParameters() const
 
 void OmniTouchFingerTracker::refresh()
 {
-	if (!enabled)
+    if (!InteractiveSpaceEngine::sharedEngine()->isFlagEnabled(ISE_OMNI_TOUCH))
 	{
 		return;
 	}   

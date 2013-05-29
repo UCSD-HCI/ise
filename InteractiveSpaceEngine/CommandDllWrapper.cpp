@@ -104,14 +104,12 @@ DLL_EXPORT void setOmniTouchCropping(int left, int top, int right, int bottom)
 	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setCropping(left, top, right, bottom);
 }
 
-DLL_EXPORT void setOmniTouchEnabled(int isEnabled)
+DLL_EXPORT void setFlags(unsigned int flags)
 {
-	InteractiveSpaceEngine::sharedEngine()->getOmniTouchFingerTracker()->setEnabled(isEnabled > 0);
+    InteractiveSpaceEngine::sharedEngine()->setFlags(flags);
 }
 
-DLL_EXPORT void setTabletopRectifiedEnabled(int isEnabled)
+DLL_EXPORT void clearFlag(InteractiveSpaceEngineFlags flag)
 {
-	InteractiveSpaceEngine::sharedEngine()->getImageProcessingFactory()->setTabletopRectifiedEnabled(isEnabled > 0);
+    InteractiveSpaceEngine::sharedEngine()->clearFlags(flag);
 }
-
-

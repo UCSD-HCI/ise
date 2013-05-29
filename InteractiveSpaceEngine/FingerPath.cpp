@@ -15,7 +15,8 @@ void FingerPath::addPoint(const FloatPoint3D& point, long long frame, FingerStat
     points.push_back(point);
 
     //IIR filter
-	if (pointsFiltered.size() > 0) 
+    if (InteractiveSpaceEngine::sharedEngine()->isFlagEnabled(ISE_STABLIZE)
+        && pointsFiltered.size() > 0) 
 	{
 		//apply IIR filter
 		FloatPoint3D newFilteredPoint;
@@ -24,12 +25,13 @@ void FingerPath::addPoint(const FloatPoint3D& point, long long frame, FingerStat
 		newFilteredPoint.z = 0.7757f * pointsFiltered.back().z + 0.1122f * point.z + 0.1122f * previousInput.z;
 
 		pointsFiltered.push_back(newFilteredPoint);
-		previousInput = point;
 	}
 	else
 	{
 		pointsFiltered.push_back(point);
 	}
+
+    previousInput = point;
 
 	if (points.size() > PATH_LENGTH)
 	{

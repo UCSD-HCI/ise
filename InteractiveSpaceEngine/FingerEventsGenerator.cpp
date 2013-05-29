@@ -119,7 +119,7 @@ void FingerEventsGenerator::findBestMatch(const Finger* fingers, int fingerNum)
     {
         for (int j = 0; j < paths.size(); j++)
         {
-            if (maxPosInRows[i] == j && maxPosInCols[j] == i)
+            if (maxPosInRows[i] == j && maxPosInCols[j] == i && distMat.at<double>(i,j) < TRACK_RADIUS * TRACK_RADIUS)
             {
                 fingerToPathMatch[i] = j;
                 break;
@@ -180,7 +180,6 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 			if (nearestPath.getLength() == MIN_PATH_LENGTH)
 			{
                 addEvent(FingerCaptured, finger.id, nearestPath.getEndPointFiltered(), finger.fingerState);
-                DEBUG("FingerCaptured: " << finger.id);
 				if (finger.fingerState == FingerOnSurface)
 				{
 					addEvent(FingerDown, finger.id, nearestPath.getEndPointFiltered(), finger.fingerState);
@@ -204,7 +203,12 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 	//delete idle paths
 	for (int i = 0; i < paths.size(); i++)
 	{
-		if (newFrameCount - paths[i].getLastUpdateFrame() > PATH_IDLE_FRAMES)
+        if (paths[i].getLength() < MIN_PATH_LENGTH && newFrameCount - paths[i].getLastUpdateFrame() > 0)
+        {
+            paths.erase(paths.begin() + i);
+            i--;
+        }
+		else if (newFrameCount - paths[i].getLastUpdateFrame() > PATH_IDLE_FRAMES)
 		{
 			if (paths[i].getLength() >= MIN_PATH_LENGTH)
 			{
@@ -215,10 +219,7 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 				addEvent(FingerLost, paths[i].getID(), paths[i].getEndPointFiltered(), FingerHovering);
 			}
 
-			std::vector<FingerPath>::iterator itToDel = paths.begin();
-			for (int j = 0; j < i; j++, ++itToDel);
-			paths.erase(itToDel);
-
+			paths.erase(paths.begin() + i);
 			i--;
 		}
 	}
@@ -229,6 +230,11 @@ void FingerEventsGenerator::refresh(long long newFrameCount)
 
 void FingerEventsGenerator::drawDebugLines()
 {
+    if (!InteractiveSpaceEngine::sharedEngine()->isFlagEnabled(ISE_DEBUG_WINDOW))
+    {
+        return;
+    }
+
     static const unsigned int colors[] = {
         0xFF0000, 0xFF0800, 0x4B0082, 0x0000FF, 0x00FFFF, 0xFF00FF,
         0x800080, 0x00FFFF, 0xD2691E, 0xFF1493

@@ -34,7 +34,8 @@ InteractiveSpaceEngine::InteractiveSpaceEngine() :
     kinectSensorFrameCount(-1),  
     fps(0), 
     engineFrameCount(0), 
-    engineUpdateCallback(NULL)
+    engineUpdateCallback(NULL),
+    flags(ISE_FLAG_ENABLED | ISE_OMNI_TOUCH | ISE_COLOR_MODEL | ISE_STABLIZE)
 {
     kinectSensor->setImageProcessingFactory(ipf.get());
     kinectSensorFrameCount = -1;
@@ -49,6 +50,18 @@ InteractiveSpaceEngine::~InteractiveSpaceEngine()
 
 }
 
+void InteractiveSpaceEngine::setFlags(unsigned int flags)
+{
+    this->flags |= flags;
+    omniTracker->updateFlags();
+}
+
+void InteractiveSpaceEngine::clearFlags(InteractiveSpaceEngineFlags flags)
+{
+    this->flags &= (~(unsigned int)flags);
+    omniTracker->updateFlags();
+}
+
 void InteractiveSpaceEngine::mainLoopUpdate()
 {
     kinectSensor->refresh();
@@ -60,6 +73,8 @@ void InteractiveSpaceEngine::mainLoopUpdate()
 		{
 			ipf->refreshDepthHistogramed();
 			calibrator->refresh();
+            kinectSensorFrameCount = newFrameCount;
+            engineFrameCount++;
 		}
 	}
 	else

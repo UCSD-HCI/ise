@@ -21,11 +21,11 @@ private:
 		
 	double fingerWidthMin, fingerWidthMax, fingerLengthMin, fingerLengthMax, fingerRisingThreshold, fingerFallingThreshold, clickFloodMaxGrad;
 	int cropLeft, cropTop, cropRight, cropBottom;
-	bool enabled;
 
     //cv mat for detector, temporarily
     cv::Mat _rgbFrame, _depthFrame, _debugFrame, _debugFrame2, _depthToRgbCoordFrame;
 
+    inline void updateDetectorDynamicParameters();
 public:
 	OmniTouchFingerTracker(ImageProcessingFactory* ipf, const KinectSensor* kinectSensor);
 	virtual ~OmniTouchFingerTracker();
@@ -34,16 +34,15 @@ public:
 	void setParameters(double fingerWidthMin, double fingerWidthMax, double fingerLengthMin, double fingerLengthMax, double fingerRisingThreshold, double fingerFallingThreshold, double clickFloodMaxGrad);
 	void setCropping(int left, int top, int right, int bottom);
 	void getCropping(int* left, int* top, int* right, int* bottom);
+    
+    inline void updateFlags()
+    {
+        updateDetectorDynamicParameters();
+    }
 
-	ise::OmniTouchParameters getParameters() const;	//for export
+	ise::OmniTouchParameters convertParametersToStructure() const;	//for export
 
     inline const std::vector<ise::Finger>& getFingers() const { return fingers; }
-
-	inline void setEnabled(bool enabled) 
-	{ 
-		this->enabled = enabled; 
-	}
-	inline bool isEnabled() { return enabled; }
 };
 
 #endif

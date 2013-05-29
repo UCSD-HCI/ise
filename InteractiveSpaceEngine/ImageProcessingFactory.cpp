@@ -5,7 +5,7 @@
 #include "KinectSensor.h"
 
 ImageProcessingFactory::ImageProcessingFactory(KinectSensor* kinectSensor) 
-	: kinectSensor(kinectSensor), tabletopRectifiedEnabled(false)
+	: kinectSensor(kinectSensor)
 {
 	for (int i = 0; i < ImageProductsCount; i++)
 	{
@@ -69,7 +69,7 @@ void ImageProcessingFactory::refresh(long long kinectSensorFrameCount)
 
 void ImageProcessingFactory::updateRectifiedTabletop(Calibrator* calibrator)
 {
-	if (!tabletopRectifiedEnabled)
+    if (!InteractiveSpaceEngine::sharedEngine()->isFlagEnabled(ISE_RECTIFIED_TABLETOP))
 	{
 		return;
 	}

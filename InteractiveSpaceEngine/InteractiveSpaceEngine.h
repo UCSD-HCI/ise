@@ -4,6 +4,18 @@
 #include "ise.h"
 #include <memory>
 
+typedef enum
+{
+    ISE_FLAG_ENABLED = 0x1,
+    ISE_DEBUG_WINDOW = 0x2,
+    ISE_COLOR_MODEL = 0x4,
+    //The values above should be the same as ise::DetectorFlags defined in InteractiveSpaceCvLib/DataTypes.h
+
+    ISE_STABLIZE = 0x8,
+    ISE_OMNI_TOUCH = 0x10,
+    ISE_RECTIFIED_TABLETOP = 0x20
+} InteractiveSpaceEngineFlags;
+
 class InteractiveSpaceEngine
 {
 private:
@@ -30,6 +42,8 @@ private:
 
 	Callback engineUpdateCallback;
     
+    unsigned int flags;
+
 public:
 	InteractiveSpaceEngine();
 	virtual ~InteractiveSpaceEngine();
@@ -76,6 +90,24 @@ public:
 	{
 		engineUpdateCallback = callback;
 	}
+
+    inline unsigned int getFlags() const
+    {
+        return flags;
+    }
+
+    inline void setFlags(InteractiveSpaceEngineFlags flags)
+    {
+        setFlags((unsigned int)flags);
+    }
+
+    void setFlags(unsigned int flags);
+    void clearFlags(InteractiveSpaceEngineFlags flags);
+
+    bool isFlagEnabled(InteractiveSpaceEngineFlags flag) const
+    {
+        return (this->flags & flag) != 0;
+    }
 };
 
 #endif

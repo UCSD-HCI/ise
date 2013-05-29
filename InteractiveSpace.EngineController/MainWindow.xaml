@@ -14,14 +14,29 @@
             </StackPanel>
         </GroupBox>
         
-        <GroupBox Header="Enabled Components">
-            <StackPanel>
-                <CheckBox Name="omniTouchCheckBox" Margin="5" IsChecked="True" Click="omniTouchCheckBox_Click">OmniTouch</CheckBox>
-                <CheckBox Name="projectorFeedbackCheckbox" Margin="5" IsChecked="False" Click="projectorFeedbackCheckbox_Click">Projector Feedbak</CheckBox>
-                <CheckBox Name="rectifiedTabletopCheckBox" Margin="5" IsChecked="False" Click="rectifiedTabletopCheckBox_Click">Rectified Tabletop</CheckBox>
-                <CheckBox Name="sharedMemoryCheckBox" Margin="5" IsChecked="False" Click="sharedMemoryCheckBox_Click">Shared Memory Stream</CheckBox>
-            </StackPanel>
-        </GroupBox>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Components">
+                <StackPanel>
+                    <CheckBox Name="omniTouchCheckBox" Margin="5" IsChecked="True" Click="omniTouchCheckBox_Click">OmniTouch</CheckBox>
+                    <CheckBox Name="projectorFeedbackCheckbox" Margin="5" IsChecked="False" Click="projectorFeedbackCheckbox_Click">Projector Feedbak</CheckBox>
+                    <CheckBox Name="rectifiedTabletopCheckBox" Margin="5" IsChecked="False" Click="rectifiedTabletopCheckBox_Click">Rectified Tabletop</CheckBox>
+                    <CheckBox Name="sharedMemoryCheckBox" Margin="5" IsChecked="False" Click="sharedMemoryCheckBox_Click">Shared Memory Stream</CheckBox>
+                </StackPanel>
+            </GroupBox>
+            
+            <GroupBox Grid.Column="1" Header="Features">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox Margin="5" Name="colorModelCheckBox" IsChecked="True" Click="colorModelCheckBox_Click">Color Model</CheckBox>
+                    <CheckBox Margin="5" Name="stablizationCheckBox" IsChecked="True" Click="stablizationCheckBox_Click">Stablization</CheckBox>
+                </StackPanel>
+            </GroupBox>
+
+        </Grid>
+        
         
         <GroupBox Header="Utilities">
             <StackPanel Orientation="Horizontal">

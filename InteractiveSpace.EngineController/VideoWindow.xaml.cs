@@ -50,6 +50,11 @@ namespace InteractiveSpace.EngineController
         {
             this.videoSourceType = videoSourceType;
 
+            if (videoSourceType == VideoSourceType.OmniTouch)
+            {
+                CommandDllWrapper.setFlags(InteractiveSpaceEngineFlags.ISE_DEBUG_WINDOW);
+            }
+
             Title = videoSourceType.ToString();
 
             //create finger points
@@ -322,7 +327,10 @@ namespace InteractiveSpace.EngineController
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            //CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            if (videoSourceType == VideoSourceType.OmniTouch)
+            {
+                CommandDllWrapper.clearFlag(InteractiveSpaceEngineFlags.ISE_DEBUG_WINDOW);
+            }
         }
 
         private void cropButton_Checked(object sender, RoutedEventArgs e)

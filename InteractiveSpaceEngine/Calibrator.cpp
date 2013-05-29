@@ -368,9 +368,26 @@ void Calibrator::transformPoint(const FloatPoint3D* srcPoints, FloatPoint3D* dst
 
 void Calibrator::transformPoint(int count, const FloatPoint3D* srcPoints, FloatPoint3D* dstPoints, CoordinateSpaceConversion cvtCode)
 {
-    if (count <= 0 || (state != AllCalibrated && state != CalibratorStopped))
+    if (count <= 0)
     {
         return;
+    }
+
+    if (state != AllCalibrated && state != CalibratorStopped)
+    {
+        switch (cvtCode)
+        {
+        case SpaceRGBToDepthProjective:
+        case SpaceDepthProjectiveToDepthReal:
+        case SpaceRGBToDepthReal:
+        case SpaceDepthRealToDepthProjective:
+        case SpaceDepthProjectiveToRGB:
+        case SpaceDepthRealToRGB:
+            break;  //works without calibration
+
+        default:
+            return;
+        }
     }
 
     switch (cvtCode)
