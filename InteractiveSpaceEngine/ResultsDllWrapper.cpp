@@ -34,7 +34,7 @@ DLL_EXPORT const char* getCalibrationDepthImage()
     return (char*)InteractiveSpaceEngine::sharedEngine()->getCalibrator()->getDepthImage().data;
 }
 
-DLL_EXPORT const FingerEvent* lockFingerEvents(int* fingerNum, long long* frame)
+DLL_EXPORT const FingerEvent* getFingerEvents(int* fingerNum, long long* frame)
 {
 	const FingerEvent* fingerEventsPtr = InteractiveSpaceEngine::sharedEngine()->getFingerEventsGenerator()->getEvents(fingerNum, frame);
     return fingerEventsPtr;

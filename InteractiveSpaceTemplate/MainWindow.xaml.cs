@@ -47,18 +47,50 @@ namespace InteractiveSpaceTemplate
 
         private void button_NewContact(object sender, NewContactEventArgs e)
         {
-            Button b = (Button)sender; 
+            Button b = (Button)sender;
+            if (b.Tag != null)
+            {
+                return;
+            }
+
             b.Background = Brushes.OrangeRed;
             b.Content = "Touching";
             e.Contact.Capture(b);
+            b.Tag = e.Contact.GetPosition(mainGrid);
         }
 
         private void button_ContactRemoved(object sender, ContactEventArgs e)
         {
             Button b = (Button)sender;
+            if (e.Contact.Captured != b)
+            {
+                return;
+            }
+
             b.Background = Brushes.White;
             b.Content = "Touch Me!";
             e.Contact.ReleaseCapture();
+            b.Tag = null;
+        }
+
+        private void button_ContactMoved(object sender, ContactEventArgs e)
+        {
+            
+            Button b = (Button)sender;
+            if (e.Contact.Captured != b)
+            {
+                return;
+            }
+
+            if (b.Tag != null)
+            {
+                Point prevP = (Point)b.Tag;
+                Point p = e.Contact.GetPosition(mainGrid);
+
+                b.Margin = new Thickness(b.Margin.Left + p.X - prevP.X, b.Margin.Top + p.Y - prevP.Y, 0, 0);
+                b.Tag = p;
+            }
+            
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -27,6 +27,8 @@ namespace InteractiveSpace.EngineController
         private BackgroundWorker worker;
         private volatile bool isInitialized;
 
+        private int engineFrameCount;
+
         public event EventHandler EngineUpdateOnMainUI;
         public event EventHandler EngineUpdate;
         public event EventHandler CompletedOnMainUI;
@@ -78,19 +80,23 @@ namespace InteractiveSpace.EngineController
             while (!worker.CancellationPending)
             {
                 CommandDllWrapper.engineMainLoopUpdate();
-
-                if (EngineUpdate != null)
+                if (ResultsDllWrapper.getEngineFrameCount() > engineFrameCount)
                 {
-                    EngineUpdate(this, EventArgs.Empty);
-                }
-
-                App.Current.Dispatcher.Invoke((Action)delegate()
-                {
-                    if (EngineUpdateOnMainUI != null)
+                    if (EngineUpdate != null)
                     {
-                        EngineUpdateOnMainUI(this, EventArgs.Empty);
+                        EngineUpdate(this, EventArgs.Empty);
                     }
-                }, null);
+
+                    App.Current.Dispatcher.Invoke((Action)delegate()
+                    {
+                        if (EngineUpdateOnMainUI != null)
+                        {
+                            EngineUpdateOnMainUI(this, EventArgs.Empty);
+                        }
+                    }, null);
+
+                    engineFrameCount++;
+                }
             }
 
             CommandDllWrapper.engineExit();

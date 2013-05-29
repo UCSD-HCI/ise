@@ -5,10 +5,8 @@
 #include "ise.h"
 #include "InteractiveSpaceTypes.h"
 #include "FingerPath.h"
+#include <cv.h>
 
-#define TRACK_RADIUS 100
-#define PATH_IDLE_FRAMES 3	//A path will survive for PATH_IDLE_FRAMES since there is no new point assigned to it
-#define MIN_PATH_LENGTH 5 //A finger will raise event only after it survives for at least MIN_PATH_LENGTH frames
 
 typedef enum
 {
@@ -41,16 +39,27 @@ struct FingerEvent
 class FingerEventsGenerator
 {
 private:
+    static const int TRACK_RADIUS = 50;
+    static const int PATH_IDLE_FRAMES = 3;	//A path will survive for PATH_IDLE_FRAMES since there is no new point assigned to it
+    static const int MIN_PATH_LENGTH = 5;//A finger will raise event only after it survives for at least MIN_PATH_LENGTH frames
+    static const float SLH_SIGMA;
+
 	FingerEvent events[MAX_FINGER_NUM * 2];	
 	int eventNum;
 	long long frameCount;
 	unsigned int lastId;
 
-	std::vector<FingerPath> paths;   
+	std::vector<FingerPath> paths;
+    int fingerToPathMatch[MAX_FINGER_NUM];
+
 	FingerSelector* fingerSelector;
 
 	void addEvent(FingerEventType type, int id, const FloatPoint3D& position, FingerState fingerState);
-	void addEvent(FingerEventType type, const Finger& finger);
+	//void addEvent(FingerEventType type, const Finger& finger);
+    void findBestMatch(const Finger* fingers, int fingerNum);
+
+    void drawDebugLines();
+
 public:
 	FingerEventsGenerator(FingerSelector* fingerSelector);
 	void refresh(long long newFrameCount);
