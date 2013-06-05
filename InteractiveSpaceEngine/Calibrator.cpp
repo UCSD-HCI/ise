@@ -92,12 +92,12 @@ void Calibrator::refresh()
 		IplImage* rgbInIpf = ipf->getImageProduct(RGBSourceProduct);
 		rgbImg = cv::cvarrToMat(rgbInIpf, true);
                         
-
+        int result;
 		if (state == DetectingRGBChessboard)
 		{
             cv::cvtColor(rgbImg, grayImg, CV_RGB2GRAY);
 
-            int result = cv::findChessboardCorners(grayImg, cv::Size(chessboardCols - 1, chessboardRows - 1), chessboardCorners);
+            result = cv::findChessboardCorners(grayImg, cv::Size(chessboardCols - 1, chessboardRows - 1), chessboardCorners);
             int cornerCount = chessboardCorners.size();
 
 			//find chessboard, calculate average
@@ -135,13 +135,9 @@ void Calibrator::refresh()
 					state = RGBCalibrated;
 				}
 			}
-			else
-			{
-				cv::drawChessboardCorners(rgbImg, cv::Size(chessboardCols - 1, chessboardRows - 1), chessboardCorners, result);
-			}
 		}
 
-		
+		cv::drawChessboardCorners(rgbImg, cv::Size(chessboardCols - 1, chessboardRows - 1), chessboardCorners, result);
 	}
 
 	if (state != CalibratorNotInit && state != CalibratorStopped)
