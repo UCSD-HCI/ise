@@ -38,11 +38,26 @@ namespace InteractiveSpaceTemplate
             spaceProvider.CreateRawVideoStreaming();
             */
 
+            spaceProvider.EngineUpdate += new EventHandler(spaceProvider_EngineUpdate);
+
             //Uncomment these lines to draw fingers on the projected screen
             
-            //spaceProvider.CreateFingerTracker();
+            spaceProvider.CreateFingerTracker();
             //vizLayer.SpaceProvider = spaceProvider;
-            
+
+            spaceProvider.FingerTracker.FingerCaptured += new EventHandler<FingerEventArgs>(FingerTracker_FingerCaptured);
+        }
+
+        void FingerTracker_FingerCaptured(object sender, FingerEventArgs e)
+        {
+            //use e.ID to get finger ID
+            //e.Position
+        }
+
+        void spaceProvider_EngineUpdate(object sender, EventArgs e)
+        {
+            //Get called every frame
+            //throw new NotImplementedException();
         }
 
         private void button_NewContact(object sender, NewContactEventArgs e)
