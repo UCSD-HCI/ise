@@ -23,13 +23,16 @@ VideoRecorder::~VideoRecorder()
 void VideoRecorder::start(string filepath)
 {
 	string rgbPath = filepath + ".rgb.avi";
-	rgbWriter = cvCreateVideoWriter(rgbPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 12, cvSize(KinectSensor::KINECT_RGB_WIDTH, KinectSensor::KINECT_RGB_HEIGHT), 1);
+	rgbWriter = cvCreateVideoWriter(rgbPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 30, cvSize(KinectSensor::KINECT_RGB_WIDTH, KinectSensor::KINECT_RGB_HEIGHT), 1);
 
 	string depthHistPath = filepath + ".depth.avi";
-	depthHistWriter = cvCreateVideoWriter(depthHistPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 12, cvSize(KinectSensor::KINECT_DEPTH_WIDTH, KinectSensor::KINECT_DEPTH_HEIGHT), 1);
+	depthHistWriter = cvCreateVideoWriter(depthHistPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 30, cvSize(KinectSensor::KINECT_DEPTH_WIDTH, KinectSensor::KINECT_DEPTH_HEIGHT), 1);
 
 	string depthDataPath = filepath + ".depth.bin";
 	depthDataFp = fopen(depthDataPath.c_str(), "wb");
+
+    string debugPath = filepath + ".debug.avi";
+    debugWriter = cvCreateVideoWriter(debugPath.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), 30, cvSize(KinectSensor::KINECT_DEPTH_WIDTH, KinectSensor::KINECT_DEPTH_HEIGHT), 1);
 
 	isRecording = true;
 
@@ -77,6 +80,11 @@ void VideoRecorder::stop()
 		cvReleaseVideoWriter(&depthHistWriter);
 	}
 
+    if (debugWriter != NULL)
+    {
+        cvReleaseVideoWriter(&debugWriter);
+    }
+
 	if (depthDataFp != NULL)
 	{
 		fclose(depthDataFp);
@@ -103,6 +111,14 @@ void VideoRecorder::refresh()
 	cvCvtColor(depthHistPtr, dstDepth, CV_GRAY2BGR);
 	cvWriteFrame(depthHistWriter, dstDepth);
 	cvReleaseImage(&dstDepth);
+
+    //debug
+    IplImage* debugSrcPtr = ipf->getImageProduct(DebugOmniOutputProduct);
+	IplImage* debugDst = InteractiveSpaceEngine::sharedEngine()->getKinectSensor()->createBlankRGBImage();
+	cvCvtColor(debugSrcPtr, debugDst, CV_RGB2BGR);
+	cvWriteFrame(debugWriter, debugDst);
+	cvReleaseImage(&debugDst);
+
 
 	//depth bin
 	IplImage* depthDataPtr = ipf->getImageProduct(DepthSourceProduct);

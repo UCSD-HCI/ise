@@ -12,6 +12,7 @@ class VideoRecorder
 private:
 	CvVideoWriter* rgbWriter;
 	CvVideoWriter* depthHistWriter;
+    CvVideoWriter* debugWriter;
 	FILE* depthDataFp;
 	ImageProcessingFactory* ipf;
 	bool isRecording;
