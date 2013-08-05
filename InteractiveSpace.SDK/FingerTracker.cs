@@ -11,10 +11,29 @@ namespace InteractiveSpace.SDK
 {
     public interface FingerTracker
     {
-        event EventHandler<FingerEventArgs> FingerDown;
+		/// <summary>
+		/// Triggered when a hovering finger touches the tabletop.
+		/// </summary>
+		event EventHandler<FingerEventArgs> FingerDown;
+
+		/// <summary>
+		/// Triggered when a finger leaves the tabletop. 
+		/// </summary>
         event EventHandler<FingerEventArgs> FingerUp;
+
+		/// <summary>
+		/// Triggered when a finger moves, whether hovering or on tabletop.
+		/// </summary>
         event EventHandler<FingerEventArgs> FingerMove;
+
+		/// <summary>
+		/// Triggered when a finger is detected by ISE, whether hovering or on tabletop.
+		/// </summary>
         event EventHandler<FingerEventArgs> FingerCaptured;
+
+		/// <summary>
+		/// Trigered when a detected finger is lost, whether hovering or on tabletop.
+		/// </summary>
         event EventHandler<FingerEventArgs> FingerLost;
 
         //TODO: click, double click
@@ -26,11 +45,37 @@ namespace InteractiveSpace.SDK
         /// <returns></returns>
         Finger FindFingerById(int id);
 
+		/// <summary>
+		/// Get all on-surface fingers.
+		/// </summary>
+		/// <remarks>
+		/// Use <code>foreach (var f in OnSurfaceFingers) to enumerate them.</code>
+		/// </remarks>
+		/// <value>The on surface fingers.</value>
         IEnumerable<Finger> OnSurfaceFingers { get; }
+
+		/// <summary>
+		/// Get all hovering fingers. 
+		/// </summary>
+		/// <remarks>
+		/// Use <code>foreach (var f in HoveringFingers)</code> to enumerate them.
+		/// </remarks>
+		/// <value>The hovering fingers.</value>
         IEnumerable<Finger> HoveringFingers { get; }
+
+		/// <summary>
+		/// Get both on-surface hand hovering fingers. 
+		/// </summary>
+		/// <remarks>
+		/// Use <code>foreach (var f in Fingers)</code> to enumerate them, <code>f.FingerState</code> to tell on-surface or hovering. 
+		/// </remarks>
+		/// <value>The fingers.</value>
         IEnumerable<Finger> Fingers { get; }
     }
 
+	/// <summary>
+	/// Enumerate for finger state, whether hovering or on surface
+	/// </summary>
     public enum FingerState
     {
         Hovering,
@@ -41,8 +86,22 @@ namespace InteractiveSpace.SDK
     {
         private int id;
 
+		/// <summary>
+		/// Gets or sets the finger position. (X, Y) is the finger's 2D absolute coordinate, in pixels, relative to the top-left of the projected screen. Z is the finger's height, i.e. distance from the finger to the tabletop, in centimeters. 
+		/// </summary>
+		/// <value>The position.</value>
         public Point3D Position { get; set; }
+
+		/// <summary>
+		/// Gets or sets the state of the finger.
+		/// </summary>
+		/// <value>The state of the finger.</value>
         public FingerState FingerState { get; set; }
+
+		/// <summary>
+		/// Gets the ID of the finger. 
+		/// </summary>
+		/// <value>The ID</value>
         public int ID { get { return id; } } 
 
         public Finger(int id)
@@ -75,9 +134,28 @@ namespace InteractiveSpace.SDK
             this.finger = finger;
         }
 
+		/// <summary>
+		/// Gets the ID of the finger.
+		/// </summary>
+		/// <value>The ID.</value>
         public int ID { get { return finger.ID; } }
+
+		/// <summary>
+		/// Gets the finger position. (X, Y) is the finger's 2D absolute coordinate, in pixels, relative to the top-left of the projected screen. Z is the finger's height, i.e. distance from the finger to the tabletop, in centimeters. 
+		/// </summary>
+		/// <value>The position.</value>
         public Point3D Position { get { return finger.Position; } }
+
+		
+		/// <summary>
+		/// Convenient property to get the fingerTracker component. 
+		/// </summary>
         public FingerTracker FingerTracker { get { return fingerTracker; } }
+
+		/// <summary>
+		/// Gets the state of the finger, whether hovering or on surface. 
+		/// </summary>
+		/// <value>The state of the finger.</value>
         public FingerState FingerState { get { return finger.FingerState; } }
     }
 }

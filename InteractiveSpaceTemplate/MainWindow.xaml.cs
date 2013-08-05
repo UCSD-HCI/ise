@@ -30,38 +30,35 @@ namespace InteractiveSpaceTemplate
 
             MultitouchScreen.AllowNonContactEvents = true;
 
+			//Initialize the Interactive Space Engine
             spaceProvider = new InteractiveSpaceProviderDLL();
             spaceProvider.Connect();
 
-            //Uncomment this line to enable raw video streaming.
+			//Enable the finger tracker. 
+			spaceProvider.CreateFingerTracker();
+			spaceProvider.FingerTracker.FingerMove += new EventHandler<FingerEventArgs>(FingerTracker_FingerMove);
+            
+
+			//Uncomment this line to enable raw video streaming.
             /*
             spaceProvider.CreateRawVideoStreaming();
             */
 
-            spaceProvider.EngineUpdate += new EventHandler(spaceProvider_EngineUpdate);
-
-            //Uncomment these lines to draw fingers on the projected screen
-            
-            spaceProvider.CreateFingerTracker();
+            //Uncomment this line to draw fingers on the projected screen            
             //vizLayer.SpaceProvider = spaceProvider;
 
-            spaceProvider.FingerTracker.FingerCaptured += new EventHandler<FingerEventArgs>(FingerTracker_FingerCaptured);
         }
 
-        void FingerTracker_FingerCaptured(object sender, FingerEventArgs e)
-        {
-            //use e.ID to get finger ID
-            //e.Position
-        }
-
-        void spaceProvider_EngineUpdate(object sender, EventArgs e)
-        {
-            //Get called every frame
-            //throw new NotImplementedException();
-        }
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			//Stop the Interactive Space Engine. 
+			spaceProvider.Close();
+		}
 
         private void button_NewContact(object sender, NewContactEventArgs e)
         {
+			//Here we start a dragging operation. The initial position of the finger touched on the button is stored in the button's Tag. 
+
             Button b = (Button)sender;
             if (b.Tag != null)
             {
@@ -70,8 +67,11 @@ namespace InteractiveSpaceTemplate
 
             b.Background = Brushes.OrangeRed;
             b.Content = "Touching";
+
+			//"Capture(b)" means the event "ContactMoved" of this Contact is trigerred on button "b" even if the finger gets out of the button. This is commonly used for dragging. 
             e.Contact.Capture(b);
-            b.Tag = e.Contact.GetPosition(mainGrid);
+            
+			b.Tag = e.Contact.GetPosition(mainGrid);
         }
 
         private void button_ContactRemoved(object sender, ContactEventArgs e)
@@ -99,6 +99,8 @@ namespace InteractiveSpaceTemplate
 
             if (b.Tag != null)
             {
+				//Here we move the button according to the offset of the finger that is dragging this button. 
+
                 Point prevP = (Point)b.Tag;
                 Point p = e.Contact.GetPosition(mainGrid);
 
@@ -108,10 +110,31 @@ namespace InteractiveSpaceTemplate
             
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            spaceProvider.Close();
-        }
+		//This function listens to 3D finger events. 
+		private void FingerTracker_FingerMove(object sender, FingerEventArgs e)
+		{
+			//use e.ID to get finger ID
+			int fingerId = e.ID;
+
+			//use e.FingerState to get the state, can be "Hovering" or "OnSurface". 
+			FingerState state = e.FingerState;
+
+			//use e.Position to get finger position. 
+			Point3D pos = e.Position;
+
+			//(pos.X, pos.Y) is the finger's 2D absolute coordinate, in pixels.
+			Point pos2d = new Point(pos.X, pos.Y);
+
+			//Use hit testing to determine if the finger is above a WPF control. 
+			HitTestResult result = VisualTreeHelper.HitTest(mainGrid, pos2d);
+			if (result != null) {
+				Trace.WriteLine ("Finger above " + result.VisualHit.ToString());
+			}
+
+			//pos.Z is the finger's height, i.e. distance from the finger to the tabletop, in centimeters. 
+			Trace.WriteLine ("Finger height: " + pos.Z.ToString ());
+		}
+
 
     }
 }
